@@ -14,13 +14,9 @@
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
     <link rel="import" href="../bower_components/paper-input/paper-input.html">
 
-    <link rel="import" href="morse-about-page.html">
     <link rel="import" href="morse-output-params.html">
     <link rel="import" href="morse-input-params.html">
-    <link rel="import" href="morse-decode-page.html">
     <link rel="import" href="morse-station.html">
-    <link rel="import" href="morse-train-page.html">
-    <link rel="import" href="morse-connect-page.html">
   </head>
   <body>
     <polymer-element name="morse-app">
@@ -63,8 +59,12 @@
 	  </core-header-panel>
 	  <div id="div" tool>Morse Code</div>
 	  <core-pages id="core-pages" selected="0">
-	    <morse-about-page></morse-about-page>
-	    <section id="section">
+	    <section id="about_section">
+	      <div>
+		<h1>About</h1>
+	      </div>
+	    </section>
+	    <section id="output_section">
 	      <div layout vertical block>
 		<h1>Output</h1>
 		<paper-input id="output_text" label="Text to send:"></paper-input>
@@ -77,7 +77,7 @@
 		<morse-output-params id="output_params"></morse-output-params>
 	      </div>
 	    </section>
-	    <section id="section">
+	    <section id="input_section">
 	      <div layout vertical block>
 		<h1>Input</h1>
 		<div layout horizontal block center>
@@ -93,11 +93,21 @@
 		<morse-input-params id="input_params"></morse-input-params>
 	      </div>
 	    </section>
-	    <morse-decode-page></morse-decode-page>
-	    <morse-train-page words="Morse"></morse-train-page>
-	    <morse-train-page words="English"></morse-train-page>
-	    <morse-train-page words="Callsigns"></morse-train-page>
-	    <morse-connect-page></morse-connect-page>
+	    <section id="decode_section">
+	      <div>
+		<h1>Decode</h1>
+	      </div>
+	    </section>
+	    <section id="train_section">
+	      <div>
+		<h1>Train {{words}}</h1>
+	      </div>
+	    </section>
+	    <section id="connect_section">
+	      <div>
+		<h1>Connect</h1>
+	      </div>
+	    </section>
 	  </core-pages>
 	</core-scaffold>
       </template>
