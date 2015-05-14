@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+    <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+  </head>
+  <body>
+    <polymer-element name="morse-slider" attributes="vname units min max step value label">
+      <template>
+	<style>    
+	  :host {
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    box-sizing: border-box;
+	  }
+	  #div {
+	    left: 0px;
+	    top: 0px;
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	  }
+	</style>
+	<div id="div" layout horizontal center block>
+
+	  <paper-slider id="slider" pin="true" on-change="{{change}}"></paper-slider>
+	  <core-tooltip label="{{label}}">{{vname}} {{value}} {{units}}</core-tooltip>
+	</div>
+      </template>
+      <script src="morse-slider.js"></script>
+    </polymer-element>
+  </body>
+</html>

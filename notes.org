@@ -1,0 +1,3 @@
+* guide to material design
+  tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
+

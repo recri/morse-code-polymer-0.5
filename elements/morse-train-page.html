@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+
+  </head>
+  <body>
+    <polymer-element name="morse-train-page" attributes="words">
+
+  <template>
+    <style>    
+      :host {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      #section {
+        left: 0px;
+        top: 0px;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <section id="section">
+      <div>
+	<h1>Train {{words}}</h1>
+      </div>
+    </section>
+  </template>
+
+  <script src="morse-train-page.js"></script>
+
+</polymer-element>
+</body></html>

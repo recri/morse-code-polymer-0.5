@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+
+    <link rel="import" href="../bower_components/core-menu/core-menu.html">
+    <link rel="import" href="../bower_components/core-icons/core-icons.html">
+    <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+
+    <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+    <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+    <link rel="import" href="./morse-params.html">
+
+  </head>
+  <body>
+    <polymer-element name="morse-output-params">
+      
+      <template>
+	<style>    
+	  :host {
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    box-sizing: border-box;
+	  }
+	  #section {
+	    left: 0px;
+	    top: 0px;
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	  }
+	</style>
+	<section id="section">
+	  <morse-station id="station"
+			 output_pitch="{{output_pitch}}" output_gain_dB="{{output_gain_dB}}" output_wpm="{{output_wpm}}"
+			 output_rise_ms="{{ output_rise_ms}}" output_fall_ms="{{ output_fall_ms}}" output_dah="{{ output_dah}}"
+			 output_ies="{{ output_ies}}" output_ils="{{ output_ils}}" output_iws="{{ output_iws}}"
+			 output_midi="{{ output_midi}}"></morse-station>
+	  <morse-params>
+	    <h2>Output Params</h2>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="sidetone frequency">Pitch {{output_pitch}} Hz</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="sidetone level">Gain {{output_gain_dB}} dB</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="envelope rise time">Rise {{output_rise_ms}} ms</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="envelope fall time">Fall {{output_fall_ms}} ms</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="keying speed">Speed {{output_wpm}} wpm</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="Dash length.">Dah {{output_dah}} dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="Inter-element spacing.">IES {{output_ies}} dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="Inter-letter spacing.">ILS {{output_ils}} dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="Inter-word spacing.">IWS {{output_iws}} dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-dropdown-menu label="MIDI Device" on-core-select="{{output_midi_select}}">
+		<paper-dropdown class="dropdown">
+		  <core-menu class="menu" selected="0" selectedItem="{{selected_output_midi_item}}">
+		    <paper-item id="none">None</paper-item>
+		  </core-menu>
+		</paper-dropdown>
+	      </paper-dropdown-menu>
+	      <core-tooltip label="Reload the MIDI device list.">
+		<paper-icon-button icon="refresh" on-click="{{output_midi_refresh}}"></paper-icon-button>
+	      </core-tooltip>MIDI Device
+	    </div>
+	  </morse-params>
+	</section>
+      </template>
+      <script src="morse-output-params.js"></script>
+    </polymer-element>
+  </body>
+</html>
