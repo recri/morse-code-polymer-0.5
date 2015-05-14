@@ -46,19 +46,17 @@
 	<core-scaffold id="core_scaffold">
 	  <core-header-panel mode="seamed" id="core_header_panel" navigation flex>
             <core-toolbar id="core_toolbar"></core-toolbar>
-            <core-menu valueattr="label" id="core_menu" theme="core-light-theme">
-              <paper-item id="item0" icon="settings" label="About" horizontal center layout>About</paper-item>
-              <paper-item id="item1" icon="settings" label="Output" horizontal center layout>Output</paper-item>
-              <paper-item id="item2" icon="settings" label="Input" horizontal center layout>Input</paper-item>
-              <paper-item id="item3" icon="settings" label="Decode" horizontal center layout>Decode</paper-item>
-              <paper-item id="item4" icon="settings" label="TrainMorse" horizontal center layout>Train Morse</paper-item>
-              <paper-item id="item5" icon="settings" label="TrainEnglsh" horizontal center layout>Train English</paper-item>
-              <paper-item id="item6" icon="settings" label="TrainCallsigns" horizontal center layout>Train Callsigns</paper-item>
-              <paper-item id="item7" icon="settings" label="Connect" horizontal center layout>Connect</paper-item>
+            <core-menu valueattr="label" id="core_menu" theme="core-light-theme" on-core-select="{{core_select}}" >
+              <paper-item icon="settings" label="About" horizontal center layout>About</paper-item>
+              <paper-item icon="settings" label="Output" horizontal center layout>Output</paper-item>
+              <paper-item icon="settings" label="Input" horizontal center layout>Input</paper-item>
+              <paper-item icon="settings" label="Decode" horizontal center layout>Decode</paper-item>
+              <paper-item icon="settings" label="Train" horizontal center layout>Train Morse</paper-item>
+              <paper-item icon="settings" label="Connect" horizontal center layout>Connect</paper-item>
             </core-menu>
 	  </core-header-panel>
 	  <div id="div" tool>Morse Code</div>
-	  <core-pages id="core-pages" selected="0">
+	  <core-pages id="core_pages" selected="0">
 	    <section id="about_section">
 	      <div>
 		<h1>About</h1>

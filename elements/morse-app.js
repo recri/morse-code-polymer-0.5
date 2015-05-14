@@ -11,14 +11,6 @@ Polymer('morse-app', {
     },
     domReady: function() {
         console.log('morse-app domReady');
-        var pages = this.$['core-pages'];
-	var map = [0, 1, 2, 3, 4, 4, 4, 5];
-        for (var i = 0; i < 8; i += 1) {
-	    var j = map[i];
-            this.$['item'+i].addEventListener('click', (function(pages, selected) {
-                return (function() { pages.selected = selected; });
-            })(pages, j));
-        }
     },
     detached: function() {
         console.log('morse-app detached');
@@ -26,5 +18,10 @@ Polymer('morse-app', {
     attributeChanged: function(attrName, oldVal, newVal) {
         console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
     },
+    core_select : function(e) {
+	console.log("core_select: "+this.$.core_menu.selectedIndex);
+	this.$.core_pages.selected = this.$.core_menu.selectedIndex;
+    },
+
 });
 
