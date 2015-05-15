@@ -46,12 +46,12 @@
 	<core-scaffold id="core_scaffold">
 	  <core-header-panel mode="seamed" id="core_header_panel" navigation flex>
             <core-toolbar id="core_toolbar"></core-toolbar>
-            <core-menu valueattr="label" id="core_menu" theme="core-light-theme" on-core-select="{{core_select}}" >
+            <core-menu id="core_menu" selected="0" on-core-select="{{core_select}}" >
               <paper-item icon="settings" label="About" horizontal center layout>About</paper-item>
               <paper-item icon="settings" label="Output" horizontal center layout>Output</paper-item>
               <paper-item icon="settings" label="Input" horizontal center layout>Input</paper-item>
               <paper-item icon="settings" label="Decode" horizontal center layout>Decode</paper-item>
-              <paper-item icon="settings" label="Train" horizontal center layout>Train Morse</paper-item>
+              <paper-item icon="settings" label="Train" horizontal center layout>Train</paper-item>
               <paper-item icon="settings" label="Connect" horizontal center layout>Connect</paper-item>
             </core-menu>
 	  </core-header-panel>
