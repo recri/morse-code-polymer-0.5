@@ -9,6 +9,7 @@
     <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
     <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
     <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
@@ -48,8 +49,6 @@
       }
       paper-button {
         font-size: 16px;
-        background-color: #ddd;
-        margin: 5px;
       }
 	</style>
 	<core-scaffold id="core_scaffold">
@@ -111,22 +110,26 @@
 	      </div>
 	      <div layout vertical block>
 		<div layout horizontal center block>
-		  <paper-progress id="training_progress" flex></paper-progress>Dictionary Progress
+		  <paper-progress id="training_progress" ></paper-progress>Dictionary Progress
 		</div>
 		<div layout horizontal center block>
-		  <paper-progress id="session_progress" flex></paper-progress>Session Progress
+		  <paper-progress id="session_progress" ></paper-progress>Session Progress
 		</div>
 		<div layout horizontal around-justified block>
-		  <paper-button raised>Repeat Last</paper-button>
-		  <paper-button raised>Skip to Next</paper-button>
+		  <paper-button>Repeat Last</paper-button>
+		  <paper-button>Skip to Next</paper-button>
 		</div>
 		<div layout horizontal around-justified block>
-		  <paper-button raised>New Session</paper-button>
-		  <paper-button raised>Review Session</paper-button>
+		  <paper-button>New Session</paper-button>
+		  <paper-button>Review Session</paper-button>
 		</div>
 		<div layout horizontal around-justified block>
-		  <paper-button raised>Save Progress</paper-button>
-		  <paper-button raised>Delete Progress</paper-button>
+		  <paper-button>Save Progress</paper-button>
+		  <paper-button>Delete Progress</paper-button>
+		</div>
+		<div layout horizontal block center>
+		  <paper-fab id="left-paddle" icon="arrow-forward"></paper-fab>
+		  <paper-fab id="right-paddle" icon="arrow-back"></paper-fab>
 		</div>
 		<h2>Train Params</h2>
 		<div layout horizontal block center>
@@ -141,11 +144,11 @@
 		  </paper-dropdown-menu>Training Words
 		</div>
 		<div layout horizontal block center>
-		  <paper-slider value="{{items-per-session}}" min="2" max="50" step="1" pin="true" snap="true" flex></paper-slider>
+		  <paper-slider value="{{items-per-session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
 		  <core-tooltip label="items-per-session">Items/Session {{items_per_session}}</core-tooltip>
 		</div>
 		<div layout horizontal block center>
-		  <paper-slider value="{{reps-per-item}}" min="2" max="50" step="1" pin="true" snap="true" flex></paper-slider>
+		  <paper-slider value="{{reps-per-item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
 		  <core-tooltip label="reps-per-item">Repetitions/Item {{reps_per_item}}</core-tooltip>
 		</div>
 	      </div>
