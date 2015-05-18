@@ -40,5 +40,3 @@ Polymer({
 
     attrChanged : function(attr, oldv, newv) { console.log("output:"+attr, "oldv="+oldv, "newv="+newv); },
 });
-
-  

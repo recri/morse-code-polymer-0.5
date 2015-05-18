@@ -52,5 +52,3 @@ Polymer({
 
     attrChanged : function(attr, oldv, newv) { console.log("input:"+attr, "oldv="+oldv, "newv="+newv); },
 });
-
-  

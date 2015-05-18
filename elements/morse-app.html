@@ -17,11 +17,13 @@
     <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
     <link rel="import" href="../bower_components/paper-input/paper-input.html">
-    <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 
-    <link rel="import" href="morse-output-params.html">
     <link rel="import" href="morse-input-params.html">
-    <link rel="import" href="morse-station.html">
+    
+    <link rel="import" href="morse-output-section.html">
+    <link rel="import" href="morse-input-section.html">
+    <link rel="import" href="morse-train-section.html">
+    
   </head>
   <body>
     <polymer-element name="morse-app">
@@ -70,89 +72,14 @@
 		<h1>About</h1>
 	      </div>
 	    </section>
-	    <section id="output_section">
-	      <div layout vertical block>
-		<h1>Output</h1>
-		<paper-input id="output_text" label="Text to send:"></paper-input>
-		<div layout horizontal block center>
-		  <paper-autogrow-textarea id="output_decoded" rows="4" maxrows="10">
-		    <textarea id="output_decoded_textarea"></textarea>
-		  </paper-autogrow-textarea>
-		  <paper-fab mini id="clear_output" icon="clear"></paper-fab>
-		</div>
-		<morse-output-params id="output_params"></morse-output-params>
-	      </div>
-	    </section>
-	    <section id="input_section">
-	      <div layout vertical block>
-		<h1>Input</h1>
-		<div layout horizontal block center>
-		  <paper-autogrow-textarea id="input_decoded" rows="4" maxrows="10">
-		    <textarea id="input_decoded_textarea"></textarea>
-		  </paper-autogrow-textarea>
-		  <paper-fab mini id="clear_input" icon="clear"></paper-fab>
-		</div>
-		<div layout horizontal block center>
-		  <paper-fab id="left-paddle" icon="arrow-forward"></paper-fab>
-		  <paper-fab id="right-paddle" icon="arrow-back"></paper-fab>
-		</div>
-		<morse-input-params id="input_params"></morse-input-params>
-	      </div>
-	    </section>
+	    <morse-output-section></morse-output-section>
+	    <morse-input-section></morse-input-section>
 	    <section id="decode_section">
 	      <div>
 		<h1>Decode</h1>
 	      </div>
 	    </section>
-	    <section id="train_section">
-	      <div>
-		<h1>Train</h1>
-	      </div>
-	      <div layout vertical block>
-		<div layout horizontal center block>
-		  <paper-progress id="training_progress" ></paper-progress>Dictionary Progress
-		</div>
-		<div layout horizontal center block>
-		  <paper-progress id="session_progress" ></paper-progress>Session Progress
-		</div>
-		<div layout horizontal around-justified block>
-		  <paper-button>Repeat Last</paper-button>
-		  <paper-button>Skip to Next</paper-button>
-		</div>
-		<div layout horizontal around-justified block>
-		  <paper-button>New Session</paper-button>
-		  <paper-button>Review Session</paper-button>
-		</div>
-		<div layout horizontal around-justified block>
-		  <paper-button>Save Progress</paper-button>
-		  <paper-button>Delete Progress</paper-button>
-		</div>
-		<div layout horizontal block center>
-		  <paper-fab id="left-paddle" icon="arrow-forward"></paper-fab>
-		  <paper-fab id="right-paddle" icon="arrow-back"></paper-fab>
-		</div>
-		<h2>Train Params</h2>
-		<div layout horizontal block center>
-		  <paper-dropdown-menu label="training-words" on-core-select="{{training_words_select}}">
-		    <paper-dropdown class="dropdown">
-		      <core-menu class="menu" selected="0" selectedItem="{{selected_training_words}}">
-			<paper-item id="morse">Morse</paper-item>
-			<paper-item id="iambic">English</paper-item>
-			<paper-item id="callsigns">English</paper-item>
-		      </core-menu>
-		    </paper-dropdown>
-		  </paper-dropdown-menu>Training Words
-		</div>
-		<div layout horizontal block center>
-		  <paper-slider value="{{items-per-session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <core-tooltip label="items-per-session">Items/Session {{items_per_session}}</core-tooltip>
-		</div>
-		<div layout horizontal block center>
-		  <paper-slider value="{{reps-per-item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <core-tooltip label="reps-per-item">Repetitions/Item {{reps_per_item}}</core-tooltip>
-		</div>
-	      </div>
-	    </section>
+	    <morse-train-section></morse-train-section>
 	    <section id="connect_section">
 	      <div>
 		<h1>Connect</h1>

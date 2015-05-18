@@ -1,48 +1,49 @@
 <html>
   <head>
-    <link rel="import" href="../bower_components/polymer/polymer.html">
-
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
-    <link rel="import" href="../bower_components/core-icons/core-icons.html">
     <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 
-    <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
-    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
+    <link rel="import" href="../bower_components/paper-input/paper-input.html">
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
-    <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
-    <link rel="import" href="./morse-params.html">
-
+    <link rel="import" href="morse-station.html">
   </head>
   <body>
-    <polymer-element name="morse-output-params">
-      
+    <polymer-element name="morse-output-section">
       <template>
 	<style>    
-	  :host {
-	    position: absolute;
-	    width: 100%;
-	    height: 100%;
-	    box-sizing: border-box;
-	  }
-	  #section {
-	    left: 0px;
-	    top: 0px;
-	    position: absolute;
-	    width: 100%;
-	    height: 100%;
-	  }
+      :host {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
 	</style>
-	<section id="section">
+	<section id="output_section">
 	  <morse-station id="station"
 			 output_pitch="{{output_pitch}}" output_gain_dB="{{output_gain_dB}}" output_wpm="{{output_wpm}}"
 			 output_rise_ms="{{ output_rise_ms}}" output_fall_ms="{{ output_fall_ms}}" output_dah="{{ output_dah}}"
 			 output_ies="{{ output_ies}}" output_ils="{{ output_ils}}" output_iws="{{ output_iws}}"
 			 output_midi="{{ output_midi}}"></morse-station>
-	  <morse-params>
-	    <h2>Output Params</h2>
+	  <div layout vertical block>
+	    <h1>Output</h1>
+	    <paper-input id="output_text" label="Text to send:"></paper-input>
+	    <div layout horizontal block center>
+	      <paper-autogrow-textarea id="output_decoded" rows="4" maxrows="10">
+		<textarea id="output_decoded_textarea"></textarea>
+	      </paper-autogrow-textarea>
+	      <paper-fab mini id="clear_output" icon="clear"></paper-fab>
+	    </div>
+	    <div horizontal layout block center>
+	      <h2>Output Params</h2>
+	    </div>
 	    <div layout horizontal block center>
 	      <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
 	      <core-tooltip label="sidetone frequency">Pitch {{output_pitch}} Hz</core-tooltip>
@@ -91,10 +92,10 @@
 		<paper-icon-button icon="refresh" on-click="{{output_midi_refresh}}"></paper-icon-button>
 	      </core-tooltip>MIDI Device
 	    </div>
-	  </morse-params>
+	  </div>
 	</section>
       </template>
-      <script src="morse-output-params.js"></script>
+      <script src="morse-output-section.js"></script>
     </polymer-element>
   </body>
 </html>
