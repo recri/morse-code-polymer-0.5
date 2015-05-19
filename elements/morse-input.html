@@ -1,12 +1,13 @@
 <html>
   <head>
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
+    <link rel="import" href="../bower_components/core-icons/core-icons.html">
     <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
     <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-    <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
     <link rel="import" href="../bower_components/paper-input/paper-input.html">
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -29,6 +30,11 @@
 	  section {
 	    margin: 20px;
 	  }
+	  .key {
+	    margin: 12px;
+	    font-size: 35px;
+	    font-weight: bold;
+	  }
 	</style>
 	<section>
 	  <morse-station id="station"
@@ -38,15 +44,15 @@
 			 input_midi="{{ input_midi}}" input_swapped="{{ input_swapped}}" input_type="{{ input_type}}"></morse-station>
 	  <div layout vertical block>
 	    <h1>Input</h1>
-	    <div layout horizontal block center>
+	    <div layout horizontal block top>
 	      <paper-autogrow-textarea id="input_decoded" rows="4" maxrows="10">
 		<textarea id="input_decoded_textarea" readonly></textarea>
 	      </paper-autogrow-textarea>
-	      <paper-fab mini id="clear_input" icon="clear"></paper-fab>
+	      <paper-icon-button id="clear_textarea" icon="clear"></paper-icon-button>
 	    </div>
 	    <div layout horizontal block center>
-	      <paper-fab id="left-paddle" icon="arrow-forward"></paper-fab>
-	      <paper-fab id="right-paddle" icon="arrow-back"></paper-fab>
+	      <paper-button id="left-paddle" class="key" raised>&lt;</paper-button>
+	      <paper-button id="right-paddle" class="key" raised>&gt;</paper-button>
 	    </div>
 	    <div horizontal layout block center>
 	      <h2>Input Params</h2>
