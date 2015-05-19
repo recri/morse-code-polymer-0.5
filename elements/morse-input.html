@@ -17,7 +17,7 @@
 
   </head>
   <body>
-    <polymer-element name="morse-input-section">
+    <polymer-element name="morse-input">
       <template>
 	<style>    
       :host {
@@ -27,7 +27,7 @@
         box-sizing: border-box;
       }
 	</style>
-	<section id="input_section">
+	<section>
 	  <morse-station id="station"
 			 input_pitch="{{input_pitch}}" input_gain_dB="{{input_gain_dB}}" input_wpm="{{input_wpm}}"
 			 input_rise_ms="{{ input_rise_ms}}" input_fall_ms="{{ input_fall_ms}}" input_dah="{{ input_dah}}"
@@ -112,7 +112,7 @@
 	  </div>
 	</section>
       </template>
-      <script src="morse-input-section.js"></script>
+      <script src="morse-input.js"></script>
     </polymer-element>
   </body>
 </html>

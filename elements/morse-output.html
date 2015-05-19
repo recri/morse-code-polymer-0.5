@@ -16,7 +16,7 @@
     <link rel="import" href="morse-station.html">
   </head>
   <body>
-    <polymer-element name="morse-output-section">
+    <polymer-element name="morse-output">
       <template>
 	<style>    
       :host {
@@ -26,7 +26,7 @@
         box-sizing: border-box;
       }
 	</style>
-	<section id="output_section">
+	<section>
 	  <morse-station id="station"
 			 output_pitch="{{output_pitch}}" output_gain_dB="{{output_gain_dB}}" output_wpm="{{output_wpm}}"
 			 output_rise_ms="{{ output_rise_ms}}" output_fall_ms="{{ output_fall_ms}}" output_dah="{{ output_dah}}"
@@ -97,7 +97,7 @@
 	  </div>
 	</section>
       </template>
-      <script src="morse-output-section.js"></script>
+      <script src="morse-output.js"></script>
     </polymer-element>
   </body>
 </html>
