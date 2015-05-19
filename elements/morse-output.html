@@ -1,12 +1,13 @@
 <html>
   <head>
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
+    <link rel="import" href="../bower_components/core-icons/core-icons.html">
     <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
     <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-    <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
     <link rel="import" href="../bower_components/paper-input/paper-input.html">
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -19,12 +20,15 @@
     <polymer-element name="morse-output">
       <template>
 	<style>    
-      :host {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-      }
+	  :host {
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    box-sizing: border-box;
+	  }
+	  section {
+	    margin: 20px;
+	  }
 	</style>
 	<section>
 	  <morse-station id="station"
@@ -34,14 +38,21 @@
 			 output_midi="{{ output_midi}}"></morse-station>
 	  <div layout vertical block>
 	    <h1>Output</h1>
-	    <paper-input id="input" label="Text to send:"
-			 on-keydown="{{output_onkeydown}}(event)"
-			 ></paper-input>
+	    <div layout horizontal block center>
+	      <paper-input id="input" label="Text to send:" on-keydown="{{output_onkeydown}}(event)"></paper-input>
+	      <div id="input_button_div" layout horizontal block center>
+		<paper-icon-button id="clear_input" icon="clear"></paper-icon-button>
+		<paper-icon-button id="sent_input" icon="send"></paper-icon-button>
+	      </div>
+	    </div>
 	    <div layout horizontal block center>
 	      <paper-autogrow-textarea id="output_decoded" rows="4" maxrows="10">
 		<textarea id="output_decoded_textarea" readonly></textarea>
 	      </paper-autogrow-textarea>
-	      <paper-fab mini id="clear_output" icon="clear"></paper-fab>
+	      <div id="textarea_button_div" layout horizontal block top>
+		<paper-icon-button id="clear_textarea" icon="clear"></paper-icon-button>
+	      </div>
+
 	    </div>
 	    <div horizontal layout block center>
 	      <h2>Output Params</h2>
