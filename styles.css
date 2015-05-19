@@ -47,12 +47,3 @@ paper-fab {
   right: 1em;
   z-index: 1;
 }
-
-paper-tabs {
-  background-color: #5677fc;
-  color: #fff;
-}
-
-paper-tabs[noink][nobar] paper-tab.core-selected {
-  color: #ffff8d;
-}

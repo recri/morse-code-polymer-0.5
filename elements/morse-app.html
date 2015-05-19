@@ -44,34 +44,12 @@
 	  <core-header-panel mode="seamed" id="core_header_panel" navigation flex>
             <core-toolbar id="core_toolbar"></core-toolbar>
             <core-menu id="core_menu" selected="0" on-core-select="{{core_select}}" >
-              <paper-item icon="settings" label="About" horizontal center layout>About</paper-item>
-              <paper-item icon="settings" label="Output" horizontal center layout>Output</paper-item>
-              <paper-item icon="settings" label="Input" horizontal center layout>Input</paper-item>
-              <paper-item icon="settings" label="Decode" horizontal center layout>Decode</paper-item>
-              <paper-item icon="settings" label="Train" horizontal center layout>Train</paper-item>
-              <paper-item icon="settings" label="Connect" horizontal center layout>Connect</paper-item>
+	      <content select="paper-item"></content>
             </core-menu>
 	  </core-header-panel>
 	  <div id="div" tool>Morse Code</div>
 	  <core-pages id="core_pages" selected="0">
-	    <section id="about_section">
-	      <div>
-		<h1>About</h1>
-	      </div>
-	    </section>
-	    <morse-output-section></morse-output-section>
-	    <morse-input-section></morse-input-section>
-	    <section id="decode_section">
-	      <div>
-		<h1>Decode</h1>
-	      </div>
-	    </section>
-	    <morse-train-section></morse-train-section>
-	    <section id="connect_section">
-	      <div>
-		<h1>Connect</h1>
-	      </div>
-	    </section>
+	    <content></content>
 	  </core-pages>
 	</core-scaffold>
       </template>

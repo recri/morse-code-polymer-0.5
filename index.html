@@ -4,10 +4,45 @@
     <title>Morse Code</title>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/morse-app.html">
+    <link rel="import" href="elements/morse-output-section.html">
+    <link rel="import" href="elements/morse-input-section.html">
+    <link rel="import" href="elements/morse-train-section.html">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body unresolved>
-    <morse-app></morse-app>
+    <morse-app>
+
+      <paper-item layout center>About</paper-item>
+      <section id="about_section">
+	<div>
+	  <h1>About</h1>
+	</div>
+      </section>
+
+      <paper-item layout center>Output</paper-item>
+      <morse-output-section></morse-output-section>
+
+      <paper-item layout center>Input</paper-item>
+      <morse-input-section></morse-input-section>
+
+      <paper-item layout center>Decode</paper-item>
+      <section id="decode_section">
+	<div>
+	  <h1>Decode</h1>
+	</div>
+      </section>
+
+      <paper-item layout center>Train</paper-item>
+      <morse-train-section></morse-train-section>
+
+      <paper-item layout center>Connect</paper-item>
+      <section id="connect_section">
+	<div>
+	  <h1>Connect</h1>
+	</div>
+      </section>
+
+    </morse-app>
     <script src="main.js"></script>
   </body>
 </html>
