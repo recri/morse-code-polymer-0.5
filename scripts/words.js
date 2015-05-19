@@ -36,7 +36,7 @@ function word_list(name, words, table, next_i) {
     //
     // take the word list and sort into order of difficulty, dit length,
     //
-    var word_list = {
+    var self = {
         name : name,
 	    length : words.length,
 	    dits : null,
@@ -44,19 +44,19 @@ function word_list(name, words, table, next_i) {
 	    min : 0,
 	    max : 0,
 	    next_i : next_i || 0,
-	    how_many_more : function() { return word_list.length - word_list.next_i; },
-	    any_more : function() { return word_list.how_many_more() > 0; },
+	    how_many_more : function() { return self.length - self.next_i; },
+	    any_more : function() { return self.how_many_more() > 0; },
 	    ditLength : function(word) { return table.ditLength(word); },
-	    startAt : function(i) { word_list.next_i = i; },
+	    startAt : function(i) { self.next_i = i; },
 	    next : function(n) {
-	        n = Math.min(word_list.length-word_list.next_i, n);
+	        n = Math.min(self.length-self.next_i, n);
 	        var next = new Array(n);
-	        for (var i = 0; i < n; i += 1) next[i] = words[order[word_list.next_i++]];
+	        for (var i = 0; i < n; i += 1) next[i] = words[order[self.next_i++]];
 	        return next;
 	    },
     };
-    var dits = word_list.dits = new Uint8Array(word_list.length);
-    var order = word_list.order = new Uint16Array(word_list.length);
+    var dits = self.dits = new Uint8Array(self.length);
+    var order = self.order = new Uint16Array(self.length);
     var min = 128, max = 0;
     for (var i in words) {
 	    dits[i] = table.ditLength(words[i]);
@@ -64,7 +64,7 @@ function word_list(name, words, table, next_i) {
 	    max = Math.max(dits[i], max);
     }
     var x = 0;
-    for (var i = min; i <= max; i += 1) {
+    for (i = min; i <= max; i += 1) {
 	    var n_at_i = 0;
 	    for (var j in dits) {
 	        if (dits[j] == i) {
@@ -73,7 +73,7 @@ function word_list(name, words, table, next_i) {
 	        }
 	    }
     }
-    return word_list;
+    return self;
 }
 
 //
@@ -517,7 +517,7 @@ function word_list_comb(table, next_i) {
     var nsing = singles.length;
     while (true) {
 	    var nwords = words.length;
-	    for (var i = 0; i < nsing; i += 1) {
+	    for (i = 0; i < nsing; i += 1) {
 	        var iword = singles[i];
 	        if ( ! isLetter(iword)) continue;
 	        var ilen = table.ditLength(iword);

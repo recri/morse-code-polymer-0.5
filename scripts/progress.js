@@ -144,7 +144,7 @@ function study_progress(word_list, station) {
             self.test_score();
             if (self.session.reps_done == self.session.reps_to_do) {
                 self.session_progress();
-                self.session_score()
+                self.session_score();
             } else {
                 self.session_continue();
             }
@@ -162,7 +162,7 @@ function study_progress(word_list, station) {
         session_score : function() {
             var n = self.session.tests.length;
             for (var i = 0; i < n; i += 1) {
-                var t = self.session.tests[i]
+                var t = self.session.tests[i];
                 self.progress_score_word(t[0], t[1]);
             }
             self.progress_progress();
@@ -184,7 +184,7 @@ function study_progress(word_list, station) {
         worst : function(n) {
             var worst = Object.keys(self.words).sort(function(a,b) {
                 a = self.words[a];
-                b = self.words[b]
+                b = self.words[b];
                 return (b.score-a.score) || (a.n-b.n);
             });
             // for (var i = 0; i < worst.length; i += 1) console.log(worst[i], self.words[worst[i]]);
@@ -219,7 +219,7 @@ function study_progress(word_list, station) {
         progress_score_word : function(word, score) {
             var w = self.words[word];
             if ( ! w ) {
-                w = { n : 1, score : score }
+                w = { n : 1, score : score };
             } else {
                 w.n += 1;
                 w.score = (w.score + score) / 2;
@@ -249,7 +249,7 @@ function study_progress(word_list, station) {
             self.msPerDit = 1/(wpm * 50 * (1/60) * (1/1000)); // 1 / (words/minute * dits/word * minutes/second * second/millisecond)
             document.getElementById('speed').innerText = ""+wpm;
         },
-        getSpeed : function() { return self.station.output.wpm },
+        getSpeed : function() { return self.station.output.wpm; },
         faster : function() { self.setSpeed(self.getSpeed()+2.5); },
         slower : function() { self.setSpeed(self.getSpeed()-2.5); },
         swappaddles : function(swapped) { self.station.swapped = swapped; },

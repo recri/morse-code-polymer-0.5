@@ -30,7 +30,7 @@
     // our personal extender function for inheritance
     // lucky choice, turns out that _.extend() doesn't do setters and getters
     function extend(obj, props) {
-        for (prop in props) {
+        for (var prop in props) {
             if (obj[prop]) console.log("overwrite "+prop);
             var tmp = Object.getOwnPropertyDescriptor(props, prop);
             if (tmp.get && tmp.set) {
@@ -71,7 +71,7 @@
                         var c = string.charAt(i).toUpperCase();
                         if (self.code[c]) {
                             result.push(self.code[c]);
-                            result.push(' ')
+                            result.push(' ');
                         } else if (c == ' ') {
                             result.push('  ');
                         }
@@ -123,14 +123,14 @@
                         self.code = self.codes[name];
                         self.trans = self.transliterations[name];
                         self.invert = {};
-                        self.dits = {}
+                        self.dits = {};
                         // there is a problem with multiple translations
                         // because some morse codes get used for more than one character
                         // ignored for now
                         for (var i in self.code) {
                             var code = self.code[i];
                             self.invert[code] = i; // deal with multiple letters sharing codes
-                            self.dits[i] = 0
+                            self.dits[i] = 0;
                             for (var j = 0; j < code.length; j += 1) {
                                 var c = code.charAt(j);
                                 if (c == '.') self.dits[i] += 2;
@@ -200,12 +200,13 @@
                     "\u30a2" : '--.--', "\u30ab" : '.-..', "\u30b5" : '-.-.-', "\u30bf" : '-.', "\u30ca" : '.-.', "\u30cf" : '-...',
                     "\u30de" : '-..-', "\u30e4" : '.--', "\u30e9" : '...', "\u30ef" : '-.-', "\u25cc" : '..', "\u30a4" : '.-',
                     "\u30ad" : '-.-..', "\u30b7" : '--.-.', "\u30c1" : '..-.', "\u30cb" : '-.-.', "\u30d2" : '--..-', "\u30df" : '..-.-',
-                    "\u30ea" : '--.', "\u30f0" : '.-..-', "\u25cc" : '..--.', "\u30a6" : '..-', "\u30af" : '...-', "\u30b9" : '---.-',
+                    "\u30ea" : '--.', "\u30f0" : '.-..-', "\u30a6" : '..-', "\u30af" : '...-', "\u30b9" : '---.-',
                     "\u30c4" : '.--.', "\u30cc" : '....', "\u30d5" : '--..', "\u30e0" : '-', "\u30e6" : '-..--', "\u30eb" : '-.--.',
-                    "\u30f3" : '.-.-.', "\u25cc" : '.--.-', "\u30a8" : '-.---', "\u30b1" : '-.--', "\u30bb" : '.---.', "\u30c6" : '.-.--',
+                    "\u30f3" : '.-.-.',  "\u30a8" : '-.---', "\u30b1" : '-.--', "\u30bb" : '.---.', "\u30c6" : '.-.--',
                     "\u30cd" : '--.-', "\u30d8" : '.', "\u30e1" : '-...-', "\u30ec" : '---', "\u30f1" : '.--..', "\u3001" : '.-.-.-',
                     "\u30aa" : '.-...', "\u30b3" : '----', "\u30bd" : '---.', "\u30c8" : '..-..', "\u30ce" : '..--', "\u30db" : '-..',
                     "\u30e2" : '-..-.', "\u30e8" : '--', "\u30ed" : '.-.-', "\u30f2" : '.---', "\u3002": '.-.-..' }
+                    // duplicate key "\u25cc" : '.--.-', "\u25cc" : '..--.', 
             },
             // transliteration tables for non-roman alphabets
             transliterations : {
@@ -252,7 +253,7 @@
         };
         self.setName(name || 'itu');
         return self;
-    }
+    };
 
     morse.event = function() {
         var self = {
@@ -264,25 +265,24 @@
              *  on: listen to events
              */
             on : function(type, func, ctx) {
-                (this.events[type] = this.events[type] || []).push({f:func, c:ctx})
+                (this.events[type] = this.events[type] || []).push({f:func, c:ctx});
             },
             /**
              *  Off: stop listening to event / specific callback
              */
             off : function(type, func) {
-                type || (this.events = {})
+                if ( ! type) this.events = {};
                 var list = this.events[type] || [],
-                i = list.length = func ? list.length : 0
-                while(i-->0) func == list[i].f && list.splice(i,1)
+                i = list.length = func ? list.length : 0;
+                while(i-->0) if (func == list[i].f) list.splice(i,1);
             },
             /**
              * Emit: send event, callbacks will be triggered
              */
             emit : function() {
-                var args = Array.apply([], arguments), list = this.events[args.shift()] || [], i=0, j;
-                while (j=list[i++]) j.f.apply(j.c, args)
+                var args = Array.apply([], arguments), list = this.events[args.shift()] || [], i=0;
+                for (var j=list[i++]; j; j=list[i++]) j.f.apply(j.c, args);
             },
-            events : {},
         };
         return self;
     };
@@ -311,15 +311,15 @@
             },
             get gain() { return this._gain_dB; },
             // the rise time of the envelope in ms
-            set rise(ms) { this.ramp.rise = (ms || 4) * 1000; },
-            get rise() { return this.ramp.rise / 1000; },
+            set rise(ms) { this.ramp.rise = (ms || 4) / 1000; },
+            get rise() { return this.ramp.rise * 1000; },
             // the fall time of the envelope in ms
-            set fall(ms) { this.ramp.fall = (ms || 4) * 1000; },
-            get fall() { return this.ramp.fall / 1000; },
+            set fall(ms) { this.ramp.fall = (ms || 4) / 1000; },
+            get fall() { return this.ramp.fall * 1000; },
             // where we are in the sample time stream
             curpos : 0,
             set cursor(seconds) { this.curpos = seconds; },
-            get cursor() { return this.curpos = Math.max(this.curpos, context.currentTime); },
+            get cursor() { return (this.curpos = Math.max(this.curpos, context.currentTime)); },
             // connect our output samples to somewhere
             connect : function(target) { this.key.connect(target); },
             // turn the key on now
@@ -334,6 +334,7 @@
             },
             // schedule the key on at time
             keyOnAt : function(time) {
+                // console.log("keyOnAt", time, " at ", context.currentTime);
                 this.key.gain.setValueAtTime(0.0, time);
                 this.key.gain.linearRampToValueAtTime(this.ramp.max, time+this.ramp.rise);
                 this.cursor = time;
@@ -341,15 +342,20 @@
             },
             // schedule the key off at time
             keyOffAt : function(time) {
+                // console.log("keyOffAt", time, " at ", context.currentTime);
                 this.key.gain.setValueAtTime(this.ramp.max, time);
                 this.key.gain.linearRampToValueAtTime(0.0, time+this.ramp.fall);
                 this.cursor = time;
                 this.emit('transition', 0, time);
             },
             // hold the last scheduled key state for seconds
-            keyHoldFor : function(seconds) { return this.cursor += seconds; },
+            keyHoldFor : function(seconds) {
+                // console.log("keyHoldFor until", this.cursor+seconds, "at", context.currentTime);
+                return this.cursor += seconds;
+            },
             // cancel all scheduled key transitions
             cancel : function() {
+                // console.log("cancel at ", context.currentTime);
                 this.key.gain.cancelScheduledValues(this.cursor = context.currentTime);
                 this.key.gain.value = 0;
             },
@@ -362,13 +368,13 @@
         self.fall = 4;
         self.cursor = 0;                // next time
 
-        // initialize the gain
-        self.key.gain.value = 0;
-        self.oscillator.connect(self.key);
-
         // initialize the oscillator
         self.oscillator.type = 'sine';
         self.oscillator.start();
+
+        // initialize the gain
+        self.key.gain.value = 0;
+        self.oscillator.connect(self.key);
 
         return self;
     };
@@ -475,7 +481,7 @@
                     outputData[sample] = inputData[sample];
                     if (this.detone_process(inputData[sample])) {
                         this.maxPower = Math.max(this.power, this.maxPower);
-                        if (this.onoff == 0 && this.oldPower < 0.6*this.maxPower && this.power > 0.6*this.maxPower)
+                        if (this.onoff === 0 && this.oldPower < 0.6*this.maxPower && this.power > 0.6*this.maxPower)
                             this.emit('transition', this.onoff = 1, time);
                         if (this.onoff == 1 && this.oldPower > 0.4*this.maxPower && this.power < 0.4*this.maxPower)
                             this.emit('transition', this.onoff = 0, time);
@@ -484,7 +490,7 @@
                     time += this.dtime;
                 }
             },
-            connect : function(node) { this.scriptNode.connect(node) },
+            connect : function(node) { this.scriptNode.connect(node); },
             get target() { return this.scriptNode; },
             onchangepitch : function(pitch) { this.setCenterAndBandwidth(pitch, this.bandwidth); },
         });
@@ -494,7 +500,7 @@
         self.scriptNode.onaudioprocess = function(audioProcessingEvent) { self.onAudioProcess(audioProcessingEvent); };
         // go
         return self;
-    }
+    };
 
     // translate keydown/keyup events to dit dah strings
     morse.detime = function(context) {
@@ -539,13 +545,14 @@
             detime_process : function(onoff, time) {
                 time *= context.sampleRate;                     /* convert seconds to frames */
                 var observation = time - this.time;     /* float length of observed element or space */
+                var guess, wt, update;
                 this.time = time;
-                if (onoff == 0) {                               /* the end of a dit or a dah */
+                if (onoff === 0) {                               /* the end of a dit or a dah */
                     var o_dit = observation;            /* float if it's a dit, then the length is the dit clock observation */
                     var o_dah = observation / 3;                /* float if it's a dah, then the length/3 is the dit clock observation */
                     var d_dit = o_dit - this.estimate;  /* float the dit distance from the current estimate */
                     var d_dah = o_dah - this.estimate;  /* float the dah distance from the current estimate */
-                    if (d_dit == 0 || d_dah == 0) {
+                    if (d_dit === 0 || d_dah === 0) {
                         /* one of the observations is spot on, so 1/(d*d) will be infinite and the estimate is unchanged */
                     } else {
                         /* the weight of an observation is the observed frequency of the element scaled by inverse of
@@ -553,15 +560,15 @@
                          */
                         var w_dit = 1.0 * this.n_dit / (d_dit*d_dit); /* raw weight of dit observation */
                         var w_dah = 1.0 * this.n_dah / (d_dah*d_dah); /* raw weight of dah observation */
-                        var wt = w_dit + w_dah;                      /* weight normalization */
-                        var update = (o_dit * w_dit + o_dah * w_dah) / wt;
+                        wt = w_dit + w_dah;                      /* weight normalization */
+                        update = (o_dit * w_dit + o_dah * w_dah) / wt;
                         //console.log("o_dit="+o_dit+", w_dit="+w_dit+", o_dah="+o_dah+", w_dah="+w_dah+", wt="+wt);
                         //console.log("update="+update+", estimate="+this.estimate);
                         this.estimate += update;
                         this.estimate /= 2;
                         this.wpm = (context.sampleRate * 60) / (this.estimage * this.word);
                     }
-                    var guess = 100 * observation / this.estimate;    /* make a guess */
+                    guess = 100 * observation / this.estimate;    /* make a guess */
                     if (guess < 200) {
                         this.n_dit += 1; return '.';
                     } else {
@@ -572,16 +579,16 @@
                     var o_ils = observation / 3;
                     var d_ies = o_ies - this.estimate;
                     var d_ils = o_ils - this.estimate;
-                    var guess = 100 * observation / this.estimate;
-                    if (d_ies == 0 || d_ils == 0) {
+                    guess = 100 * observation / this.estimate;
+                    if (d_ies === 0 || d_ils === 0) {
                         /* if one of the observations is spot on, then 1/(d*d) will be infinite and the estimate is unchanged */
                     } else if (guess > 500) {
                         /* if it looks like a word space, it could be any length, don't worry about how long it is */
                     } else {
                         var w_ies = 1.0 * this.n_ies / (d_ies*d_ies);
                         var w_ils = 1.0 * this.n_ils / (d_ils*d_ils);
-                        var wt = w_ies + w_ils;
-                        var update = (o_ies * w_ies + o_ils * w_ils) / wt;
+                        wt = w_ies + w_ils;
+                        update = (o_ies * w_ies + o_ils * w_ils) / wt;
                         //console.log("o_ies="+o_ies+", w_ies="+w_ies+", o_ils="+o_ils+", w_ils="+w_ils+", wt="+wt);
                         //console.log("update="+update+", estimate="+this.estimate);
                         this.estimate += update;
@@ -607,7 +614,7 @@
         self.on('transition', self.ontransition, self);
         self.configure(15, 50); // this is part suggestion (15 wpm) and part routine (50 dits/word is PARIS)
         return self;
-    }
+    };
 
     // translate dit dah strings to text
     morse.decode = function(context) {
@@ -628,12 +635,12 @@
                     clearTimeout(this.elementTimeout);
                     this.elementTimeout = null;
                 }
-                if (elt == '') {
+                if (elt === '') {
                     return;
                 }
                 if (elt == '.' || elt == '-') {
                     this.elements.push(elt);
-                    this.elementTimeout = setTimeout(this.elementTimeoutFun, 1000*(timeEnded-context.currentTime)+250)
+                    this.elementTimeout = setTimeout(this.elementTimeoutFun, 1000*(timeEnded-context.currentTime)+250);
                     return;
                 }
                 if (this.elements.length > 0) {
@@ -648,7 +655,7 @@
         });
         self.on('element', self.onelement, self);
         return self;
-    }
+    };
 
     // translate iambic paddle events into keyup/keydown events
     morse.iambic_keyer = function(context) {
@@ -794,7 +801,7 @@
         //
         update();
         return self;
-    }
+    };
 
     morse.straight_input = function(context) {
         // extends player
@@ -827,7 +834,7 @@
             },
         });
         return self;
-    }
+    };
 
     morse.iambic_input = function(context) {
         // extend iambic keyer
@@ -880,7 +887,7 @@
             },
         });
         return self;
-    }
+    };
 
     /*
     ** The MIDI interface may need to be enabled in chrome://flags,
@@ -946,7 +953,7 @@
             console.log("no navigator.requestMIDIAccess found");
         }
         return self;
-    }
+    };
 
     // translate keyup/keydown into keyed oscillator sidetone
     morse.input = function(context) {
@@ -963,15 +970,15 @@
                 this.straight.gain = gain;
                 this.iambic.gain = gain;
             },
-            get rise() { return this.iambic.rise; },
+            get rise() { return this.iambic.rise * 1000; },
             set rise(ms) {
-                this.straight.rise = ms;
-                this.iambic.rise = ms;
+                this.straight.rise = ms / 1000;
+                this.iambic.rise = ms / 1000;
             },
-            get fall() { return this.iambic.fall; },
+            get fall() { return this.iambic.fall * 1000; },
             set fall(ms) {
-                this.straight.fall = ms;
-                this.iambic.fall = ms;
+                this.straight.fall = ms / 1000;
+                this.iambic.fall = ms / 1000;
             },
             get wpm() { return this.iambic.wpm; },
             set wpm(wpm) { this.iambic.wpm = wpm; },
@@ -1006,9 +1013,9 @@
             _midi : null,
             get midi() { return this._midi; },
             set midi(midi) {
-                this.midi_input.disconnect(this._midi)
+                this.midi_input.disconnect(this._midi);
                 this._midi = midi;
-                this.midi_input.connect(midi, this.onmidievent)
+                this.midi_input.connect(midi, this.onmidievent);
             },
             midi_refresh : function() { this.midi_input = morse.midi_input(); },
             midi_names : function() { this.midi_input.names(); },
@@ -1018,7 +1025,7 @@
 
     // combine inputs and outputs
     morse.station = function(params) {
-        var context = new (window.AudioContext || window.webkitAudioContext)();
+        var context = window.AudioContext ? new window.AudioContext() : new window.webkitAudioContext();
 
         var self = {
             context : context,
@@ -1121,7 +1128,8 @@
             output_midi_names : function() { this.output.midi_names(); },
             input_midi_refresh : function() { this.input.midi_refresh(); },
             input_midi_names : function() { this.input.midi_names(); },
-            output_text_send : function(text) { this.output.send(text); },
+            output_send : function(text) { this.output.send(text); },
+            output_cancel : function() { this.output.cancel(); },
             input_decoder_on_letter : function(callback, context) { this.input_decoder.on('letter', callback, context); },
             output_decoder_on_letter : function(callback, context) { this.output_decoder.on('letter', callback, context); },
             
@@ -1161,7 +1169,7 @@
             self.set_defaults();
 
         return self;
-    }
+    };
 
     // Export the morse object for **Node.js**, with
     // backwards-compatibility for the old `require()` API. If we're in

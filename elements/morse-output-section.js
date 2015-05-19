@@ -11,7 +11,7 @@ Polymer({
         output_ils : 3,
         output_iws : 7,
         output_midi : 'none',
-        selected_output_midi_item : null
+        selected_output_midi_item : null,
     },
 
     ready : function() { },
@@ -39,4 +39,16 @@ Polymer({
     output_midiChanged : function(oldv, newv) { this.attrChanged('output_midi', oldv, newv); },
 
     attrChanged : function(attr, oldv, newv) { console.log("output:"+attr, "oldv="+oldv, "newv="+newv); },
+
+    output_send : function(text) { this.$.station.output_send(text); },
+    output_cancel : function() { this.$.station.output_cancel(); },
+    output_onkeydown : function(event) {
+        if (event.keyCode == 13) {
+            this.output_send(this.$.input.value);
+            this.$.input.value = "";
+            return false;
+        } else {
+            return true;
+        }
+    },
 });

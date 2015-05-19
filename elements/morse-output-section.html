@@ -34,10 +34,12 @@
 			 output_midi="{{ output_midi}}"></morse-station>
 	  <div layout vertical block>
 	    <h1>Output</h1>
-	    <paper-input id="output_text" label="Text to send:"></paper-input>
+	    <paper-input id="input" label="Text to send:"
+			 on-keydown="{{output_onkeydown}}(event)"
+			 ></paper-input>
 	    <div layout horizontal block center>
 	      <paper-autogrow-textarea id="output_decoded" rows="4" maxrows="10">
-		<textarea id="output_decoded_textarea"></textarea>
+		<textarea id="output_decoded_textarea" readonly></textarea>
 	      </paper-autogrow-textarea>
 	      <paper-fab mini id="clear_output" icon="clear"></paper-fab>
 	    </div>

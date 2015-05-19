@@ -1,0 +1,17 @@
+* [ ] make morse-station reflect values,
+	especially choices in menus
+* [x] make textareas readonly
+* [ ] go back to collapsing settings
+* [ ] use icons
+** [ ] clear for input
+** [ ] send for input
+** [ ] clear for textareas
+** [ ] settings for setting blocks
+** [ ] refresh for MIDI refresh
+** [ ] swap-horiz for swap paddles
+* [ ] move to card based drill
+** [ ] show didah
+** [ ] show text
+** [ ] show reply text
+** [ ] show score
+** [ ] make optional what is shown

@@ -83,8 +83,10 @@
         output_iwsChanged : function(oldv, newv) { this.attrChanged('output_iws', oldv, newv); },
         output_midiChanged : function(oldv, newv) { this.attrChanged('output_midi', oldv, newv); },
 
-        attrChanged : function(attr, oldv, newv) {
-	    console.log("station:"+attr, "oldv="+oldv, "newv="+newv);
-	},
+        attrChanged : function(attr, oldv, newv) { console.log("station:"+attr, "oldv="+oldv, "newv="+newv); },
+
+	output_send : function(text) { station.output_send(text); },
+	output_cancel : function() { station.output.cancel(); },
+	    
     });
 })();
