@@ -7,7 +7,9 @@
     <link rel="import" href="elements/morse-about.html">
     <link rel="import" href="elements/morse-output.html">
     <link rel="import" href="elements/morse-input.html">
+    <link rel="import" href="elements/morse-decode.html">
     <link rel="import" href="elements/morse-train.html">
+    <link rel="import" href="elements/morse-connect.html">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body unresolved>
@@ -23,13 +25,13 @@
       <morse-input></morse-input>
 
       <paper-item layout center>Decode</paper-item>
-      <section><div><h1>Decode</h1></div></section>
+      <morse-decode></morse-decode>
 
       <paper-item layout center>Train</paper-item>
       <morse-train></morse-train>
 
       <paper-item layout center>Connect</paper-item>
-      <section><div><h1>Connect</h1></div></section>
+      <morse-connect></morse-connect>
 
     </morse-app>
     <script src="main.js"></script>
