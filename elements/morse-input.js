@@ -16,7 +16,14 @@ Polymer({
         selected_input_midi_item : null,
         selected_input_type_item : null,
     },
-    ready : function() { },
+    core_select : function(e) {
+        console.log("morse-input core-select", e.detail.isSelected, e.detail.item);
+    },
+    ready : function() {
+        this.$.station.input_decoder_on_letter(this.onletter, this);
+        this.$.left_paddle.oncontextmenu = function() { return false; };
+        this.$.right_paddle.oncontextmenu = function() { return false; };
+   },
 
     input_type_select : function(e) {
         if (this.selected_input_type_item) {
@@ -51,4 +58,33 @@ Polymer({
     input_typeChanged : function(oldv, newv) { this.attrChanged('input_type', oldv, newv); },
 
     attrChanged : function(attr, oldv, newv) { console.log("input:"+attr, "oldv="+oldv, "newv="+newv); },
+
+    text : "",
+
+    onletter : function(letter, code) {
+        this.text += letter;
+        this.$.input_decoded_textarea.innerText = this.text;
+    },
+
+    clear_textarea : function(event, detail, sender) {
+        this.text = "";
+        this.$.input_decoded_textarea.innerText = this.text;
+    },
+
+    blur : function() { this.$.station.input_blur(); },
+    focus : function() { this.$.station.input_focus(); },
+
+    keydown : function(e) { this.$.station.input_keydown(e.keyCode&1); },
+    keyup : function(e) { this.$.station.input_keyup(e.keyCode&1); },
+
+    left_touchstart : function(e) { this.$.station.input_keydown(1); },
+    left_touchend : function(e) { this.$.station.input_keyup(1); },
+    right_touchstart : function(e) { this.$.station.input_keydown(0); },
+    right_touchend : function(e) { this.$.station.input_keyup(0);  },
+        
+    left_mousedown : function(e) { this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
+    left_mouseup : function(e) {  this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
+    right_mousedown : function(e) { this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
+    right_mouseup : function(e) {  this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
+        
 });

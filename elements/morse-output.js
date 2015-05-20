@@ -14,7 +14,11 @@ Polymer({
         selected_output_midi_item : null,
     },
 
-    ready : function() { },
+    text : "",
+
+    ready : function() {
+        this.$.station.output_decoder_on_letter(this.onletter, this);
+    },
 
     output_midi_select : function(e) {
         if (this.selected_output_midi_item) {
@@ -24,8 +28,8 @@ Polymer({
                 this.output_midi = this.selected_output_midi_item.innerText;
         }
     },
-    output_midi_refresh : function() { station.output_midi_refresh(); },
-    output_midi_names : function() { station.output_midi_names(); },
+    output_midi_refresh : function() { this.$.station.output_midi_refresh(); },
+    output_midi_names : function() { this.$.station.output_midi_names(); },
 
     output_pitchChanged : function(oldv, newv) { this.attrChanged('output_pitch', oldv, newv); },
     output_gain_dBChanged : function(oldv, newv) { this.attrChanged('output_gain_dB', oldv, newv); },
@@ -42,7 +46,8 @@ Polymer({
 
     output_send : function(text) { this.$.station.output_send(text); },
     output_cancel : function() { this.$.station.output_cancel(); },
-    output_onkeydown : function(event) {
+
+    onkeydown : function(event, detail, sender) {
         if (event.keyCode == 13) {
             this.output_send(this.$.input.value);
             this.$.input.value = "";
@@ -51,4 +56,21 @@ Polymer({
             return true;
         }
     },
+    clear_textarea : function(event, detail, sender) {
+        this.text = "";
+        this.$.output_decoded_textarea.innerText = this.text;
+    },
+    clear_input : function(event, detail, sender) {
+        this.$.input.value = "";
+    },
+    send_input : function(event, detail, sender) {
+        this.output_send(this.$.input.value);
+        this.$.input.value = "";
+    },
+    onletter : function(letter, code) {
+        this.text += letter;
+        this.$.output_decoded_textarea.innerText = this.text;
+    },
+
+
 });

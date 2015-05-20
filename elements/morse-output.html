@@ -39,17 +39,18 @@
 	  <div layout vertical block>
 	    <h1>Output</h1>
 	    <div layout horizontal block center>
-	      <paper-input id="input" label="Text to send:" on-keydown="{{output_onkeydown}}(event)"></paper-input>
+	      <!--  -->
+	      <paper-input id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
 	      <div id="input_button_div" layout horizontal block center>
-		<paper-icon-button id="clear_input" icon="clear"></paper-icon-button>
-		<paper-icon-button id="sent_input" icon="send"></paper-icon-button>
+		<paper-icon-button id="clear_input" icon="clear" on-click="{{clear_input}}"></paper-icon-button>
+		<paper-icon-button id="send_input" icon="send" on-click="{{send_input}}"></paper-icon-button>
 	      </div>
 	    </div>
 	    <div layout horizontal block top>
 	      <paper-autogrow-textarea id="output_decoded" rows="4" maxrows="10">
 		<textarea id="output_decoded_textarea" readonly></textarea>
 	      </paper-autogrow-textarea>
-	      <paper-icon-button id="clear_textarea" icon="clear"></paper-icon-button>
+	      <paper-icon-button id="clear_textarea" icon="clear"  on-click="{{clear_textarea}}"></paper-icon-button>
 	    </div>
 	    <div horizontal layout block center>
 	      <h2>Output Params</h2>

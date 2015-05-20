@@ -83,10 +83,22 @@
         output_iwsChanged : function(oldv, newv) { this.attrChanged('output_iws', oldv, newv); },
         output_midiChanged : function(oldv, newv) { this.attrChanged('output_midi', oldv, newv); },
 
-        attrChanged : function(attr, oldv, newv) { console.log("station:"+attr, "oldv="+oldv, "newv="+newv); },
+        attrChanged : function(attr, oldv, newv) {
+	    console.log("station:"+attr, "oldv="+oldv, "newv="+newv);
+	    if (newv != oldv)
+		station[attr] = newv;
+	},
 
 	output_send : function(text) { station.output_send(text); },
 	output_cancel : function() { station.output.cancel(); },
-	    
+	output_decoder_on_letter : function(callback, context) { station.output_decoder_on_letter(callback, context); },
+	input_decoder_on_letter : function(callback, context) { station.input_decoder_on_letter(callback, context); },	    
+
+	input_blur : function() { station.input_blur(); },
+	input_focus : function() { station.input_focus(); },
+
+	input_keydown : function(isleft) { station.input_keydown(isleft); },
+	input_keyup : function(isleft) { station.input_keyup(isleft); },
+
     });
 })();

@@ -18,9 +18,14 @@ Polymer('morse-app', {
     attributeChanged: function(attrName, oldVal, newVal) {
         console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
     },
-    core_select : function(e) {
-	// console.log("core_select: ", e, this.$.core_menu.selected, this.$.core_menu.selectedIndex);
-	this.$.core_pages.selected = this.$.core_menu.selected;
+    core_select : function(e, d) {
+	if (d.isSelected)
+	    this.$.core_pages.selected = this.$.core_menu.selected;
+	var item = this.$.core_pages.items[this.$.core_pages.selected];
+	if (d.isSelected)
+	    item.focus();
+	else
+	    item.blur();
     },
 
 });
