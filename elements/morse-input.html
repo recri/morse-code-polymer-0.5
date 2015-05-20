@@ -13,6 +13,7 @@
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
     <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+    <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
     <link rel="import" href="morse-station.html">
 
@@ -98,17 +99,17 @@
 	      <paper-slider value="{{input_iws}}" class="iambic" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
 	      <core-tooltip label="inter-word space length.">IWS {{input_iws}} dits</core-tooltip>
 	    </div>
-	    <div>
-	      <paper-dropdown-menu label="Key Type" on-core-select="{{input_type_select}}">
+	    <div layout horizontal block center>
+	      <paper-dropdown-menu on-core-select="{{input_type_select}}">
 		<paper-dropdown class="dropdown">
-		  <core-menu class="menu" selected="1" selectedItem="{{selected_input_type_item}}">
+		  <core-menu id="key_type_menu" class="menu" selected="1" selectedItem="{{selected_input_type_item}}">
 		    <paper-item id="straight">Straight Key</paper-item>
 		    <paper-item id="iambic">Iambic Paddle</paper-item>
 		  </core-menu>
 		</paper-dropdown>
 	      </paper-dropdown-menu>Key Type
 	    </div>
-	    <div>
+	    <div layout horizontal block center>
 	      <paper-toggle-button id="swapped" class="iambic" label="Swap Paddles" on-change="{{input_swap_paddles}}"></paper-toggle-button>Swap Paddles
 	    </div>
 	    <div layout horizontal block center>

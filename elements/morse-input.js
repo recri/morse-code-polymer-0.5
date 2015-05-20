@@ -71,11 +71,39 @@ Polymer({
         this.$.input_decoded_textarea.innerText = this.text;
     },
 
-    blur : function() { this.$.station.input_blur(); },
-    focus : function() { this.$.station.input_focus(); },
+    // key event handlers with backed in reference to this
+    keydownhandler : null,
+    keyuphandler : null,
+    keyhandlers : function() {
+        if ( ! this.keydownhandler)
+            this.keydownhandler = (function(self) {
+                return function(e) { self.keydown(e); }
+            })(this);
+        if ( ! this.keyuphandler)
+            this.keyuphandler = (function(self) {
+                return function(e) { self.keyup(e); }
+            })(this);
+    },
 
-    keydown : function(e) { this.$.station.input_keydown(e.keyCode&1); },
-    keyup : function(e) { this.$.station.input_keyup(e.keyCode&1); },
+    onblur : function() {
+        // console.log('morse-input blur');
+        this.keyhandlers();
+        this.removeEventListener('keydown', this.keydownhandler);
+        this.removeEventListener('keyup', this.keyuphandler);
+        this.$.station.input_blur();
+        this.blur();
+    },
+    onfocus : function() {
+        // console.log('morse-input focus');
+        this.keyhandlers();
+        this.addEventListener('keydown', this.keydownhandler);
+        this.addEventListener('keyup', this.keyuphandler);
+        this.$.station.input_focus();
+        this.focus();
+    },
+
+    keydown : function(e) { this.$.station.input_keydown((e.keyCode&1)^1); },
+    keyup : function(e) { this.$.station.input_keyup((e.keyCode&1)^1); },
 
     left_touchstart : function(e) { this.$.station.input_keydown(1); },
     left_touchend : function(e) { this.$.station.input_keyup(1); },

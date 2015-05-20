@@ -22,10 +22,11 @@ Polymer('morse-app', {
 	if (d.isSelected)
 	    this.$.core_pages.selected = this.$.core_menu.selected;
 	var item = this.$.core_pages.items[this.$.core_pages.selected];
-	if (d.isSelected)
-	    item.focus();
-	else
-	    item.blur();
+	if (d.isSelected) {
+	    if (item.onfocus) item.onfocus();
+	} else {
+	    if (item.onblur) item.onblur();
+	}
     },
 
 });
