@@ -1,69 +1,68 @@
+<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
 <html>
   <head>
     <link rel="import" href="../bower_components/polymer/polymer.html">
   </head>
   <body>
     <polymer-element name="morse-station">
-      <script src="../scripts/morse.js"></script>
+      <script src="morse.js"></script>
       <script>
     (function() {
-	// these variables are shared by all instances of app-globals
-	var station = window.morse.station();
+        // these variables are shared by all instances of app-globals
+        var station = window.morse.station();
 
-	Polymer('morse-station', {
+        Polymer('morse-station', {
 
             publish : {
-		input_pitch : 600,
-		input_gain_dB : -26,
-		input_wpm : 15,
-		input_rise_ms : 4,
-		input_fall_ms : 4,
-		input_dah : 3,
-		input_ies : 1,
-		input_ils : 3,
-		input_iws : 7,
-		input_midi : 'none',
-		input_swapped : false,
-		input_type : 'iambic',
+                input_pitch : 600,
+                input_gain_dB : -26,
+                input_wpm : 15,
+                input_rise_ms : 4,
+                input_fall_ms : 4,
+                input_dah : 3,
+                input_ies : 1,
+                input_ils : 3,
+                input_iws : 7,
+                input_midi : 'none',
+                input_swapped : false,
+                input_type : 'iambic',
 
-		output_pitch : 550,
-		output_gain_dB : -26,
-		output_wpm : 15,
-		output_rise_ms : 4,
-		output_fall_ms : 4,
-		output_dah : 3,
-		output_ies : 1,
-		output_ils : 3,
-		output_iws : 7,
-		output_midi : 'none',
+                output_pitch : 550,
+                output_gain_dB : -26,
+                output_wpm : 15,
+                output_rise_ms : 4,
+                output_fall_ms : 4,
+                output_dah : 3,
+                output_ies : 1,
+                output_ils : 3,
+                output_iws : 7,
+                output_midi : 'none',
             },
 
-            ready: function() { console.log("morse-station: ready"); },
+            ready: function() {
+                this.input_pitch = station.input_pitch;
+                this.input_gain_dB = station.input_gain_dB;
+                this.input_wpm = station.input_wpm;
+                this.input_rise_ms = station.input_rise_ms;
+                this.input_fall_ms = station.input_fall_ms;
+                this.input_dah = station.input_dah;
+                this.input_ies = station.input_ies;
+                this.input_ils = station.input_ils;
+                this.input_iws = station.input_iws;
+                this.input_midi = station.input_midi;
+                this.input_swapped = station.input_swapped;
+                this.input_type = station.input_type;
 
-            domReady: function() {
-		this.input_pitch = station.input_pitch;
-		this.input_gain_dB = station.input_gain_dB;
-		this.input_wpm = station.input_wpm;
-		this.input_rise_ms = station.input_rise_ms;
-		this.input_fall_ms = station.input_fall_ms;
-		this.input_dah = station.input_dah;
-		this.input_ies = station.input_ies;
-		this.input_ils = station.input_ils;
-		this.input_iws = station.input_iws;
-		this.input_midi = station.input_midi;
-		this.input_swapped = station.input_swapped;
-		this.input_type = station.input_type;
-
-		this.output_pitch = station.output_pitch;
-		this.output_gain_dB = station.output_gain_dB;
-		this.output_wpm = station.output_wpm;
-		this.output_rise_ms = station.output_rise_ms;
-		this.output_fall_ms = station.output_fall_ms;
-		this.output_dah = station.output_dah;
-		this.output_ies = station.output_ies;
-		this.output_ils = station.output_ils;
-		this.output_iws = station.output_iws;
-		this.output_midi = station.output_midi;
+                this.output_pitch = station.output_pitch;
+                this.output_gain_dB = station.output_gain_dB;
+                this.output_wpm = station.output_wpm;
+                this.output_rise_ms = station.output_rise_ms;
+                this.output_fall_ms = station.output_fall_ms;
+                this.output_dah = station.output_dah;
+                this.output_ies = station.output_ies;
+                this.output_ils = station.output_ils;
+                this.output_iws = station.output_iws;
+                this.output_midi = station.output_midi;
             },
 
             input_pitchChanged : function(oldv, newv) { this.attrChanged('input_pitch', oldv, newv); },
@@ -91,24 +90,23 @@
             output_midiChanged : function(oldv, newv) { this.attrChanged('output_midi', oldv, newv); },
 
             attrChanged : function(attr, oldv, newv) {
-		console.log("station:"+attr, "oldv="+oldv, "newv="+newv);
-		if (newv != oldv)
-		    station[attr] = newv;
-	    },
+                // console.log("station:"+attr, "oldv="+oldv, "newv="+newv);
+                if (newv != oldv) station[attr] = newv;
+            },
 
-	    output_send : function(text) { station.output_send(text); },
-	    output_cancel : function() { station.output.cancel(); },
-	    output_decoder_on_letter : function(callback, context) { station.output_decoder_on_letter(callback, context); },
-	    input_decoder_on_letter : function(callback, context) { station.input_decoder_on_letter(callback, context); },	    
+            output_send : function(text) { station.output_send(text); },
+            output_cancel : function() { station.output.cancel(); },
+            output_decoder_on_letter : function(callback, context) { station.output_decoder_on_letter(callback, context); },
+            input_decoder_on_letter : function(callback, context) { station.input_decoder_on_letter(callback, context); },          
 
-	    input_blur : function() { station.input_blur(); },
-	    input_focus : function() { station.input_focus(); },
+            input_blur : function() { station.input_blur(); },
+            input_focus : function() { station.input_focus(); },
 
-	    input_keydown : function(isleft) { station.input_keydown(isleft); },
-	    input_keyup : function(isleft) { station.input_keyup(isleft); },
+            input_keydown : function(isleft) { station.input_keydown(isleft); },
+            input_keyup : function(isleft) { station.input_keyup(isleft); },
 
-	});
-    })();
+        });
+    }());
       </script>
     </polymer-element>
   </body>

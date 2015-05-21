@@ -809,15 +809,14 @@
             raw_key_on : false,
             is_on : false,
             keyset : function(key, on) {
-                this.raw_on = on;
-                if (this.raw_on != this.is_on) {
-                    this.is_on = this.raw_on;
+                this.raw_key_on = on;
+                if (this.raw_key_on != this.is_on) {
+                    this.is_on = this.raw_key_on;
                     if (this.is_on) this.keyOnAt(this.cursor); else this.keyOffAt(this.cursor);
-                    this.intervalFunction();
                 }
             },
             //
-            keydown : function(key) { this.keyset(key, true); },
+            keydown : function(key) { self.keyset(key, true); },
             keyup : function(key) { self.keyset(key, false); },
             //
             onfocus : function() { },
@@ -996,11 +995,12 @@
                 this.straight.connect(target);
                 this.iambic.connect(target);
             },
+            onblur : function() { },
+            onfocus : function() { },
             _type : null,
             get type() { return this._type; },
             set type(type) {
-                if (this._type && this[this._type] && this[this._type].onblur)
-                    this[this._type].onblur();
+                this.onblur();
                 this._type = type;
                 this.onfocus=this[type].onfocus;
                 this.onblur=this[type].onblur;
@@ -1008,6 +1008,7 @@
                 this.keydown=this[type].keydown;
                 this.keyup=this[type].keyup;
                 this.midi = this.midi;
+                this.onfocus();
             },
             midi_input : morse.midi_input(),
             _midi : null,
@@ -1018,7 +1019,7 @@
                 this.midi_input.connect(midi, this.onmidievent);
             },
             midi_refresh : function() { this.midi_input = morse.midi_input(); },
-            midi_names : function() { this.midi_input.names(); },
+            midi_names : function() { return this.midi_input.names(); },
         };
         return self;
     };
@@ -1127,7 +1128,7 @@
             output_midi_refresh : function() { this.output.midi_refresh(); },
             output_midi_names : function() { this.output.midi_names(); },
             output_send : function(text) { this.output.send(text); },
-            output_cancel : function() { this.output.cancel(); },
+            output_cancel : function() { this.output.keyOff(); },
             output_decoder_on_letter : function(callback, context) { this.output_decoder.on('letter', callback, context); },
 
             input_midi_refresh : function() { this.input.midi_refresh(); },

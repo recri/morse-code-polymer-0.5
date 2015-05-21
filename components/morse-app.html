@@ -3,9 +3,7 @@
     <link rel="import" href="../bower_components/core-scaffold/core-scaffold.html">
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
     <link rel="import" href="../bower_components/core-pages/core-pages.html">
-
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
-    
   </head>
   <body>
     <polymer-element name="morse-app">
@@ -32,15 +30,15 @@
 	    font-size: 16px;
 	  }
 	</style>
-	<core-scaffold id="core_scaffold">
-	  <core-header-panel mode="seamed" id="core_header_panel" navigation flex>
-            <core-toolbar id="core_toolbar"></core-toolbar>
-            <core-menu id="core_menu" selected="0" on-core-select="{{core_select}}" >
+	<core-scaffold>
+	  <core-header-panel mode="seamed" navigation flex>
+            <core-toolbar></core-toolbar>
+            <core-menu selected="{{selected}}" >
 	      <content select="paper-item"></content>
             </core-menu>
 	  </core-header-panel>
 	  <div id="div" tool>Morse Code</div>
-	  <core-pages id="core_pages" selected="0">
+	  <core-pages id="pages" selected="{{selected}}">
 	    <content></content>
 	  </core-pages>
 	</core-scaffold>
@@ -48,33 +46,19 @@
 
       <script>
     Polymer('morse-app', {
-	created: function() {
-            console.log('morse-app created');
+	publish : {
+	    selected: 0,
 	},
-	ready : function() {
-            console.log('morse-app ready');
+	selectedChanged : function(oldv, newv) {
+	    var items = this.$.pages.items;
+	    if (typeof oldv !== 'undefined' && items[oldv].onblur) items[oldv].onblur();
+	    if (typeof newv !== 'undefined' && items[newv].onfocus) items[newv].onfocus();
 	},
 	attached: function () {
-            console.log('morse-app attached');
-	},
-	domReady: function() {
-            console.log('morse-app domReady');
+	    this.selectedChanged(undefined, this.selected);
 	},
 	detached: function() {
-            console.log('morse-app detached');
-	},
-	attributeChanged: function(attrName, oldVal, newVal) {
-            console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
-	},
-	core_select : function(e, d) {
-	    if (d.isSelected)
-		this.$.core_pages.selected = this.$.core_menu.selected;
-	    var item = this.$.core_pages.items[this.$.core_pages.selected];
-	    if (d.isSelected) {
-		if (item.onfocus) item.onfocus();
-	    } else {
-		if (item.onblur) item.onblur();
-	    }
+	    this.selectedChanged(this.selected, undefined);
 	},
 
     });
