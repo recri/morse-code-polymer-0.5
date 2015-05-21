@@ -15,3 +15,6 @@
 ** [ ] show reply text
 ** [ ] show score
 ** [ ] make optional what is shown
+* guide to material design
+  tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
+
