@@ -34,12 +34,12 @@
 	<core-scaffold>
 	  <core-header-panel mode="seamed" navigation flex>
             <core-toolbar></core-toolbar>
-            <core-menu selected="{{selected}}" >
+            <core-menu valueattr="label" selected="{{selected}}" >
 	      <content select="paper-item"></content>
             </core-menu>
 	  </core-header-panel>
-	  <div tool id="title_bar_div">Morse Code</div>
-	  <core-pages id="pages" selected="{{selected}}">
+	  <div tool id="title_bar_div">Morse Code > <span>{{selected}}</span></div>
+	  <core-pages id="pages" valueattr="label" selected="{{selected}}">
 	    <content></content>
 	  </core-pages>
 	</core-scaffold>
@@ -48,7 +48,7 @@
       <script>
     Polymer('morse-app', {
 	publish : {
-	    selected: 0,
+	    selected: "About",
 	},
 	selectedChanged : function(oldv, newv) {
 	    var items = this.$.pages.items;

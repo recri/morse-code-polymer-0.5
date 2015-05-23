@@ -35,7 +35,6 @@
 			 output_ies="{{output_ies}}" output_ils="{{output_ils}}" output_iws="{{output_iws}}"
 			 output_midi="{{output_midi}}"></morse-station>
 	  <div layout vertical block>
-	    <h1>Output</h1>
 	    <div layout horizontal block center>
 	      <!--  -->
 	      <paper-input id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
@@ -58,7 +57,7 @@
 	      <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
 	    </div>
 	    <div horizontal layout block center>
-	      <h2>Output Params</h2>
+	      <h2>Settings</h2>
 	    </div>
 	    <div layout horizontal block center>
 	      <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>

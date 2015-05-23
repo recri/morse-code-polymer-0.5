@@ -8,10 +8,10 @@
 * [x] make input cancelable
 * [?] go back to collapsing settings
 * [x] disable iambic tagged input controls when straight key
-* [ ] move straight key/iambic paddle selector to the top
+* [x] move straight key/iambic paddle selector to the top
 * [ ] use bars for titles
 * [ ] use animations for page reveals
-* [ ] alter the app title on page changes
+* [x] alter the app title on page changes
 * [ ] use routing to select titles, pages, ...
 * [ ] use icons
 ** [x] clear for input
@@ -41,3 +41,4 @@
 ** [ ] core-tooltip should lose the arrows
 ** [ ] core-tooltip needs styling  
 * [ ] package as a chrome application and push to the store
+* [ ] stop the output decoder from getting ahead of itself
