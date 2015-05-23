@@ -1,3 +1,4 @@
+<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
 <html>
   <head>
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
@@ -46,7 +47,9 @@
 	      <paper-autogrow-textarea rows="4" maxrows="10">
 		<textarea readonly>{{decoded_text}}</textarea>
 	      </paper-autogrow-textarea>
-	      <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
+	      <core-tooltip label="clear text area">
+                <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
+              </core-tooltip>
 	    </div>
 	    <div layout horizontal block center>
 	      <paper-button class="key" raised
@@ -64,42 +67,6 @@
 	      <h2>Input Params</h2>
 	    </div>
 	    <div layout horizontal block center>
-	      <paper-slider value="{{input_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="sidetone frequency">Pitch <span>{{input_pitch}}</span> Hz</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="sidetone level">Gain <span>{{input_gain_dB}}</span> dB</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="envelope rise time">Rise <span>{{input_rise_ms}}</span> ms</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="envelope fall time">Fall <span>{{input_fall_ms}}</span> ms</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_wpm}}" class="iambic" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="key speed">Speed <span>{{input_wpm}}</span> wpm</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_dah}}" class="iambic" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="dash length">Dah <span>{{input_dah}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_ies}}" class="iambic" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="inter-element space length">IES <span>{{input_ies}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_ils}}" class="iambic" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="inter-letter space length">ILS <span>{{input_ils}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{input_iws}}" class="iambic" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="inter-word space length.">IWS <span>{{input_iws}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
 	      <paper-dropdown-menu>
 		<paper-dropdown class="dropdown">
 		  <core-menu class="menu" valueattr="label" selected="{{input_type}}">
@@ -110,7 +77,43 @@
 	      </paper-dropdown-menu>Key Type
 	    </div>
 	    <div layout horizontal block center>
-	      <paper-toggle-button class="iambic" label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button>Swap Paddles
+	      <paper-slider value="{{input_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="sidetone frequency">Pitch <span>{{input_pitch}}</span> Hz</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{input_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="sidetone level">Gain <span>{{input_gain_dB}}</span> dB</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+              <paper-slider value="{{input_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="envelope rise time">Rise <span>{{input_rise_ms}}</span> ms</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider value="{{input_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="envelope fall time">Fall <span>{{input_fall_ms}}</span> ms</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider iambic value="{{input_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="key speed">Speed <span>{{input_wpm}}</span> wpm</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider iambic value="{{input_dah}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="dash length">Dah <span>{{input_dah}}</span> dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider iambic value="{{input_ies}}" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="inter-element space length">IES <span>{{input_ies}}</span> dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider iambic value="{{input_ils}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="inter-letter space length">ILS <span>{{input_ils}}</span> dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-slider iambic value="{{input_iws}}" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
+	      <core-tooltip label="inter-word space length.">IWS <span>{{input_iws}}</span> dits</core-tooltip>
+	    </div>
+	    <div layout horizontal block center>
+	      <paper-toggle-button iambic label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button>Swap Paddles
 	    </div>
 	    <div layout horizontal block center>
 	      <paper-dropdown-menu label="MIDI Device">
@@ -163,7 +166,12 @@
 	// input_iwsChanged : function(oldv, newv) { this.attrChanged('input_iws', oldv, newv); },
 	// input_midiChanged : function(oldv, newv) { this.attrChanged('input_midi', oldv, newv); },
 	// input_swappedChanged : function(oldv, newv) { this.attrChanged('input_swapped', oldv, newv); },
-	// input_typeChanged : function(oldv, newv) { this.attrChanged('input_type', oldv, newv); },
+	input_typeChanged : function(oldv, newv) {
+	    var disabled = newv != 'iambic';
+	    var elts = this.shadowRoot.querySelectorAll("[iambic]");
+	    for (var i = 0; i < elts.length; i += 1) elts[i].disabled = disabled;
+	    // this.attrChanged('input_type', oldv, newv);
+	},
 
 	// attrChanged : function(attr, oldv, newv) { console.log("input:"+attr, "oldv="+oldv, "newv="+newv); },
 
@@ -192,6 +200,8 @@
             this.removeEventListener('keyup', this.keyuphandler);
             this.$.station.input_blur();
             this.blur();
+	    var tbd = document.getElementById('title_bar_div');
+	    if (tbd) tbd.innerText = "Morse Code";
 	},
 	onfocus : function() {
             // console.log('morse-input focus');
@@ -200,6 +210,9 @@
             this.addEventListener('keyup', this.keyuphandler);
             this.$.station.input_focus();
             this.focus();
+	    var tbd = document.querySelector('#title_bar_div');
+	    console.log("title_bar_div", tbd);
+	    if (tbd) tbd.innerText = "Morse Code > Input";
 	},
 
 	keydown : function(e) { this.$.station.input_keydown((e.keyCode&1)^1); },

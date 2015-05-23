@@ -1,20 +1,43 @@
-* [ ] make morse-station reflect values,
-	especially choices in menus
+* [x] make morse-station reflect values, especially choices in menus
+* [x] achieve menu choices with data binding
+* [x] achieve additional actions with property change observers  
 * [x] make textareas readonly
-* [ ] go back to collapsing settings
+* [x] make textareas erasable
+* [x] make input erasable
+* [x] make input sendable
+* [x] make input cancelable
+* [?] go back to collapsing settings
+* [x] disable iambic tagged input controls when straight key
+* [ ] move straight key/iambic paddle selector to the top
+* [ ] use bars for titles
+* [ ] use animations for page reveals
+* [ ] alter the app title on page changes
+* [ ] use routing to select titles, pages, ...
 * [ ] use icons
-** [ ] clear for input
-** [ ] send for input
-** [ ] clear for textareas
+** [x] clear for input
+** [x] send for input
+** [x] clear for textareas
 ** [ ] settings for setting blocks
-** [ ] refresh for MIDI refresh
-** [ ] swap-horiz for swap paddles
+** [x] refresh for MIDI refresh
+** [?] swap-horiz for swap paddles
+* [x] make icons for the app
+* [x] set up vulcanizer for polymer-0.5
+* [x] vulcanize app
+* [x] test vulcanize --csp for the chrome app
+* [ ] decide whether the polyserver makes sense
+  so, building an app uses components in ./bower_components
+  but running an app that is loaded from bower uses components
+  in ../, polyserver resolves imports and loads
 * [ ] move to card based drill
 ** [ ] show didah
 ** [ ] show text
 ** [ ] show reply text
 ** [ ] show score
 ** [ ] make optional what is shown
-* guide to material design
+** [ ] add replay, skip, and quit buttons to each card
+** [ ] review cards at end of session
+* [ ] follow guide to material design
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
-
+** [ ] core-tooltip should lose the arrows
+** [ ] core-tooltip needs styling  
+* [ ] package as a chrome application and push to the store

@@ -7,8 +7,9 @@
   "minimum_chrome_version": "38",
 
   "icons": {
-    "16": "assets/icon_16.png",
-    "128": "assets/icon_128.png"
+    "24": "assets/icon_24.png",
+    "48": "assets/icon_48.png",
+    "192": "assets/icon_192.png"
   },
 
   "app": {

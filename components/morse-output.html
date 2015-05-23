@@ -40,9 +40,15 @@
 	      <!--  -->
 	      <paper-input id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
 	      <div layout horizontal block center>
-		<paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
-		<paper-icon-button icon="send" on-click="{{send_input}}"></paper-icon-button>
-		<paper-icon-button icon="cancel" on-click="{{output_cancel}}"></paper-icon-button>		
+		<core-tooltip label="clear input text">
+		  <paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
+		</core-tooltip>
+		<core-tooltip label="send input text">
+		  <paper-icon-button icon="send" on-click="{{send_input}}"></paper-icon-button>
+		</core-tooltip>
+		<core-tooltip label="cancel output">
+		  <paper-icon-button icon="cancel" on-click="{{output_cancel}}"></paper-icon-button>		
+		</core-tooltip>
 	      </div>
 	    </div>
 	    <div layout horizontal block top>
