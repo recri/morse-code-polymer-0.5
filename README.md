@@ -24,7 +24,11 @@ chromebook is set up, your mileage may vary.
 Far and away, the easiest way to run this application is to grab the chrome
 application from the chrome store, but it isn't there yet.
 
-The files in this directory as of writing, Sat May 23 09:44:11 MDT 2015.
+This code has been entirely developed on a Chromebook using the dev-channel
+of ChromeOS.  It runs there, it probably runs on recent versions of Chrome
+on other platforms, and it may run elsewhere.
+
+The files in this directory kept in git on May 23, 2015.
 
 * Makefile      - automation scripts
 * README.md     - this helpful 
@@ -32,10 +36,8 @@ The files in this directory as of writing, Sat May 23 09:44:11 MDT 2015.
 * background.js - the chrome extension launch
 * bower.json    - the bower package configuration
 * bower_components/ - where bower stores its packages
-* components/   - where this package stores itself
+* components/   - my sources
 * index.html    - the root of this application
 * manifest.json - the chrome extension manifest
 * todo.org      - my notes
-* vulcanized.html - all of the html documents in one file
-* vulcanized.js - almost all of the javascript source in one file
 
