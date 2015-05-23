@@ -42,7 +42,14 @@
     </section>
   </template>
 
-  <script src="morse-params.js"></script>
+  <script>
+    Polymer({
+	toggle : function(e) {
+	    this.$.button.icon = (this.$.button.icon == "expand-more" ? "expand-less" : "expand-more");
+	    this.$.collapse.toggle();
+	},
+    });
+  </script>
 
 </polymer-element>
 </body></html>

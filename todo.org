@@ -9,9 +9,17 @@
 * [?] go back to collapsing settings
 * [x] disable iambic tagged input controls when straight key
 * [x] move straight key/iambic paddle selector to the top
+* [x] alter the app title on page changes
+* [x] make icons for the app
+* [x] set up vulcanizer for polymer-0.5
+* [x] vulcanize app
+* [x] test vulcanize --csp for the chrome app
+* [x] rename repository to morse-code-polymer-0.5
+* [x] move to entirely inline javascript for components
+  no need to manage external files when vulcanize and
+  crisper will sort those issues out on the backend.
 * [ ] use bars for titles
 * [ ] use animations for page reveals
-* [x] alter the app title on page changes
 * [ ] use routing to select titles, pages, ...
 * [ ] use icons
 ** [x] clear for input
@@ -20,14 +28,16 @@
 ** [ ] settings for setting blocks
 ** [x] refresh for MIDI refresh
 ** [?] swap-horiz for swap paddles
-* [x] make icons for the app
-* [x] set up vulcanizer for polymer-0.5
-* [x] vulcanize app
-* [x] test vulcanize --csp for the chrome app
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
   but running an app that is loaded from bower uses components
   in ../, polyserver resolves imports and loads
+* [ ] follow guide to material design
+  tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
+** [ ] core-tooltip should lose the arrows
+** [ ] core-tooltip needs styling  
+* [ ] stop the output decoder from getting ahead of itself
+* [ ] package as a chrome application and push to the store
 * [ ] move to card based drill
 ** [ ] show didah
 ** [ ] show text
@@ -36,9 +46,3 @@
 ** [ ] make optional what is shown
 ** [ ] add replay, skip, and quit buttons to each card
 ** [ ] review cards at end of session
-* [ ] follow guide to material design
-  tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
-** [ ] core-tooltip should lose the arrows
-** [ ] core-tooltip needs styling  
-* [ ] package as a chrome application and push to the store
-* [ ] stop the output decoder from getting ahead of itself
