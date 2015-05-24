@@ -38,7 +38,7 @@
 	      <content select="paper-item"></content>
             </core-menu>
 	  </core-header-panel>
-	  <div tool id="title_bar_div">Morse Code > <span>{{selected}}</span></div>
+	  <div tool>Morse <span>{{selected}}</span></div>
 	  <core-pages id="pages" valueattr="label" selected="{{selected}}">
 	    <content></content>
 	  </core-pages>
@@ -48,12 +48,22 @@
       <script>
     Polymer('morse-app', {
 	publish : {
-	    selected: "About",
+	    selected: "0",
+	},
+	findTargetLabel : function(label) {
+	    var items = this.$.pages.items;
+	    for (var i = 0; i < items.length; i += 1) {
+		// console.log("items["+i+"].getAttribute('label')=", items[i].getAttribute('label'), "compared to", label);
+		if (items[i].getAttribute('label') === label)
+		    return items[i];
+	    }
+	    return null;
 	},
 	selectedChanged : function(oldv, newv) {
-	    var items = this.$.pages.items;
-	    if (typeof oldv !== 'undefined' && items[oldv].onblur) items[oldv].onblur();
-	    if (typeof newv !== 'undefined' && items[newv].onfocus) items[newv].onfocus();
+            var oldi = this.findTargetLabel(oldv);
+	    if (oldi && oldi.onblur) oldi.onblur();
+	    var newi = this.findTargetLabel(newv);
+	    if (newi && newi.onfocus) newi.onfocus();
 	},
 	attached: function () {
 	    this.selectedChanged(undefined, this.selected);

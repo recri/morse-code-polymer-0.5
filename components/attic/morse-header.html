@@ -1,0 +1,36 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/core-icon/core-icon.html">
+    <link rel="import" href="../bower_components/core-icons/core-icons.html">
+    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+    <polymer-element name="morse-header">
+      <template>
+
+	<style>    
+	  :host {
+	    position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    box-sizing: border-box;
+	    display: block;
+	  }
+	  paper-icon-button {
+	  }
+	</style>
+
+	<div horizontal layout block center icon="" on-click="">
+	  <core-icon icon="{{icon}}"></core-icon>
+	  <content select="*"></content>
+	  <span flex></span>
+	  <paper-icon-button icon="expand-more"></paper-icon-button>
+	</div>
+
+      </template>
+
+      <script>
+    Polymer({
+    });
+      </script>
+
+    </polymer-element>
+

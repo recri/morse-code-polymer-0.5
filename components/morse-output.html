@@ -27,6 +27,29 @@
 	  section {
 	    margin: 20px;
 	  }
+	  paper-autogrow-textarea {
+	    margin: 10px;
+	  }
+	  .heading {
+	    padding: 10px 15px;
+	    background-color: #f3f3f3;
+	    border: 1px solid #dedede;
+	    border-top-left-radius: 5px;
+	    border-top-right-radius: 5px;
+	    font-size: 18px;
+	    cursor: pointer;
+	    -webkit-tap-highlight-color: rgba(0,0,0,0);
+	  }
+	  .content {
+	    padding: 15px;
+	    border: 1px solid #dedede;
+	    border-top: none;
+	    border-bottom-left-radius: 5px;
+	    border-bottom-right-radius: 5px;
+	  }
+	  .heading core-icon {
+	    margin: 0px 10px;
+	  }
 	</style>
 	<section>
 	  <morse-station id="station"
@@ -56,56 +79,115 @@
 	      </paper-autogrow-textarea>
 	      <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
 	    </div>
-	    <div horizontal layout block center>
-	      <h2>Settings</h2>
+
+	    <!-- output settings -->
+	    <div class="heading" layout horizontal block center on-click="{{settings_toggle}}">
+	      <core-icon icon="settings"></core-icon>
+              Settings
+	      <span layout flex></span>
+	      <paper-icon-button icon="expand-more"></paper-icon-button>
 	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="sidetone frequency">Pitch <span>{{output_pitch}}</span> Hz</core-tooltip>
+
+	    <core-collapse id="settings">
+	      <div class="content" layout vertical block>
+
+		<!-- output pitch -->
+		<div layout horizontal block center>
+		  <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
+		  <core-tooltip label="sidetone frequency">Pitch <span>{{output_pitch}}</span> Hz</core-tooltip>
+		</div>
+
+		<!-- output level -->
+		<div layout horizontal block center>
+		  <paper-slider value="{{output_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
+		  <core-tooltip label="sidetone level">Level <span>{{output_gain_dB}}</span> dB</core-tooltip>
+		</div>
+		
+		<!-- output words per minute -->
+		<div layout horizontal block center>
+		  <paper-slider value="{{output_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
+		  <core-tooltip label="keying speed">Speed <span>{{output_wpm}}</span> wpm</core-tooltip>
+		</div>
+
+		<!-- more output settings -->
+		<div class="heading" layout horizontal block center on-click="{{more_settings_toggle}}">
+		  <core-icon icon="settings"></core-icon>
+		  More Settings
+		  <span layout flex></span>
+		  <paper-icon-button icon="expand-more"></paper-icon-button>
+		</div>
+
+		<core-collapse id="more_settings">
+		  <div class="content" layout vertical block>
+
+		    <!-- output rise time -->
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="envelope rise time">Rise <span>{{output_rise_ms}}</span> ms</core-tooltip>
+		    </div>
+		    
+		    <!-- output fall time -->
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="envelope fall time">Fall <span>{{output_fall_ms}}</span> ms</core-tooltip>
+		    </div>
+
+		    <!-- output dah length -->
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="Dash length.">Dah <span>{{output_dah}}</span> dits</core-tooltip>
+		    </div>
+
+		    <!-- output inter-element space length -->
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="Inter-element spacing.">IES <span>{{output_ies}}</span> dits</core-tooltip>
+		    </div>
+
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="Inter-letter spacing.">ILS <span>{{output_ils}}</span> dits</core-tooltip>
+		    </div>
+
+		    <div layout horizontal block center>
+		      <paper-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
+		      <core-tooltip label="Inter-word spacing.">IWS <span>{{output_iws}}</span> dits</core-tooltip>
+		    </div>
+
+		    <div layout horizontal block center>
+		      <paper-dropdown-menu label="MIDI Device">
+			<paper-dropdown class="dropdown">
+			  <core-menu class="menu" valueattr="label" selected="{{output_midi}}">
+			    <paper-item label="none">None</paper-item>
+			  </core-menu>
+			</paper-dropdown>
+		      </paper-dropdown-menu>MIDI Device<core-tooltip label="Reload the MIDI device list.">
+			<paper-icon-button icon="refresh" on-click="{{output_midi_refresh}}"></paper-icon-button>
+		      </core-tooltip>
+		    </div>
+		  </div>
+		</core-collapse>
+
+              </div>
+            </core-collapse>
+
+	    <!-- output information -->
+	    <div class="heading" layout horizontal block center on-click="{{info_toggle}}">
+	      <core-icon icon="info"></core-icon>
+              Info
+	      <span layout flex></span>
+	      <paper-icon-button icon="expand-more"></paper-icon-button>
 	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="sidetone level">Gain <span>{{output_gain_dB}}</span> dB</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="envelope rise time">Rise <span>{{output_rise_ms}}</span> ms</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="envelope fall time">Fall <span>{{output_fall_ms}}</span> ms</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="keying speed">Speed <span>{{output_wpm}}</span> wpm</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="Dash length.">Dah <span>{{output_dah}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="Inter-element spacing.">IES <span>{{output_ies}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="Inter-letter spacing.">ILS <span>{{output_ils}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
-	      <core-tooltip label="Inter-word spacing.">IWS <span>{{output_iws}}</span> dits</core-tooltip>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-dropdown-menu label="MIDI Device">
-		<paper-dropdown class="dropdown">
-		  <core-menu class="menu" valueattr="label" selected="{{output_midi}}">
-		    <paper-item label="none">None</paper-item>
-		  </core-menu>
-		</paper-dropdown>
-	      </paper-dropdown-menu>MIDI Device<core-tooltip label="Reload the MIDI device list.">
-		<paper-icon-button icon="refresh" on-click="{{output_midi_refresh}}"></paper-icon-button>
-	      </core-tooltip>
-	    </div>
+
+	    <core-collapse id="info">
+	      <div class="content" layout vertical block>
+                <p>
+                  There are several ways to key.
+                </p><p>
+                </p>
+              </div>
+            </core-collapse>
+
 	  </div>
 	</section>
       </template>
@@ -131,6 +213,10 @@
 
 	output_midi_refresh : function() { this.$.station.output_midi_refresh(); },
 	output_midi_names : function() { return this.$.station.output_midi_names(); },
+
+        settings_toggle : function() { this.$.settings.toggle(); },
+        more_settings_toggle : function() { this.$.more_settings.toggle(); },
+        info_toggle : function() { this.$.info.toggle(); },
 
 	// output_pitchChanged : function(oldv, newv) { this.attrChanged('output_pitch', oldv, newv); },
 	// output_gain_dBChanged : function(oldv, newv) { this.attrChanged('output_gain_dB', oldv, newv); },
