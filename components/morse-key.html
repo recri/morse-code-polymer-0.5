@@ -1,0 +1,99 @@
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+    <polymer-element name="morse-key">
+      <template>
+	<style>    
+	  :host {
+	    display: block;
+	    position: relative;
+	    width: 100%;
+	    height: 100%;
+	    box-sizing: border-box;
+	  }
+	  div {
+	    margin: 10px;
+	    border: 1px solid #dedede;
+	    border-radius: 5px;
+	  }
+	  .key {
+	     margin: 10px;
+	     font-size: 35px;
+	     font-weight: bold;
+	  }
+	</style>
+
+	<div layout horizontal block center>
+	  <paper-button class="key" id="left" raised block
+			on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
+			on-mousedown="{{left_mousedown}}" on-mouseup="{{left_mouseup}}"
+			oncontextmenu="return false"
+			>&lt;</paper-button>
+	  <paper-button class="key" id="right" raised block
+			on-touchstart="{{right_touchstart}}" on-touchend="{{right_touchend}}"
+			on-mousedown="{{right_mousedown}}" on-mouseup="{{right_mouseup}}"
+			oncontextmenu="return false"
+			>&gt;</paper-button>
+	</div>
+
+      </template>
+
+      <script>
+    Polymer({
+	// key handler target
+	keytarget : null,
+	set_keytarget : function(target) { this.keytarget = target; },
+
+	// key station target
+	keystation : null,
+	set_keystation : function(station) { this.keystation = station; },
+
+	// key event handlers with backed in reference to this
+	keydownhandler : null,
+	keyuphandler : null,
+	keyhandlers : function() {
+            if ( ! this.keydownhandler)
+		this.keydownhandler = (function(self) {
+                    return function(e) { self.keydown(e); }
+		})(this);
+            if ( ! this.keyuphandler)
+		this.keyuphandler = (function(self) {
+                    return function(e) { self.keyup(e); }
+		})(this);
+	},
+
+	onblur : function() {
+            // console.log('morse-input blur');
+            this.keyhandlers();
+	    this.keytarget.removeEventListener('keydown', this.keydownhandler);
+            this.keytarget.removeEventListener('keyup', this.keyuphandler);
+            this.keytarget.blur();
+	    this.keystation.input_blur();
+	},
+
+	onfocus : function() {
+            // console.log('morse-input focus');
+            this.keyhandlers();
+            this.keytarget.addEventListener('keydown', this.keydownhandler);
+            this.keytarget.addEventListener('keyup', this.keyuphandler);
+            this.keytarget.focus();
+	    this.keystation.input_focus();
+	},
+
+	keydown : function(e) { this.keystation.input_keydown((e.keyCode&1)^1); },
+	keyup : function(e) { this.keystation.input_keyup((e.keyCode&1)^1); },
+
+	left_touchstart : function(e) { this.keystation.input_keydown(1); },
+	left_touchend : function(e) { this.keystation.input_keyup(1); },
+	right_touchstart : function(e) { this.keystation.input_keydown(0); },
+	right_touchend : function(e) { this.keystation.input_keyup(0);  },
+        
+	left_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
+	left_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
+	right_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
+	right_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
+    });
+      </script>
+      
+    </polymer-element>
+

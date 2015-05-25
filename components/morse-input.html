@@ -1,6 +1,7 @@
 <!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
 <html>
   <head>
+    <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
     <link rel="import" href="../bower_components/core-menu/core-menu.html">
     <link rel="import" href="../bower_components/core-icons/core-icons.html">
     <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
@@ -15,12 +16,14 @@
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
     <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
     <link rel="import" href="morse-station.html">
+    <link rel="import" href="morse-key.html">
   </head>
   <body>
     <polymer-element name="morse-input">
       <template>
 	<style>    
 	  :host {
+	    display: block;
 	    position: absolute;
 	    width: 100%;
 	    height: 100%;
@@ -31,11 +34,6 @@
 	  }
 	  paper-autogrow-textarea {
 	    margin: 10px;
-	  }
-	  .key {
-	    margin: 12px;
-	    font-size: 35px;
-	    font-weight: bold;
 	  }
 	  .heading {
 	    padding: 10px 15px;
@@ -65,6 +63,7 @@
 			 input_ies="{{input_ies}}" input_ils="{{input_ils}}" input_iws="{{input_iws}}"
 			 input_midi="{{input_midi}}" input_swapped="{{input_swapped}}" input_type="{{input_type}}"></morse-station>
 	  <div layout vertical block>
+
 	    <div layout horizontal block top>
 	      <paper-autogrow-textarea rows="4" maxrows="10">
 		<textarea readonly>{{decoded_text}}</textarea>
@@ -73,18 +72,8 @@
                 <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
               </core-tooltip>
 	    </div>
-	    <div layout horizontal block center>
-	      <paper-button class="key" raised
-			    on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
-			    on-mousedown="{{left_mousedown}}" on-mouseup="{{left_mouseup}}"
-			    oncontextmenu="return false"
-			    >&lt;</paper-button>
-	      <paper-button class="key" raised
-			    on-touchstart="{{right_touchstart}}" on-touchend="{{right_touchend}}"
-			    on-mousedown="{{right_mousedown}}" on-mouseup="{{right_mouseup}}"
-			    oncontextmenu="return false"
-			    >&gt;</paper-button>
-	    </div>
+
+	    <morse-key id="key" layout horizontal block center></morse-key>
 
             <!-- input settings -->
 	    <div class="heading" layout horizontal block center on-click="{{settings_toggle}}">
@@ -223,26 +212,18 @@
 	    decoded_text : ""
 	},
 
-	ready : function() { this.$.station.input_decoder_on_letter(this.onletter, this); },
-
-	input_midi_refresh : function() { this.$.station.input_midi_refresh(); },
-	input_midi_names : function() { return this.$.station.input_midi_names(); },
+	ready : function() {
+	    // console.log('ready in morse-input', this.$.key, this.$.station);
+            this.tabIndex = 0;
+	    this.$.station.input_decoder_on_letter(this.onletter, this);
+	    this.$.key.set_keystation(this.$.station);
+	    this.$.key.set_keytarget(this);
+	},
 
         settings_toggle : function() { this.$.settings.toggle(); },
         more_settings_toggle : function() { this.$.more_settings.toggle(); },    
         info_toggle : function() { this.$.info.toggle(); },
 
-	// input_pitchChanged : function(oldv, newv) { this.attrChanged('input_pitch', oldv, newv); },
-	// input_gain_dBChanged : function(oldv, newv) { this.attrChanged('input_gain_dB', oldv, newv); },
-	// input_wpmChanged : function(oldv, newv) { this.attrChanged('input_wpm', oldv, newv); },
-	// input_rise_msChanged : function(oldv, newv) { this.attrChanged('input_rise_ms', oldv, newv); },
-	// input_fall_msChanged : function(oldv, newv) { this.attrChanged('input_fall_ms', oldv, newv); },
-	// input_dahChanged : function(oldv, newv) { this.attrChanged('input_dah', oldv, newv); },
-	// input_iesChanged : function(oldv, newv) { this.attrChanged('input_ies', oldv, newv); },
-	// input_ilsChanged : function(oldv, newv) { this.attrChanged('input_ils', oldv, newv); },
-	// input_iwsChanged : function(oldv, newv) { this.attrChanged('input_iws', oldv, newv); },
-	// input_midiChanged : function(oldv, newv) { this.attrChanged('input_midi', oldv, newv); },
-	// input_swappedChanged : function(oldv, newv) { this.attrChanged('input_swapped', oldv, newv); },
 	input_typeChanged : function(oldv, newv) {
 	    var disabled = newv != 'iambic';
 	    var elts = this.shadowRoot.querySelectorAll("[iambic]");
@@ -250,55 +231,23 @@
 	    // this.attrChanged('input_type', oldv, newv);
 	},
 
-	// attrChanged : function(attr, oldv, newv) { console.log("input:"+attr, "oldv="+oldv, "newv="+newv); },
+	input_midi_refresh : function() { this.$.station.input_midi_refresh(); },
+	input_midi_names : function() { return this.$.station.input_midi_names(); },
 
 	onletter : function(letter, code) { this.decoded_text += letter; },
 
 	clear_textarea : function(event, detail, sender) { this.decoded_text = ""; },
 
-	// key event handlers with backed in reference to this
-	keydownhandler : null,
-	keyuphandler : null,
-	keyhandlers : function() {
-            if ( ! this.keydownhandler)
-		this.keydownhandler = (function(self) {
-                    return function(e) { self.keydown(e); }
-		})(this);
-            if ( ! this.keyuphandler)
-		this.keyuphandler = (function(self) {
-                    return function(e) { self.keyup(e); }
-		})(this);
-	},
+	// key event handlers now inside morse-key component
 
 	onblur : function() {
-            // console.log('morse-input blur');
-            this.keyhandlers();
-            this.removeEventListener('keydown', this.keydownhandler);
-            this.removeEventListener('keyup', this.keyuphandler);
-            this.$.station.input_blur();
-            this.blur();
+	    this.$.key.onblur();
+            // this.blur();
 	},
 	onfocus : function() {
-            // console.log('morse-input focus');
-            this.keyhandlers();
-            this.addEventListener('keydown', this.keydownhandler);
-            this.addEventListener('keyup', this.keyuphandler);
-            this.$.station.input_focus();
-            this.focus();
+	    this.$.key.onfocus();
+            // this.focus();
 	},
-
-	keydown : function(e) { this.$.station.input_keydown((e.keyCode&1)^1); },
-	keyup : function(e) { this.$.station.input_keyup((e.keyCode&1)^1); },
-
-	left_touchstart : function(e) { this.$.station.input_keydown(1); },
-	left_touchend : function(e) { this.$.station.input_keyup(1); },
-	right_touchstart : function(e) { this.$.station.input_keydown(0); },
-	right_touchend : function(e) { this.$.station.input_keyup(0);  },
-        
-	left_mousedown : function(e) { this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
-	left_mouseup : function(e) {  this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
-	right_mousedown : function(e) { this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
-	right_mouseup : function(e) {  this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
         
     });
       </script>

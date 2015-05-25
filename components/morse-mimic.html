@@ -14,6 +14,7 @@
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 
     <link rel="import" href="morse-station.html">
+    <link rel="import" href="morse-key.html">
 
   </head>
   <body>
@@ -22,6 +23,7 @@
       <template>
 	<style>    
 	  :host {
+	    display: block;
 	    position: absolute;
 	    width: 100%;
 	    height: 100%;
@@ -55,6 +57,9 @@
 	    border-bottom-left-radius: 5px;
 	    border-bottom-right-radius: 5px;
 	  }
+	  .heading core-icon {
+	    margin: 0px 10px;
+	  }
 	</style>
 	<section>
 	  <morse-station id="station"></morse-station>
@@ -62,13 +67,12 @@
 	    <div layout horizontal center block>
 	      <paper-progress id="training_progress" ></paper-progress>Progress
 	    </div>
+
+	    <morse-key id="key" layout horizontal block center></morse-key>
+
 	    <div layout horizontal center block>
 	      <paper-button>New Session</paper-button>
 	      <paper-button>Review Session</paper-button>
-	    </div>
-	    <div layout horizontal block center>
-	      <paper-button id="left-paddle" class="key" raised>&lt;</paper-button>
-	      <paper-button id="right-paddle" class="key" raised>&gt;</paper-button>
 	    </div>
 
 	    <!-- mimic settings -->
@@ -82,12 +86,12 @@
 	    <core-collapse id="settings" allowOverflow="true">
 	      <div class="content">
 		<div layout horizontal block center>
-		  <paper-slider value="{{items-per-session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <core-tooltip label="items-per-session">Items/Session {{items_per_session}}</core-tooltip>
+		  <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+		  <span>{{items_per_session}}</span> Items/Session
 		</div>
 		<div layout horizontal block center>
-		  <paper-slider value="{{reps-per-item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <core-tooltip label="reps-per-item">Repetitions/Item {{reps_per_item}}</core-tooltip>
+		  <paper-slider value="{{reps_per_item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+		  <span>{{reps_per_item}}</span> Repetitions/Item
 		</div>
 	      </div>
 	    </core-collapse>
@@ -110,15 +114,19 @@
 		  and your mind will get better at remembering the
 		  patterns that it hears.
 		</p><p>
-		  The Output page allows you to change the way the
-		  computer makes morse code.  You can also type in
-		  letters to see how they are encoded into morse.
+		  The <strong>Output</strong> page allows you to change
+		  the way the computer makes morse code.  You can also
+		  type in letters to see how they are encoded into
+		  morse.
 		</p><p>
 		  The <strong>Input</strong> page explains how you can
 		  enter morse code with the keyboard, mouse, touch, or
-		  an external key.
+		  an external key.  You can fiddle with the input
+		  methods and with the input parameters to see what
+		  you can do.
 		</p><p>
-		  Good luck, learn well.
+		  This page will give you patterns to mimic and score
+		  you on how well you do.
 		</p>
 	      </div>
 	    </core-collapse>
@@ -129,8 +137,38 @@
       <script src="words.js"></script>
       <script>
 	Polymer({
+	    publish : {
+		items_per_session : 5,
+		reps_per_item : 5,
+	    },
 	    settingsToggle : function() { this.$.settings.toggle(); },
 	    infoToggle : function() { this.$.info.toggle(); },
+	    onletter_input : function(ltr, code) {
+	    },
+	    onletter_output : function(ltr, code) {
+	    },
+	    ready : function() {
+		var station = this.$.station.get_station();
+		if ( ! localStorage['morse-mimic']) {
+		    var progress = study_progress(word_list_by_name('comb', station.table), station)
+		    progress.progress_save('morse-mimic');
+		}
+		this.progress = study_progress_restore('morse-mimic');
+		// set up input and output handlers
+		this.$.station.output_decoder_on_letter(this.onletter_output, this);
+		this.$.station.input_decoder_on_letter(this.onletter_input, this);
+		// set up key handlers
+		this.tabIndex = 0;
+		this.$.key.set_keystation(this.$.station);
+		this.$.key.set_keytarget(this);
+	    },
+	    blur : function() {
+		this.$.key.onblur();
+		this.progress_save('morse-mimic');
+	    },
+	    onfocus : function() {
+		this.$.key.onfocus();
+	    },
 	});
       </script>
     </polymer-element>

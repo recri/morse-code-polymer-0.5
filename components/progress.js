@@ -236,23 +236,13 @@ function study_progress(word_list, station) {
                 station_params : self.station.get_params(),
                 words : self.words
             };
-            localStorage.setItem(save.word_list_name, JSON.stringify(save));
+            localStorage.setItem('morse-mimic', JSON.stringify(save));
             // console.log('progress_save('+save.word_list_name+', '+localStorage[save.word_list_name]);
         },
         progress_delete : function() {
             localStorage.removeItem(self.word_list.name);
         },
         //
-        setSpeed : function(wpm) {
-            self.station.output.wpm = (wpm);
-            self.station.input.wpm = (wpm);
-            self.msPerDit = 1/(wpm * 50 * (1/60) * (1/1000)); // 1 / (words/minute * dits/word * minutes/second * second/millisecond)
-            document.getElementById('speed').innerText = ""+wpm;
-        },
-        getSpeed : function() { return self.station.output.wpm; },
-        faster : function() { self.setSpeed(self.getSpeed()+2.5); },
-        slower : function() { self.setSpeed(self.getSpeed()-2.5); },
-        swappaddles : function(swapped) { self.station.swapped = swapped; },
         setItemsPerSession : function(n) { self.items_per_session = n; },
         setRepsPerItem : function(n) { self.reps_per_item = n; },
         //
@@ -270,7 +260,6 @@ function study_progress(word_list, station) {
 
     self.station.input_decoder.on('letter', function(ltr, code) { self.oninputletter(ltr, code); });
     self.station.output_decoder.on('letter', function(ltr, code) { self.onoutputletter(ltr, code); });
-    self.setSpeed(self.getSpeed());
     return self;
 }
 
