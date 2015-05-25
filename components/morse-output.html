@@ -58,11 +58,11 @@
 			 output_ies="{{output_ies}}" output_ils="{{output_ils}}" output_iws="{{output_iws}}"
 			 output_midi="{{output_midi}}"></morse-station>
 
-	  <div layout horizontal block top hero-id="decoder">
+	  <div layout horizontal block top hero-id="decoder" hero>
 	    <morse-decoded-text id="decoder"></morse-decoded-text>
 	  </div>
 
-	  <div layout horizontal hero-id="key">
+	  <div layout horizontal hero-id="key" hero>
 	    <morse-key id="key"></morse-key>
 	  </div>
 
@@ -83,14 +83,14 @@
 	  </div>
 
           <!-- output settings -->
-          <div class="heading" layout horizontal block center on-click="{{settings_toggle}}" hero-id="settings">
+          <div class="heading" layout horizontal block center on-click="{{settings_toggle}}" hero-id="settings" hero>
             <core-icon icon="settings"></core-icon>
             Settings
             <span layout flex></span>
             <paper-icon-button icon="expand-more"></paper-icon-button>
           </div>
 
-          <core-collapse id="settings" hero-id="settings2">
+          <core-collapse id="settings" hero-id="settings2" hero>
             <div class="content" layout vertical block>
 
               <!-- output pitch -->
@@ -174,14 +174,14 @@
           </core-collapse>
 
           <!-- output information -->
-          <div class="heading" layout horizontal block center on-click="{{info_toggle}}" hero-id="information">
-            <core-icon icon="info"></core-icon>
+          <div class="heading" layout horizontal block center on-click="{{info_toggle}}" hero-id="information" hero>
+            <core-icon icon="info-outline"></core-icon>
             Info
             <span layout flex></span>
             <paper-icon-button icon="expand-more"></paper-icon-button>
           </div>
 
-          <core-collapse id="info" hero-id="information2">
+          <core-collapse id="info" hero-id="information2" hero>
             <div class="content" layout vertical block>
               <p>
                 There are several ways to key.

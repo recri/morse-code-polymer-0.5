@@ -62,11 +62,11 @@
 
 	  <morse-station id="station"></morse-station>
 
-          <div layout horizontal block top hero-id="decoder">
+          <div layout horizontal block top hero-id="decoder" hero>
             <morse-decoded-text id="decoder"></morse-decoded-text>
           </div>
 
-          <div layout horizontal hero-id="key">
+          <div layout horizontal hero-id="key" hero>
             <morse-key id="key"></morse-key>
           </div>
 
@@ -82,14 +82,14 @@
           </div>
 
           <!-- mimic settings -->
-          <div class="heading" layout horizontal block center on-click="{{settingsToggle}}" hero-id="settings">
+          <div class="heading" layout horizontal block center on-click="{{settingsToggle}}" hero-id="settings" hero>
             <core-icon icon="settings"></core-icon>
             Settings
             <span layout flex></span>
             <paper-icon-button icon="expand-more"></paper-icon-button>
           </div>
 
-          <core-collapse id="settings" allowOverflow="true" hero-id="settings2">
+          <core-collapse id="settings" allowOverflow="true" hero-id="settings2" hero>
             <div class="content">
               <div layout horizontal block center>
                 <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
@@ -103,14 +103,14 @@
           </core-collapse>
 
           <!-- mimic splained -->
-          <div class="heading" layout horizontal block center on-click="{{infoToggle}}" hero-id="information">
+          <div class="heading" layout horizontal block center on-click="{{infoToggle}}" hero-id="information" hero>
             <core-icon icon="info-outline"></core-icon>
             Info
             <span layout flex></span>
             <paper-icon-button icon="expand-more"></paper-icon-button>
           </div>
 
-          <core-collapse id="info" hero-id="information2">
+          <core-collapse id="info" hero-id="information2" hero>
             <div class="content">
               <p>
                 The plan is to listen to letters and words being
