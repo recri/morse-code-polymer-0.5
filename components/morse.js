@@ -1147,10 +1147,12 @@
             output_send : function(text) { this.output.send(text); },
             output_cancel : function() { this.output.keyOff(); },
             output_decoder_on_letter : function(callback, context) { this.output_decoder.on('letter', callback, context); },
+            output_decoder_off_letter : function(callback, context) { this.output_decoder.off('letter', callback, context); },
 
             input_midi_refresh : function() { this.input.midi_refresh(); },
             input_midi_names : function() { this.input.midi_names(); },
             input_decoder_on_letter : function(callback, context) { this.input_decoder.on('letter', callback, context); },
+            input_decoder_off_letter : function(callback, context) { this.input_decoder.off('letter', callback, context); },
             input_keydown : function(isleft) { this.input.keydown(isleft); },
             input_keyup : function(isleft) { this.input.keyup(isleft); },
             input_focus : function() { this.input.onfocus(); },

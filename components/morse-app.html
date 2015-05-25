@@ -7,7 +7,7 @@
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
   </head>
   <body>
-    <polymer-element name="morse-app">
+    <polymer-element name="morse-app" tabIndex="0">
 
       <template>
 	<style>    
@@ -68,9 +68,14 @@
 	},
 	selectedChanged : function(oldv, newv) {
             var oldi = this.findTargetLabel(oldv);
-	    if (oldi && oldi.onblur) oldi.onblur();
+	    if (oldi) {
+		if (oldi.onblur) oldi.onblur();
+	    }
 	    var newi = this.findTargetLabel(newv);
-	    if (newi && newi.onfocus) newi.onfocus();
+	    if (newi) {
+		if (newi.set_keytarget) newi.set_keytarget(this);
+		if (newi.onfocus) newi.onfocus();
+	    }
 	},
 	attached: function () {
 	    this.selectedChanged(undefined, this.selected);

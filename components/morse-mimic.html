@@ -1,3 +1,4 @@
+<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
 <html>
   <head>
     <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
@@ -14,6 +15,7 @@
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 
     <link rel="import" href="morse-station.html">
+    <link rel="import" href="morse-decoded-text.html">
     <link rel="import" href="morse-key.html">
 
   </head>
@@ -31,11 +33,6 @@
 	  }
 	  section {
 	    margin: 20px;
-	  }
-	  .key {
-	    margin: 12px;
-	    font-size: 35px;
-	    font-weight: bold;
 	  }
 	  paper-progress {
 	    margin: 20px;
@@ -64,15 +61,24 @@
 	<section>
 	  <morse-station id="station"></morse-station>
 	  <div layout vertical block>
-	    <div layout horizontal center block>
-	      <paper-progress id="training_progress" ></paper-progress>Progress
+
+	    <div layout horizontal block top>
+	      <morse-decoded-text id="decoder"></morse-decoded-text>
 	    </div>
 
-	    <morse-key id="key" layout horizontal block center></morse-key>
+	    <div layout horizontal>
+	      <morse-key id="key"></morse-key>
+	    </div>
 
 	    <div layout horizontal center block>
-	      <paper-button>New Session</paper-button>
-	      <paper-button>Review Session</paper-button>
+	      <paper-progress flex id="progress" ></paper-progress>Progress
+	    </div>
+
+	    <div layout horizontal center block>
+	      <span flex></span>
+	      <paper-button raised>New Session</paper-button>
+	      <paper-button raised>Review Session</paper-button>
+	      <span flex></span>
 	    </div>
 
 	    <!-- mimic settings -->
@@ -141,12 +147,10 @@
 		items_per_session : 5,
 		reps_per_item : 5,
 	    },
+
 	    settingsToggle : function() { this.$.settings.toggle(); },
 	    infoToggle : function() { this.$.info.toggle(); },
-	    onletter_input : function(ltr, code) {
-	    },
-	    onletter_output : function(ltr, code) {
-	    },
+
 	    ready : function() {
 		var station = this.$.station.get_station();
 		if ( ! localStorage['morse-mimic']) {
@@ -154,19 +158,22 @@
 		    progress.progress_save('morse-mimic');
 		}
 		this.progress = study_progress_restore('morse-mimic');
-		// set up input and output handlers
-		this.$.station.output_decoder_on_letter(this.onletter_output, this);
-		this.$.station.input_decoder_on_letter(this.onletter_input, this);
-		// set up key handlers
-		this.tabIndex = 0;
+		this.$.decoder.set_keystation(this.$.station);
 		this.$.key.set_keystation(this.$.station);
-		this.$.key.set_keytarget(this);
 	    },
-	    blur : function() {
+
+	    set_keytarget : function(target) { this.$.key.set_keytarget(target); },
+	
+	    onblur : function() {
+		// console.log('mimic.onblur');
+		this.$.decoder.onblur();
 		this.$.key.onblur();
-		this.progress_save('morse-mimic');
+		this.progress.progress_save('morse-mimic');
 	    },
+
 	    onfocus : function() {
+		// console.log('mimic.onfocus');
+		this.$.decoder.onfocus();
 		this.$.key.onfocus();
 	    },
 	});

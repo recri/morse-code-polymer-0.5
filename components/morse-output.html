@@ -1,3 +1,4 @@
+<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
 <html>
   <head>
     <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
@@ -14,6 +15,8 @@
     <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
     <link rel="import" href="morse-station.html">
+    <link rel="import" href="morse-decoded-text.html">
+    <link rel="import" href="morse-key.html">
   </head>
   <body>
     <polymer-element name="morse-output">
@@ -28,9 +31,6 @@
 	  }
 	  section {
 	    margin: 20px;
-	  }
-	  paper-autogrow-textarea {
-	    margin: 10px;
 	  }
 	  .heading {
 	    padding: 10px 15px;
@@ -60,9 +60,18 @@
 			 output_ies="{{output_ies}}" output_ils="{{output_ils}}" output_iws="{{output_iws}}"
 			 output_midi="{{output_midi}}"></morse-station>
 	  <div layout vertical block>
+
+	    <div layout horizontal block top>
+	      <morse-decoded-text id="decoder"></morse-decoded-text>
+	    </div>
+
+	    <div layout horizontal>
+	      <morse-key id="key" disabled="true"></morse-key>
+	    </div>
+
+	    <!-- text input -->
 	    <div layout horizontal block center>
-	      <!--  -->
-	      <paper-input id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
+	      <paper-input flex id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
 	      <div layout horizontal block center>
 		<core-tooltip label="clear input text">
 		  <paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
@@ -74,12 +83,6 @@
 		  <paper-icon-button icon="cancel" on-click="{{output_cancel}}"></paper-icon-button>		
 		</core-tooltip>
 	      </div>
-	    </div>
-	    <div layout horizontal block top>
-	      <paper-autogrow-textarea rows="4" maxrows="10">
-		<textarea readonly>{{decoded_text}}</textarea>
-	      </paper-autogrow-textarea>
-	      <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
 	    </div>
 
 	    <!-- output settings -->
@@ -206,11 +209,11 @@
             output_ils : 3,
             output_iws : 7,
             output_midi : 'none',
-	    decoded_text : "",
 	},
 
 	ready : function() {
-            this.$.station.output_decoder_on_letter(this.onletter, this);
+	    this.$.decoder.set_keystation(this.$.station);
+	    this.$.key.set_keystation(this.$.station);
 	},
 
 	output_midi_refresh : function() { this.$.station.output_midi_refresh(); },
@@ -220,38 +223,47 @@
         more_settings_toggle : function() { this.$.more_settings.toggle(); },
         info_toggle : function() { this.$.info.toggle(); },
 
-	// output_pitchChanged : function(oldv, newv) { this.attrChanged('output_pitch', oldv, newv); },
-	// output_gain_dBChanged : function(oldv, newv) { this.attrChanged('output_gain_dB', oldv, newv); },
-	// output_wpmChanged : function(oldv, newv) { this.attrChanged('output_wpm', oldv, newv); },
-	// output_rise_msChanged : function(oldv, newv) { this.attrChanged('output_rise_ms', oldv, newv); },
-	// output_fall_msChanged : function(oldv, newv) { this.attrChanged('output_fall_ms', oldv, newv); },
-	// output_dahChanged : function(oldv, newv) { this.attrChanged('output_dah', oldv, newv); },
-	// output_iesChanged : function(oldv, newv) { this.attrChanged('output_ies', oldv, newv); },
-	// output_ilsChanged : function(oldv, newv) { this.attrChanged('output_ils', oldv, newv); },
-	// output_iwsChanged : function(oldv, newv) { this.attrChanged('output_iws', oldv, newv); },
-	// output_midiChanged : function(oldv, newv) { this.attrChanged('output_midi', oldv, newv); },
-
-	// attrChanged : function(attr, oldv, newv) { console.log("output:"+attr, "oldv="+oldv, "newv="+newv); },
-
 	output_send : function(text) { this.$.station.output_send(text); },
 	output_cancel : function() { this.$.station.output_cancel(); },
 
 	onkeydown : function(event, detail, sender) {
-            if (event.keyCode == 13) {
-		this.output_send(this.$.input.value);
-		this.$.input.value = "";
-		return false;
-            } else {
-		return true;
+	    switch (event.keyCode) {
+		case 13: {
+		    this.output_send(this.$.input.value);
+		    this.$.input.value = "";
+		    return false;
+		}
+		case 17: case 18: {
+		    this.$.key.keydown(event);
+		    return false;
+		}
+		default: {
+		    // console.log("keycode:", event.keyCode);
+		    return true;
+		}
             }
 	},
-	clear_textarea : function(event, detail, sender) { this.decoded_text = ""; },
+
 	clear_input : function(event, detail, sender) { this.$.input.value = ""; },
 	send_input : function(event, detail, sender) {
             this.output_send(this.$.input.value);
             this.$.input.value = "";
 	},
-	onletter : function(letter, code) { this.decoded_text += letter; },
+
+	set_keytarget : function(target) { this.$.key.set_keytarget(target); },
+	
+	onblur : function() {
+	    // console.log('output.onblur');
+	    this.$.decoder.onblur();
+	    this.$.key.onblur();
+	},
+
+	onfocus : function() {
+	    // console.log('output.onfocus');
+	    this.$.decoder.onfocus();
+	    this.$.key.onfocus();
+	},
+
     });
       </script>
     </polymer-element>

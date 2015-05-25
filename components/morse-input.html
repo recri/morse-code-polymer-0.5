@@ -16,6 +16,7 @@
     <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
     <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
     <link rel="import" href="morse-station.html">
+    <link rel="import" href="morse-decoded-text.html">
     <link rel="import" href="morse-key.html">
   </head>
   <body>
@@ -31,9 +32,6 @@
 	  }
 	  section {
 	    margin: 20px;
-	  }
-	  paper-autogrow-textarea {
-	    margin: 10px;
 	  }
 	  .heading {
 	    padding: 10px 15px;
@@ -65,15 +63,12 @@
 	  <div layout vertical block>
 
 	    <div layout horizontal block top>
-	      <paper-autogrow-textarea rows="4" maxrows="10">
-		<textarea readonly>{{decoded_text}}</textarea>
-	      </paper-autogrow-textarea>
-	      <core-tooltip label="clear text area">
-                <paper-icon-button icon="clear" on-click="{{clear_textarea}}"></paper-icon-button>
-              </core-tooltip>
+	      <morse-decoded-text id="decoder"></morse-decoded-text>
 	    </div>
 
-	    <morse-key id="key" layout horizontal block center></morse-key>
+	    <div layout horizontal>
+	      <morse-key id="key"></morse-key>
+	    </div>
 
             <!-- input settings -->
 	    <div class="heading" layout horizontal block center on-click="{{settings_toggle}}">
@@ -208,16 +203,12 @@
             input_midi : "none",
             input_swapped : false,
             input_type : 'iambic',
-	    // shared with local textarea
-	    decoded_text : ""
 	},
 
 	ready : function() {
 	    // console.log('ready in morse-input', this.$.key, this.$.station);
-            this.tabIndex = 0;
-	    this.$.station.input_decoder_on_letter(this.onletter, this);
+	    this.$.decoder.set_keystation(this.$.station);
 	    this.$.key.set_keystation(this.$.station);
-	    this.$.key.set_keytarget(this);
 	},
 
         settings_toggle : function() { this.$.settings.toggle(); },
@@ -234,20 +225,22 @@
 	input_midi_refresh : function() { this.$.station.input_midi_refresh(); },
 	input_midi_names : function() { return this.$.station.input_midi_names(); },
 
-	onletter : function(letter, code) { this.decoded_text += letter; },
-
-	clear_textarea : function(event, detail, sender) { this.decoded_text = ""; },
-
 	// key event handlers now inside morse-key component
 
+	set_keytarget : function(target) { this.$.key.set_keytarget(target); },
+	
 	onblur : function() {
+	    // console.log('input.onblur');
+	    this.$.decoder.onblur();
 	    this.$.key.onblur();
-            // this.blur();
 	},
+
 	onfocus : function() {
+	    // console.log('input.onfocus');
+	    this.$.decoder.onfocus();
 	    this.$.key.onfocus();
-            // this.focus();
 	},
+
         
     });
       </script>

@@ -226,7 +226,7 @@ function study_progress(word_list, station) {
             }
             self.words[word] = w;
         },
-        progress_save : function() {
+        progress_save : function(name) {
             var save = {
                 items_per_session : self.items_per_session,
                 reps_per_item : self.reps_per_item,
@@ -236,7 +236,7 @@ function study_progress(word_list, station) {
                 station_params : self.station.get_params(),
                 words : self.words
             };
-            localStorage.setItem('morse-mimic', JSON.stringify(save));
+            localStorage.setItem(name, JSON.stringify(save));
             // console.log('progress_save('+save.word_list_name+', '+localStorage[save.word_list_name]);
         },
         progress_delete : function() {

@@ -19,26 +19,31 @@
   no need to manage external files when vulcanize and
   crisper will sort those issues out on the backend.
 * [x] fix leftover use of selected as integer in morse-app
-* [ ] use bars for titles
-* [ ] use animations for page reveals
-* [ ] use routing to select titles, pages, ...
-* [ ] use icons
+* [x] use bars for titles
+* [x] use icons
 ** [x] clear for input
 ** [x] send for input
 ** [x] clear for textareas
-** [ ] settings for setting blocks
+** [x] settings for setting blocks
 ** [x] refresh for MIDI refresh
 ** [?] swap-horiz for swap paddles
+** [x] info for info pages
+* [x] get the keyboard focus reliably onto the input page
+* [x] get the keyboard focus onto the whole html document
+  got it reliably onto the morse-app element
+* [x] extract common morse-key function
+* [x] extract common decoded text display
+* [x] make all three windows implement the same key/decoded text
+* [ ] use animations for page reveals
+* [ ] use routing to select titles, pages, ...
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
   but running an app that is loaded from bower uses components
   in ../, polyserver resolves imports and loads
 * [ ] follow guide to material design
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
-** [ ] core-tooltip should lose the arrows
-** [ ] core-tooltip needs styling  
 * [ ] stop the output decoder from getting ahead of itself
-* [ ] make the input decoder track the input speed, if using iambic
+* [ ] make the input decoder track the input speed, if there is one
 * [ ] package as a chrome application and push to the store
 * [ ] move to card based drill
 ** [ ] show didah
@@ -48,5 +53,5 @@
 ** [ ] make optional what is shown
 ** [ ] add replay, skip, and quit buttons to each card
 ** [ ] review cards at end of session
-* [ ] get the keyboard focus reliably onto the input page
 * [ ] Morse Mimic - teach your muscles
+* [ ] make the decoded text consistent across the app windows
