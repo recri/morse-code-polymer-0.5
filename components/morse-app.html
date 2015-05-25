@@ -46,7 +46,12 @@
             </core-menu>
 	  </core-header-panel>
 	  <div tool>Morse <span>{{selected}}</span></div>
-	  <core-animated-pages id="pages" valueattr="label" selected="{{selected}}">
+          <!--
+              transitions="cross-fade-all"
+              transitions="slide-from-right"
+              transitions="hero-transition"
+            -->
+	  <core-animated-pages id="pages" valueattr="label" selected="{{selected}}" transitions="cross-fade-all">
 	    <content></content>
 	  </core-pages>
 	</core-scaffold>

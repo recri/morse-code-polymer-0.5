@@ -58,85 +58,84 @@
 	    margin: 0px 10px;
 	  }
 	</style>
-	<section>
+	<section layout vertical block>
+
 	  <morse-station id="station"></morse-station>
-	  <div layout vertical block>
 
-	    <div layout horizontal block top>
-	      <morse-decoded-text id="decoder"></morse-decoded-text>
-	    </div>
+          <div layout horizontal block top hero-id="decoder">
+            <morse-decoded-text id="decoder"></morse-decoded-text>
+          </div>
 
-	    <div layout horizontal>
-	      <morse-key id="key"></morse-key>
-	    </div>
+          <div layout horizontal hero-id="key">
+            <morse-key id="key"></morse-key>
+          </div>
 
-	    <div layout horizontal center block>
-	      <paper-progress flex id="progress" ></paper-progress>Progress
-	    </div>
+          <div layout horizontal center block>
+            <paper-progress flex id="progress" ></paper-progress>Progress
+          </div>
 
-	    <div layout horizontal center block>
-	      <span flex></span>
-	      <paper-button raised>New Session</paper-button>
-	      <paper-button raised>Review Session</paper-button>
-	      <span flex></span>
-	    </div>
+          <div layout horizontal center block>
+            <span flex></span>
+            <paper-button raised>New Session</paper-button>
+            <paper-button raised>Review Session</paper-button>
+            <span flex></span>
+          </div>
 
-	    <!-- mimic settings -->
-	    <div class="heading" layout horizontal block center on-click="{{settingsToggle}}">
-	      <core-icon icon="settings"></core-icon>
-	      Settings
-	      <span layout flex></span>
-	      <paper-icon-button icon="expand-more"></paper-icon-button>
-	    </div>
+          <!-- mimic settings -->
+          <div class="heading" layout horizontal block center on-click="{{settingsToggle}}" hero-id="settings">
+            <core-icon icon="settings"></core-icon>
+            Settings
+            <span layout flex></span>
+            <paper-icon-button icon="expand-more"></paper-icon-button>
+          </div>
 
-	    <core-collapse id="settings" allowOverflow="true">
-	      <div class="content">
-		<div layout horizontal block center>
-		  <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <span>{{items_per_session}}</span> Items/Session
-		</div>
-		<div layout horizontal block center>
-		  <paper-slider value="{{reps_per_item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-		  <span>{{reps_per_item}}</span> Repetitions/Item
-		</div>
-	      </div>
-	    </core-collapse>
+          <core-collapse id="settings" allowOverflow="true" hero-id="settings2">
+            <div class="content">
+              <div layout horizontal block center>
+                <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+                <span>{{items_per_session}}</span> Items/Session
+              </div>
+              <div layout horizontal block center>
+                <paper-slider value="{{reps_per_item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+                <span>{{reps_per_item}}</span> Repetitions/Item
+              </div>
+            </div>
+          </core-collapse>
 
-	    <!-- mimic splained -->
-	    <div class="heading" layout horizontal block center on-click="{{infoToggle}}">
-	      <core-icon icon="info-outline"></core-icon>
-	      Info
-	      <span layout flex></span>
-	      <paper-icon-button icon="expand-more"></paper-icon-button>
-	    </div>
+          <!-- mimic splained -->
+          <div class="heading" layout horizontal block center on-click="{{infoToggle}}" hero-id="information">
+            <core-icon icon="info-outline"></core-icon>
+            Info
+            <span layout flex></span>
+            <paper-icon-button icon="expand-more"></paper-icon-button>
+          </div>
 
-	    <core-collapse id="info">
-	      <div class="content">
-		<p>
-		  The plan is to listen to letters and words being
-		  made and then learn to make the same sounds
-		  yourself.  As your muscles learn how to make the
-		  sounds, your ear will get better at hearing them,
-		  and your mind will get better at remembering the
-		  patterns that it hears.
-		</p><p>
-		  The <strong>Output</strong> page allows you to change
-		  the way the computer makes morse code.  You can also
-		  type in letters to see how they are encoded into
-		  morse.
-		</p><p>
-		  The <strong>Input</strong> page explains how you can
-		  enter morse code with the keyboard, mouse, touch, or
-		  an external key.  You can fiddle with the input
-		  methods and with the input parameters to see what
-		  you can do.
-		</p><p>
-		  This page will give you patterns to mimic and score
-		  you on how well you do.
-		</p>
-	      </div>
-	    </core-collapse>
-	  </div>
+          <core-collapse id="info" hero-id="information2">
+            <div class="content">
+              <p>
+                The plan is to listen to letters and words being
+                made and then learn to make the same sounds
+                yourself.  As your muscles learn how to make the
+                sounds, your ear will get better at hearing them,
+                and your mind will get better at remembering the
+                patterns that it hears.
+              </p><p>
+                The <strong>Output</strong> page allows you to change
+                the way the computer makes morse code.  You can also
+                type in letters to see how they are encoded into
+                morse.
+              </p><p>
+                The <strong>Input</strong> page explains how you can
+                enter morse code with the keyboard, mouse, touch, or
+                an external key.  You can fiddle with the input
+                methods and with the input parameters to see what
+                you can do.
+              </p><p>
+                This page will give you patterns to mimic and score
+                you on how well you do.
+              </p>
+            </div>
+          </core-collapse>
 	</section>
       </template>
       <script src="progress.js"></script>

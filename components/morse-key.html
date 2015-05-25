@@ -3,7 +3,7 @@
     <link rel="import" href="../bower_components/polymer/polymer.html">
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-    <polymer-element name="morse-key" disabled="{{disabled}}">
+    <polymer-element name="morse-key">
       <template>
 	<style>    
 	  :host {
@@ -20,12 +20,12 @@
 	  }
 	</style>
 	<div layout horizontal center-justified>
-	  <paper-button class="key" id="left" raised block disabled="{{disabled}}"
+	  <paper-button class="key" id="left" raised block
 			on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
 			on-mousedown="{{left_mousedown}}" on-mouseup="{{left_mouseup}}"
 			oncontextmenu="return false"
 			>&lt;</paper-button>
-	  <paper-button class="key" id="right" raised block disabled="{{disabled}}"
+	  <paper-button class="key" id="right" raised block
 			on-touchstart="{{right_touchstart}}" on-touchend="{{right_touchend}}"
 			on-mousedown="{{right_mousedown}}" on-mouseup="{{right_mouseup}}"
 			oncontextmenu="return false"
@@ -37,7 +37,6 @@
       <script>
     Polymer({
 	properties : {
-	    disabled : false,
 	},
 	// key handler target
 	keytarget : null,
