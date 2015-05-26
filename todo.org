@@ -34,7 +34,7 @@
 * [x] extract common morse-key function
 * [x] extract common decoded text display
 * [x] make all three windows implement the same key/decoded text
-* [ ] use animations for page reveals
+* [x] use animations for page reveals
 * [ ] use routing to select titles, pages, ...
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
@@ -55,3 +55,5 @@
 ** [ ] review cards at end of session
 * [ ] Morse Mimic - teach your muscles
 * [ ] make the decoded text consistent across the app windows
+* [ ] fix the key clicks 
+* [ ] build a monitor page with scope and logic traces

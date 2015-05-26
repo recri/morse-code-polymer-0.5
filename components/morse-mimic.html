@@ -76,8 +76,8 @@
 
           <div layout horizontal center block>
             <span flex></span>
-            <paper-button raised>New Session</paper-button>
-            <paper-button raised>Review Session</paper-button>
+            <paper-button raised on-click="{{new_session}}">New Session</paper-button>
+            <paper-button raised on-click="{{review_session}}">Review Session</paper-button>
             <span flex></span>
           </div>
 
@@ -147,16 +147,36 @@
 		reps_per_item : 5,
 	    },
 
+	    items_per_sessionChanged : function(oldv, newv) { this.progress.items_per_session = newv; },
+	    reps_per_itemChanged : function(oldv, newv) { this.progress.reps_per_items = newv; },
+	    
+	    session : null,
+
+	    start_session : function() {
+		// make session card
+		// start session testing
+	    },
+	    new_session : function() {
+		this.session = study_session(this.progress, 'new');
+		this.start_session();
+	    },
+	    review_session : function() {
+		this.session = study_session(this.progress, 'review');
+		this.start_session();
+	    },
+
 	    settingsToggle : function() { this.$.settings.toggle(); },
 	    infoToggle : function() { this.$.info.toggle(); },
 
 	    ready : function() {
 		var station = this.$.station.get_station();
 		if ( ! localStorage['morse-mimic']) {
-		    var progress = study_progress(word_list_by_name('comb', station.table), station)
-		    progress.progress_save('morse-mimic');
+		    this.progress = study_progress(word_list_by_name('comb', station.table), station)
+		} else {
+		    this.progress = study_progress(null, station).restore('morse-mimic');
 		}
-		this.progress = study_progress_restore('morse-mimic');
+		this.items_per_session = this.progress.items_per_session;
+		this.reps_per_item = this.progress.reps_per_items;
 		this.$.decoder.set_keystation(this.$.station);
 		this.$.key.set_keystation(this.$.station);
 	    },
@@ -167,13 +187,14 @@
 		// console.log('mimic.onblur');
 		this.$.decoder.onblur();
 		this.$.key.onblur();
-		this.progress.progress_save('morse-mimic');
+		this.progress.save('morse-mimic');
 	    },
 
 	    onfocus : function() {
 		// console.log('mimic.onfocus');
 		this.$.decoder.onfocus();
 		this.$.key.onfocus();
+		// update progress bar
 	    },
 	});
       </script>
