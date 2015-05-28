@@ -87,8 +87,8 @@
 
 	},
 
-	keydown : function(e) { this.keystation.input_keydown((e.keyCode&1)^1); },
-	keyup : function(e) { this.keystation.input_keyup((e.keyCode&1)^1); },
+	keydown : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keydown((e.keyCode&1)^1); },
+	keyup : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keyup((e.keyCode&1)^1); },
 
 	left_touchstart : function(e) { this.keystation.input_keydown(1); },
 	left_touchend : function(e) { this.keystation.input_keyup(1); },

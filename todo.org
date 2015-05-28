@@ -6,7 +6,7 @@
 * [x] make input erasable
 * [x] make input sendable
 * [x] make input cancelable
-* [?] go back to collapsing settings
+* [x] go back to collapsing settings
 * [x] disable iambic tagged input controls when straight key
 * [x] move straight key/iambic paddle selector to the top
 * [x] alter the app title on page changes
@@ -56,4 +56,20 @@
 * [ ] Morse Mimic - teach your muscles
 * [ ] make the decoded text consistent across the app windows
 * [ ] fix the key clicks 
+  I suspect timing jitter induced by a sample clock that only changes
+  once per buffer and jumps by a buffer worth of samples. when I pick
+  up the buffer time near the start or end of the buffer, I get
+  different results for placing activities into the future.
+  Test by looking at the distribution of context.currentTime values
+  returned.
 * [ ] build a monitor page with scope and logic traces
+* [ ] CDE mobile push issues
+** [ ] confusion when both touch and pointer events are active
+** [ ] no text decoding shown
+** [ ] try from web deploy?
+* [ ] select and implement color choices
+* [ ] mobile chrome scales screen to too small
+  needs a <meta viewport> found in web starter kit documents
+* [-] using <pre> to preserve space eliminates line wrap
+  and I still don't get the mobile browser text updated
+* [x] Reverted to <textarea and got things working fine.

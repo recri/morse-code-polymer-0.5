@@ -3,6 +3,7 @@
 <html>
   <head>
     <title>Morse</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="components/morse-app.html">
     <link rel="import" href="components/morse-output.html">
@@ -26,20 +27,23 @@
     </style>
   </head>
   <body unresolved fullbleed layout vertical>
-    <morse-app selected="Mimic">
+    <template id="template" is="auto-binding">
+      <morse-app selected="Mimic" decoded_text="{{decoded_text}}">
 
-      <paper-item label="Mimic" layout center>Mimic</paper-item>
-      <morse-mimic label="Mimic"></morse-mimic>
+        <paper-item label="Mimic" decoded_text="{{decoded_text}}" layout center>Mimic</paper-item>
+        <morse-mimic label="Mimic"></morse-mimic>
 
-      <paper-item label="Output"  layout center>Output</paper-item>
-      <morse-output label="Output"></morse-output>
+        <paper-item label="Output" decoded_text="{{decoded_text}}" layout center>Output</paper-item>
+        <morse-output label="Output"></morse-output>
 
-      <paper-item label="Input" layout center>Input</paper-item>
-      <morse-input label="Input"></morse-input>
+        <paper-item label="Input" decoded_text="{{decoded_text}}" layout center>Input</paper-item>
+        <morse-input label="Input"></morse-input>
 
-    </morse-app>
+      </morse-app>
+    </template>
 
     <script>
+      document.getElementById("template").decoded_text = "";
     </script>
 
   </body>

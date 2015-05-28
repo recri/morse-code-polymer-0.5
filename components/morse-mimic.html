@@ -1,203 +1,200 @@
-<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
-<html>
-  <head>
-    <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
-    <link rel="import" href="../bower_components/core-icon/core-icon.html">
-    <link rel="import" href="../bower_components/core-icons/core-icons.html">
-    <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+<!-- -*- mode: web; indent-tabs-mode: nil; tab-width: 2; standard-indent: 2; -*- -->
+<link rel="import" href="../bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="morse-station.html">
+<link rel="import" href="morse-decoded-text.html">
+<link rel="import" href="morse-key.html">
 
-    <link rel="import" href="../bower_components/paper-button/paper-button.html">
-    <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
-    <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-    <link rel="import" href="../bower_components/paper-item/paper-item.html">
-    <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-    <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<polymer-element name="morse-mimic">
+  <template>
+    <style>
+    :host {
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
 
-    <link rel="import" href="morse-station.html">
-    <link rel="import" href="morse-decoded-text.html">
-    <link rel="import" href="morse-key.html">
+    section {
+      margin: 20px;
+    }
 
-  </head>
-  <body>
-    <polymer-element name="morse-mimic">
+    paper-progress {
+      margin: 20px;
+    }
 
-      <template>
-	<style>    
-	  :host {
-	    display: block;
-	    position: absolute;
-	    width: 100%;
-	    height: 100%;
-	    box-sizing: border-box;
-	  }
-	  section {
-	    margin: 20px;
-	  }
-	  paper-progress {
-	    margin: 20px;
-	  }
-	  .heading {
-	    padding: 10px 15px;
-	    background-color: #f3f3f3;
-	    border: 1px solid #dedede;
-	    border-top-left-radius: 5px;
-	    border-top-right-radius: 5px;
-	    font-size: 18px;
-	    cursor: pointer;
-	    -webkit-tap-highlight-color: rgba(0,0,0,0);
-	  }
-	  .content {
-	    padding: 15px;
-	    border: 1px solid #dedede;
-	    border-top: none;
-	    border-bottom-left-radius: 5px;
-	    border-bottom-right-radius: 5px;
-	  }
-	  .heading core-icon {
-	    margin: 0px 10px;
-	  }
-	</style>
-	<section layout vertical block>
+    .heading {
+      padding: 10px 15px;
+      background-color: #f3f3f3;
+      border: 1px solid #dedede;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
 
-	  <morse-station id="station"></morse-station>
+    .content {
+      padding: 15px;
+      border: 1px solid #dedede;
+      border-top: none;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
 
-          <div layout horizontal block top hero-id="decoder" hero>
-            <morse-decoded-text id="decoder"></morse-decoded-text>
+    .heading core-icon {
+      margin: 0px 10px;
+    }
+    </style>
+    <section layout vertical block>
+      <morse-station id="station"></morse-station>
+      <div layout horizontal block top hero-id="decoder" hero>
+        <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}"></morse-decoded-text>
+      </div>
+      <div layout horizontal hero-id="key" hero>
+        <morse-key id="key"></morse-key>
+      </div>
+      <div layout horizontal center block>
+        <paper-progress flex id="progress"></paper-progress>Progress
+      </div>
+      <div layout horizontal center block>
+        <span flex></span>
+        <paper-button raised on-click="{{new_session}}">New Session</paper-button>
+        <paper-button raised on-click="{{review_session}}">Review Session</paper-button>
+        <span flex></span>
+      </div>
+      <!-- mimic settings -->
+      <div class="heading" layout horizontal block center on-click="{{settingsToggle}}" hero-id="settings" hero>
+        <core-icon icon="settings"></core-icon>
+        Settings
+        <span layout flex></span>
+        <paper-icon-button icon="expand-more"></paper-icon-button>
+      </div>
+      <core-collapse id="settings" allowOverflow="true" hero-id="settings2" hero>
+        <div class="content">
+          <div layout horizontal block center>
+            <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+            <span>{{items_per_session}}</span> Items/Session
           </div>
-
-          <div layout horizontal hero-id="key" hero>
-            <morse-key id="key"></morse-key>
+          <div layout horizontal block center>
+            <paper-slider value="{{reps_per_item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
+            <span>{{reps_per_item}}</span> Repetitions/Item
           </div>
+        </div>
+      </core-collapse>
+      <!-- mimic splained -->
+      <div class="heading" layout horizontal block center on-click="{{infoToggle}}" hero-id="information" hero>
+        <core-icon icon="info-outline"></core-icon>
+        Info
+        <span layout flex></span>
+        <paper-icon-button icon="expand-more"></paper-icon-button>
+      </div>
+      <core-collapse id="info" hero-id="information2" hero>
+        <div class="content">
+          <p>
+            The plan is to listen to letters and words being made and
+      then learn to make the same sounds yourself. As your muscles
+      learn how to make the sounds, your ear will get better at
+      hearing them, and your mind will get better at remembering the
+      patterns that it hears.
+          </p>
+          <p>
+            The <strong>Output</strong> page allows you to change the
+      way the computer makes morse code. You can also type in letters
+      to see how they are encoded into morse. 
+          </p>
+          <p>
+            The <strong>Input</strong> page explains how you can enter
+      morse code with the keyboard, mouse, touch, or an external
+      key. You can fiddle with the input methods and with the input
+      parameters to see what you can do.
+          </p>
+          <p>
+            This page will give you patterns to mimic and score you on
+      how well you do.
+          </p>
+        </div>
+      </core-collapse>
+    </section>
+  </template>
+  <script src="progress.js"></script>
+  <script src="words.js"></script>
+  <script>
+  Polymer({
+    publish: {
+      items_per_session: 5,
+      reps_per_item: 5,
+    },
 
-          <div layout horizontal center block>
-            <paper-progress flex id="progress" ></paper-progress>Progress
-          </div>
+    items_per_sessionChanged: function(oldv, newv) {
+      this.progress.items_per_session = newv;
+    },
+    reps_per_itemChanged: function(oldv, newv) {
+      this.progress.reps_per_items = newv;
+    },
 
-          <div layout horizontal center block>
-            <span flex></span>
-            <paper-button raised on-click="{{new_session}}">New Session</paper-button>
-            <paper-button raised on-click="{{review_session}}">Review Session</paper-button>
-            <span flex></span>
-          </div>
+    session: null,
 
-          <!-- mimic settings -->
-          <div class="heading" layout horizontal block center on-click="{{settingsToggle}}" hero-id="settings" hero>
-            <core-icon icon="settings"></core-icon>
-            Settings
-            <span layout flex></span>
-            <paper-icon-button icon="expand-more"></paper-icon-button>
-          </div>
+    start_session: function() {
+      // make session card
+      // start session testing
+    },
+    new_session: function() {
+      this.session = study_session(this.progress, 'new');
+      this.start_session();
+    },
+    review_session: function() {
+      this.session = study_session(this.progress, 'review');
+      this.start_session();
+    },
 
-          <core-collapse id="settings" allowOverflow="true" hero-id="settings2" hero>
-            <div class="content">
-              <div layout horizontal block center>
-                <paper-slider value="{{items_per_session}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-                <span>{{items_per_session}}</span> Items/Session
-              </div>
-              <div layout horizontal block center>
-                <paper-slider value="{{reps_per_item}}" min="2" max="50" step="1" pin="true" snap="true"></paper-slider>
-                <span>{{reps_per_item}}</span> Repetitions/Item
-              </div>
-            </div>
-          </core-collapse>
+    settingsToggle: function() {
+      this.$.settings.toggle();
+    },
+    infoToggle: function() {
+      this.$.info.toggle();
+    },
 
-          <!-- mimic splained -->
-          <div class="heading" layout horizontal block center on-click="{{infoToggle}}" hero-id="information" hero>
-            <core-icon icon="info-outline"></core-icon>
-            Info
-            <span layout flex></span>
-            <paper-icon-button icon="expand-more"></paper-icon-button>
-          </div>
+    ready: function() {
+      var station = this.$.station.get_station();
+      if (!localStorage['morse-mimic']) {
+        this.progress = study_progress(word_list_by_name('comb', station.table), station)
+      } else {
+        this.progress = study_progress(null, station).restore('morse-mimic');
+      }
+      this.items_per_session = this.progress.items_per_session;
+      this.reps_per_item = this.progress.reps_per_items;
+      this.$.decoder.set_keystation(this.$.station);
+      this.$.key.set_keystation(this.$.station);
+    },
 
-          <core-collapse id="info" hero-id="information2" hero>
-            <div class="content">
-              <p>
-                The plan is to listen to letters and words being
-                made and then learn to make the same sounds
-                yourself.  As your muscles learn how to make the
-                sounds, your ear will get better at hearing them,
-                and your mind will get better at remembering the
-                patterns that it hears.
-              </p><p>
-                The <strong>Output</strong> page allows you to change
-                the way the computer makes morse code.  You can also
-                type in letters to see how they are encoded into
-                morse.
-              </p><p>
-                The <strong>Input</strong> page explains how you can
-                enter morse code with the keyboard, mouse, touch, or
-                an external key.  You can fiddle with the input
-                methods and with the input parameters to see what
-                you can do.
-              </p><p>
-                This page will give you patterns to mimic and score
-                you on how well you do.
-              </p>
-            </div>
-          </core-collapse>
-	</section>
-      </template>
-      <script src="progress.js"></script>
-      <script src="words.js"></script>
-      <script>
-	Polymer({
-	    publish : {
-		items_per_session : 5,
-		reps_per_item : 5,
-	    },
+    set_keytarget: function(target) {
+      this.$.key.set_keytarget(target);
+    },
 
-	    items_per_sessionChanged : function(oldv, newv) { this.progress.items_per_session = newv; },
-	    reps_per_itemChanged : function(oldv, newv) { this.progress.reps_per_items = newv; },
-	    
-	    session : null,
+    onblur: function() {
+      // console.log('mimic.onblur');
+      this.$.decoder.onblur();
+      this.$.key.onblur();
+      this.progress.save('morse-mimic');
+    },
 
-	    start_session : function() {
-		// make session card
-		// start session testing
-	    },
-	    new_session : function() {
-		this.session = study_session(this.progress, 'new');
-		this.start_session();
-	    },
-	    review_session : function() {
-		this.session = study_session(this.progress, 'review');
-		this.start_session();
-	    },
-
-	    settingsToggle : function() { this.$.settings.toggle(); },
-	    infoToggle : function() { this.$.info.toggle(); },
-
-	    ready : function() {
-		var station = this.$.station.get_station();
-		if ( ! localStorage['morse-mimic']) {
-		    this.progress = study_progress(word_list_by_name('comb', station.table), station)
-		} else {
-		    this.progress = study_progress(null, station).restore('morse-mimic');
-		}
-		this.items_per_session = this.progress.items_per_session;
-		this.reps_per_item = this.progress.reps_per_items;
-		this.$.decoder.set_keystation(this.$.station);
-		this.$.key.set_keystation(this.$.station);
-	    },
-
-	    set_keytarget : function(target) { this.$.key.set_keytarget(target); },
-	
-	    onblur : function() {
-		// console.log('mimic.onblur');
-		this.$.decoder.onblur();
-		this.$.key.onblur();
-		this.progress.save('morse-mimic');
-	    },
-
-	    onfocus : function() {
-		// console.log('mimic.onfocus');
-		this.$.decoder.onfocus();
-		this.$.key.onfocus();
-		// update progress bar
-	    },
-	});
-      </script>
-    </polymer-element>
-  </body>
-</html>
+    onfocus: function() {
+      // console.log('mimic.onfocus');
+      this.$.decoder.onfocus();
+      this.$.key.onfocus();
+      // update progress bar
+    },
+  });
+  </script>
+</polymer-element>
