@@ -35,6 +35,7 @@
 * [x] extract common decoded text display
 * [x] make all three windows implement the same key/decoded text
 * [x] use animations for page reveals
+* [x] make the decoded text consistent across the app windows
 * [ ] use routing to select titles, pages, ...
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
@@ -42,8 +43,12 @@
   in ../, polyserver resolves imports and loads
 * [ ] follow guide to material design
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
+* [ ] select and implement color choices
 * [ ] stop the output decoder from getting ahead of itself
 * [ ] make the input decoder track the input speed, if there is one
+* [ ] test whether the decoders are working as expected
+  seems that there are dah's read as dit's that would require the
+  estimated speed to change 
 * [ ] package as a chrome application and push to the store
 * [ ] move to card based drill
 ** [ ] show didah
@@ -54,7 +59,6 @@
 ** [ ] add replay, skip, and quit buttons to each card
 ** [ ] review cards at end of session
 * [ ] Morse Mimic - teach your muscles
-* [ ] make the decoded text consistent across the app windows
 * [ ] fix the key clicks 
   I suspect timing jitter induced by a sample clock that only changes
   once per buffer and jumps by a buffer worth of samples. when I pick
@@ -67,7 +71,6 @@
 ** [ ] confusion when both touch and pointer events are active
 ** [ ] no text decoding shown
 ** [ ] try from web deploy?
-* [ ] select and implement color choices
 * [ ] mobile chrome scales screen to too small
   needs a <meta viewport> found in web starter kit documents
 * [-] using <pre> to preserve space eliminates line wrap

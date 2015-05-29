@@ -102,26 +102,23 @@
       <core-collapse id="info" hero-id="information2" hero>
         <div class="content">
           <p>
-            The plan is to listen to letters and words being made and
-      then learn to make the same sounds yourself. As your muscles
-      learn how to make the sounds, your ear will get better at
-      hearing them, and your mind will get better at remembering the
-      patterns that it hears.
-          </p>
-          <p>
+            The plan is to listen to letters and words being made and 
+            then learn to make the same sounds yourself. As your
+            muscles learn how to make the sounds, your ear will get
+            better at hearing them, and your mind will get better at
+            remembering the patterns that it hears.
+          </p><p>
             The <strong>Output</strong> page allows you to change the
-      way the computer makes morse code. You can also type in letters
-      to see how they are encoded into morse. 
-          </p>
-          <p>
-            The <strong>Input</strong> page explains how you can enter
-      morse code with the keyboard, mouse, touch, or an external
-      key. You can fiddle with the input methods and with the input
-      parameters to see what you can do.
-          </p>
-          <p>
+            way the computer makes morse code. You can also type in
+            letters to see how they are encoded into morse.
+          </p><p>
+            The <strong>Input</strong> page explains how you can enter 
+            morse code with the keyboard, mouse, touch, or an external
+            key. You can fiddle with the input methods and with the
+            input parameters to see what you can do. 
+          </p><p>
             This page will give you patterns to mimic and score you on
-      how well you do.
+            how well you do.
           </p>
         </div>
       </core-collapse>
@@ -140,7 +137,7 @@
       this.progress.items_per_session = newv;
     },
     reps_per_itemChanged: function(oldv, newv) {
-      this.progress.reps_per_items = newv;
+      this.progress.reps_per_item = newv;
     },
 
     session: null,
@@ -169,11 +166,13 @@
       var station = this.$.station.get_station();
       if (!localStorage['morse-mimic']) {
         this.progress = study_progress(word_list_by_name('comb', station.table), station)
+        console.log('progress', 'new', this.progress);
       } else {
         this.progress = study_progress(null, station).restore('morse-mimic');
+        console.log('progress', 'old', this.progress);
       }
       this.items_per_session = this.progress.items_per_session;
-      this.reps_per_item = this.progress.reps_per_items;
+      this.reps_per_item = this.progress.reps_per_item;
       this.$.decoder.set_keystation(this.$.station);
       this.$.key.set_keystation(this.$.station);
     },

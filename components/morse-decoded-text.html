@@ -1,84 +1,84 @@
-<!-- -*- mode: html; indent-tabs-mode: nil; -*- -->
+<!-- -*- mode: web; indent-tabs-mode: nil; tab-width: 2; standard-indent: 2; -*- -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <polymer-element name="morse-decoded-text">
-    <template>
-        <style>
-        :host {
-            display: block;
-            position: relative;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-        }
-        
-        div {
-            margin: 10px;
-            position: relative; // changes how the paper-icon absolution position works
-        }
-        
-        textarea {
-            background-color: white;
-            width: 100%;
-        }
-        
-        paper-icon-button {
-            position: absolute;
-            top: 0;
-            right: 0;
-            // z-index: 1;  // does not change anything
-            background-color: transparent;
-            cursor: pointer;
-        }
-        </style>
-        <div>
-            <textarea rows="8" readonly="true" value="{{decoded_text}}"></textarea>
-            <paper-icon-button class="clear-icon" icon="clear" on-click="{{clear_decoded_text}}"></paper-icon-button>
-        </div>
-        <!-- wrapping this around the paper icon button interferes with its positioning 
-  <core-tooltip label="clear text area"></core-tooltip> -->
-    </template>
-    <script>
-    Polymer({
-        publish: {
-            decoded_text: "",
-        },
+  <template>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
 
-        // key station target
-        keystation: null,
-        set_keystation: function(station) {
-            this.keystation = station;
-        },
+    div {
+      margin: 10px;
+      position: relative; // changes how the paper-icon absolution position works
+    }
 
-        onblur: function() {
-            // console.log('decoder.onblur');
-            this.keystation.output_decoder_off_letter(this.onletter_output, this);
-            this.keystation.input_decoder_off_letter(this.onletter_input, this);
-        },
+    textarea {
+      background-color: white;
+      width: 100%;
+    }
 
-        onfocus: function() {
-            // console.log('decoder.onfocus');
-            this.keystation.output_decoder_on_letter(this.onletter_output, this);
-            this.keystation.input_decoder_on_letter(this.onletter_input, this);
-        },
-        lastout: null,
-        switchto: function(tag, ltr) {
-            if (this.lastout !== tag) {
-                this.lastout = tag;
-                if (tag) this.decoded_text += " |" + tag + "> ";
-                else this.decoded_text = '';
-            }
-            if (ltr) this.decoded_text += ltr;
-        },
-        onletter_input: function(ltr, code) {
-            this.switchto('in', ltr);
-        },
-        onletter_output: function(ltr, code) {
-            this.switchto('out', ltr);
-        },
-        clear_decoded_text: function() {
-            this.switchto(null);
-        },
-    });
-    </script>
+    paper-icon-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      // z-index: 1;  // does not change anything
+      background-color: transparent;
+      cursor: pointer;
+    }
+    </style>
+    <div>
+      <textarea rows="8" readonly="true" value="{{decoded_text}}"></textarea>
+      <paper-icon-button class="clear-icon" icon="clear" on-click="{{clear_decoded_text}}"></paper-icon-button>
+    </div>
+    <!-- wrapping this around the paper icon button interferes with its positioning
+    <core-tooltip label="clear text area"></core-tooltip> -->
+  </template>
+  <script>
+  Polymer({
+    publish: {
+      decoded_text: "",
+    },
+
+    // key station target
+    keystation: null,
+    set_keystation: function(station) {
+      this.keystation = station;
+    },
+
+    onblur: function() {
+      // console.log('decoder.onblur');
+      this.keystation.output_decoder_off_letter(this.onletter_output, this);
+      this.keystation.input_decoder_off_letter(this.onletter_input, this);
+    },
+
+    onfocus: function() {
+      // console.log('decoder.onfocus');
+      this.keystation.output_decoder_on_letter(this.onletter_output, this);
+      this.keystation.input_decoder_on_letter(this.onletter_input, this);
+    },
+    lastout: null,
+    switchto: function(tag, ltr) {
+      if (this.lastout !== tag) {
+        this.lastout = tag;
+        if (tag) this.decoded_text += " |" + tag + "> ";
+        else this.decoded_text = '';
+      }
+      if (ltr) this.decoded_text += ltr;
+    },
+    onletter_input: function(ltr, code) {
+      this.switchto('in', ltr);
+    },
+    onletter_output: function(ltr, code) {
+      this.switchto('out', ltr);
+    },
+    clear_decoded_text: function() {
+      this.switchto(null);
+    },
+  });
+  </script>
 </polymer-element>
