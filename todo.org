@@ -39,6 +39,7 @@
 * [x] using <pre> to preserve space eliminates line wrap
   and I still don't get the mobile browser text updated
 * [x] Reverted to <textarea and got things working fine.
+* [x] Autoscroll <textarea> to end when adding text.
 * [ ] use routing to select titles, pages, ...
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
@@ -54,7 +55,7 @@
   seems that there are dah's read as dit's that would require the
   estimated speed to change 
 * [ ] package as a chrome application and push to the store
-* [ ] move to card based drill
+* [ ] move to card based drill, larger issue, make a compelling game
 ** [ ] show didah
 ** [ ] show text
 ** [ ] show reply text
