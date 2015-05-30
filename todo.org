@@ -36,6 +36,9 @@
 * [x] make all three windows implement the same key/decoded text
 * [x] use animations for page reveals
 * [x] make the decoded text consistent across the app windows
+* [x] using <pre> to preserve space eliminates line wrap
+  and I still don't get the mobile browser text updated
+* [x] Reverted to <textarea and got things working fine.
 * [ ] use routing to select titles, pages, ...
 * [ ] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
@@ -44,6 +47,7 @@
 * [ ] follow guide to material design
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
 * [ ] select and implement color choices
+  much easier in 1.0
 * [ ] stop the output decoder from getting ahead of itself
 * [ ] make the input decoder track the input speed, if there is one
 * [ ] test whether the decoders are working as expected
@@ -73,6 +77,3 @@
 ** [ ] try from web deploy?
 * [ ] mobile chrome scales screen to too small
   needs a <meta viewport> found in web starter kit documents
-* [-] using <pre> to preserve space eliminates line wrap
-  and I still don't get the mobile browser text updated
-* [x] Reverted to <textarea and got things working fine.

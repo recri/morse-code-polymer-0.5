@@ -49,7 +49,7 @@
     }
     </style>
     <div>
-      <textarea rows="8" readonly="true" value="{{decoded_text}}"></textarea>
+      <textarea id="textarea" rows="8" readonly="true" value="{{decoded_text}}"></textarea>
       <paper-icon-button class="clear-icon" icon="clear" on-click="{{clear_decoded_text}}"></paper-icon-button>
     </div>
     <!-- wrapping this around the paper icon button interferes with its positioning
@@ -86,6 +86,7 @@
 	else this.decoded_text = '';
       }
       if (ltr) this.decoded_text += ltr;
+      this.$.textarea.scrollTop = 1000;
     },
     onletter_input: function(ltr, code) {
       this.switchto('in', ltr);

@@ -61,9 +61,11 @@ function study_progress(word_list, station) {
     words: {}, // the dictionary of words studied
     // number of times seen, recording percent correct,
 
+    // proportion complete of course
     progress: function() {
       return self.word_list.next_i / self.word_list.length;
     },
+
     score_word: function(word, score) {
       var w = self.words[word];
       if (!w) {
@@ -91,6 +93,7 @@ function study_progress(word_list, station) {
       localStorage.setItem(name, JSON.stringify(save));
       // console.log('progress_save('+save.word_list_name+', '+localStorage[save.word_list_name]);
     },
+
     restore: function(name) {
       var save = JSON.parse(localStorage.getItem(name));
       self.table = morse.table(save.table_name);
@@ -238,9 +241,9 @@ function study_session(progress, type) {
       var n = self.tests.length;
       for (var i = 0; i < n; i += 1) {
         var t = self.tests[i];
-        self.progress_score_word(t[0], t[1]);
+        progress.score_word(t[0], t[1]);
       }
-      self.progress_progress();
+      progress.progress();
       self.log("<br>session completed with overall score: " + (self.score / self.reps_done).toFixed(2));
     },
 
