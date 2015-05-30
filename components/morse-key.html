@@ -1,105 +1,127 @@
-<!-- -*- mode: web; indent-tabs-mode: nil; tab-width: 2; standard-indent: 2; -*- -->
+<!--
+  Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
 
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+-->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <polymer-element name="morse-key">
   <template>
-	  <style>
-	  :host {
-	    display: block;
-	    position: relative;
-	    width: 100%;
-	    height: 100%;
-	    box-sizing: border-box;
-	  }
-	  .key {
-	    margin: 10px;
-	    font-size: 35px;
-	    font-weight: bold;
-	  }
-	  </style>
-	  <div layout horizontal center-justified>
-	    <paper-button class="key" id="left" raised block
-			  on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
-			  on-mousedown="{{left_mousedown}}" on-mouseup="{{left_mouseup}}"
-			  oncontextmenu="return false"
-			  >&lt;</paper-button>
-	    <paper-button class="key" id="right" raised block
-			  on-touchstart="{{right_touchstart}}" on-touchend="{{right_touchend}}"
-			  on-mousedown="{{right_mousedown}}" on-mouseup="{{right_mouseup}}"
-			  oncontextmenu="return false"
-			  >&gt;</paper-button>
-	  </div>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .key {
+      margin: 10px;
+      font-size: 35px;
+      font-weight: bold;
+    }
+    </style>
+    <div layout horizontal center-justified>
+      <paper-button class="key" id="left" raised block
+	      on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
+	      on-mousedown="{{left_mousedown}}" on-mouseup="{{left_mouseup}}"
+	      oncontextmenu="return false"
+	      >&lt;</paper-button>
+      <paper-button class="key" id="right" raised block
+	      on-touchstart="{{right_touchstart}}" on-touchend="{{right_touchend}}"
+	      on-mousedown="{{right_mousedown}}" on-mouseup="{{right_mouseup}}"
+	      oncontextmenu="return false"
+	      >&gt;</paper-button>
+    </div>
 
   </template>
 
   <script>
   Polymer({
-	  properties : {
-	  },
-	  // key handler target
-	  keytarget : null,
-	  set_keytarget : function(target) { this.keytarget = target; },
+    properties : {
+    },
+    // key handler target
+    keytarget : null,
+    set_keytarget : function(target) { this.keytarget = target; },
 
-	  // key station target
-	  keystation : null,
-	  set_keystation : function(station) { this.keystation = station; },
+    // key station target
+    keystation : null,
+    set_keystation : function(station) { this.keystation = station; },
 
-	  // key event handlers with backed in reference to this
-	  keydownhandler : null,
-	  keyuphandler : null,
-	  keyhandlers : function() {
+    // key event handlers with backed in reference to this
+    keydownhandler : null,
+    keyuphandler : null,
+    keyhandlers : function() {
       if ( ! this.keydownhandler)
-		    this.keydownhandler = (function(self) {
+	this.keydownhandler = (function(self) {
           return function(e) { self.keydown(e); }
-		    })(this);
+	})(this);
       if ( ! this.keyuphandler)
-		    this.keyuphandler = (function(self) {
+	this.keyuphandler = (function(self) {
           return function(e) { self.keyup(e); }
-		    })(this);
-	  },
-	  ready : function() {
-	    this.keyhandlers();
-	  },
+	})(this);
+    },
+    ready : function() {
+      this.keyhandlers();
+    },
 
-	  onblur : function() {
-	    // console.log('key.onblur');
-	    if (this.keytarget) {
-		    this.keytarget.removeEventListener('keydown', this.keydownhandler);
-		    this.keytarget.removeEventListener('keyup', this.keyuphandler);
-	    } else {
-		    console.log('no keytarget on blur');
-	    }
-	    this.keystation.input_blur();
-	  },
+    onblur : function() {
+      // console.log('key.onblur');
+      if (this.keytarget) {
+	this.keytarget.removeEventListener('keydown', this.keydownhandler);
+	this.keytarget.removeEventListener('keyup', this.keyuphandler);
+      } else {
+	console.log('no keytarget on blur');
+      }
+      this.keystation.input_blur();
+    },
 
-	  onfocus : function() {
+    onfocus : function() {
       // console.log('key.onfocus');
-	    if (this.keytarget) {
-		    this.keytarget.addEventListener('keydown', this.keydownhandler);
-		    this.keytarget.addEventListener('keyup', this.keyuphandler);
-		    this.keytarget.focus();
-	    } else {
-		    console.log('no keytarget on focus');
-	    }
-	    this.keystation.input_focus();
+      if (this.keytarget) {
+	this.keytarget.addEventListener('keydown', this.keydownhandler);
+	this.keytarget.addEventListener('keyup', this.keyuphandler);
+	this.keytarget.focus();
+      } else {
+	console.log('no keytarget on focus');
+      }
+      this.keystation.input_focus();
 
-	  },
+    },
 
-	  keydown : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keydown((e.keyCode&1)^1); },
-	  keyup : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keyup((e.keyCode&1)^1); },
+    keydown : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keydown((e.keyCode&1)^1); },
+    keyup : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keyup((e.keyCode&1)^1); },
 
-	  left_touchstart : function(e) { this.keystation.input_keydown(1); },
-	  left_touchend : function(e) { this.keystation.input_keyup(1); },
-	  right_touchstart : function(e) { this.keystation.input_keydown(0); },
-	  right_touchend : function(e) { this.keystation.input_keyup(0);  },
+    left_touchstart : function(e) { this.keystation.input_keydown(1); },
+    left_touchend : function(e) { this.keystation.input_keyup(1); },
+    right_touchstart : function(e) { this.keystation.input_keydown(0); },
+    right_touchend : function(e) { this.keystation.input_keyup(0);  },
 
-	  left_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
-	  left_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
-	  right_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
-	  right_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
+    left_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
+    left_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
+    right_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
+    right_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
   });
   </script>
 
 </polymer-element>
+<!-- Local Variables: -->
+<!-- mode: web -->
+<!-- indent-tabs-mode: t -->
+<!-- web-mode-markup-indent-offset: 2 -->
+<!-- web-mode-css-indent-offset: 2 -->
+<!-- web-mode-code-indent-offset: 2 -->
+<!-- End: -->

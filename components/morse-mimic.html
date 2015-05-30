@@ -1,4 +1,20 @@
-<!-- -*- mode: web; indent-tabs-mode: nil; tab-width: 2; standard-indent: 2; -*- -->
+<!--
+  Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+-->
 <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
 <link rel="import" href="../bower_components/core-icon/core-icon.html">
 <link rel="import" href="../bower_components/core-icons/core-icons.html">
@@ -102,7 +118,7 @@
       <core-collapse id="info" hero-id="information2" hero>
         <div class="content">
           <p>
-            The plan is to listen to letters and words being made and 
+            The plan is to listen to letters and words being made and
             then learn to make the same sounds yourself. As your
             muscles learn how to make the sounds, your ear will get
             better at hearing them, and your mind will get better at
@@ -112,10 +128,10 @@
             way the computer makes morse code. You can also type in
             letters to see how they are encoded into morse.
           </p><p>
-            The <strong>Input</strong> page explains how you can enter 
+            The <strong>Input</strong> page explains how you can enter
             morse code with the keyboard, mouse, touch, or an external
             key. You can fiddle with the input methods and with the
-            input parameters to see what you can do. 
+            input parameters to see what you can do.
           </p><p>
             This page will give you patterns to mimic and score you on
             how well you do.
@@ -166,7 +182,7 @@
       var station = this.$.station.get_station();
       if (!localStorage['morse-mimic']) {
         this.progress = study_progress(word_list_by_name('comb', station.table), station)
-        console.log('progress', 'new', this.progress);
+          console.log('progress', 'new', this.progress);
       } else {
         this.progress = study_progress(null, station).restore('morse-mimic');
         console.log('progress', 'old', this.progress);
@@ -197,3 +213,10 @@
   });
   </script>
 </polymer-element>
+<!-- Local Variables: -->
+<!-- mode: web -->
+<!-- indent-tabs-mode: t -->
+<!-- web-mode-markup-indent-offset: 2 -->
+<!-- web-mode-css-indent-offset: 2 -->
+<!-- web-mode-code-indent-offset: 2 -->
+<!-- End: -->
