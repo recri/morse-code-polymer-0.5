@@ -1,46 +1,36 @@
 <!--
-  Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
+Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-  GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 -->
 <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
-<link rel="import" href="../bower_components/core-menu/core-menu.html">
-<link rel="import" href="../bower_components/core-icons/core-icons.html">
-<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="morse-station.html">
 <link rel="import" href="morse-decoded-text.html">
 <link rel="import" href="morse-key.html">
+<link rel="import" href="morse-text-input.html">
+<link rel="import" href="morse-slider.html">
+<link rel="import" href="morse-collapse-heading.html">
 
 <polymer-element name="morse-output">
   <template>
     <style>
     :host {
-      display: block;
-      position: absolute;
       width: 100%;
       height: 100%;
       box-sizing: border-box;
+      display: block;
     }
     section {
       margin: 20px;
@@ -62,9 +52,6 @@
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
     }
-    .heading core-icon {
-      margin: 0px 10px;
-    }
     </style>
     <section layout vertical block>
       <morse-station id="station"
@@ -72,194 +59,89 @@
 	      output_rise_ms="{{output_rise_ms}}" output_fall_ms="{{output_fall_ms}}" output_dah="{{output_dah}}"
 	      output_ies="{{output_ies}}" output_ils="{{output_ils}}" output_iws="{{output_iws}}"
 	      output_midi="{{output_midi}}"></morse-station>
-
-      <div layout horizontal block top hero-id="decoder" hero>
-	<morse-decoded-text id="decoder" decoded_text="{{decoded_text}}"></morse-decoded-text>
-      </div>
-
-      <div layout horizontal hero-id="key" hero>
-	<morse-key id="key"></morse-key>
-      </div>
-
-      <!-- text input -->
-      <div layout horizontal block center>
-	<paper-input flex id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
-	<div layout horizontal block center>
-	  <core-tooltip label="clear input text">
-	    <paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
-	  </core-tooltip>
-	  <core-tooltip label="send input text">
-	    <paper-icon-button icon="send" on-click="{{send_input}}"></paper-icon-button>
-	  </core-tooltip>
-	  <core-tooltip label="cancel output">
-	    <paper-icon-button icon="cancel" on-click="{{output_cancel}}"></paper-icon-button>
-	  </core-tooltip>
-	</div>
-      </div>
+      <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}" hero-id="decoder" hero></morse-decoded-text>
+      <morse-key id="key" hero-id="key" hero></morse-key>
+      <morse-text-input id="input" layout horizontal block center></morse-text-input>
 
       <!-- output settings -->
-      <div class="heading" layout horizontal block center on-click="{{ings_toggle}}" hero-id="settings" hero>
-        <core-icon icon="settings"></core-icon>
-        Settings
-        <span layout flex></span>
-        <paper-icon-button icon="expand-more"></paper-icon-button>
-      </div>
-
+      <morse-collapse-heading class="heading" on-click="{{settings_toggle}}" hero-id="settings" hero icon="settings">Settings</morse-collapse-heading>
       <core-collapse id="settings" hero-id="settings2" hero>
-        <div class="content" layout vertical block>
+        <morse-slider value="{{output_pitch}}" min="220" max="1760" label="sidetone frequency" prefix="Pitch" suffix="Hz" ></morse-slider>
+        <morse-slider value="{{output_gain_dB}}" min="-60" max="0" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
+	<morse-slider value="{{output_wpm}}" min="5" max="50" step="2.5" label="keying speed" prefix="Speed" suffix="wpm"></morse-slider>
 
-          <!-- output pitch -->
-          <div layout horizontal block center>
-            <paper-slider value="{{output_pitch}}" min="220" max="1760" pin="true" snap="true"></paper-slider>
-            <core-tooltip label="sidetone frequency">Pitch <span>{{output_pitch}}</span> Hz</core-tooltip>
-          </div>
+	<!-- more output settings -->
+	<morse-collapse-heading class="heading" on-click="{{more_settings_toggle}}" icon="settings">More Settings</morse-collapse-heading>
+        <core-collapse id="more_settings">
+          <morse-slider value="{{output_rise_ms}}" min="1" max="10" label="envelope rise time" prefix="Rise" suffix="ms"></morse-slider>
+          <morse-slider value="{{output_fall_ms}}" min="1" max="10" label="envelope fall time" prefix="Fall" suffix="ms"></morse-slider>
+	  <morse-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" label="Dash length" prefix="Dah" suffix="dits"></morse-slider>
+          <morse-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" label="Inter-element spacing." prefix="IES" suffix="dits"></morse-slider>
+          <morse-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" label="Inter-letter spacing." prefix="ILS" suffix="dits"></morse-slider>
+          <morse-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" label="Inter-word spacing." prefix="IWS" suffix="dits"></morse-slider>
+        </core-collapse>
 
-          <!-- output level -->
-          <div layout horizontal block center>
-            <paper-slider value="{{output_gain_dB}}" min="-60" max="0" pin="true" snap="true"></paper-slider>
-            <core-tooltip label="sidetone level">Level <span>{{output_gain_dB}}</span> dB</core-tooltip>
-          </div>
-
-          <!-- output words per minute -->
-          <div layout horizontal block center>
-            <paper-slider value="{{output_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true"></paper-slider>
-            <core-tooltip label="keying speed">Speed <span>{{output_wpm}}</span> wpm</core-tooltip>
-          </div>
-
-          <!-- more output settings -->
-          <div class="heading" layout horizontal block center on-click="{{more_settings_toggle}}">
-            <core-icon icon="settings"></core-icon>
-            More Settings
-            <span layout flex></span>
-            <paper-icon-button icon="expand-more"></paper-icon-button>
-          </div>
-
-          <core-collapse id="more_settings">
-            <div class="content" layout vertical block>
-
-              <!-- output rise time -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_rise_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="envelope rise time">Rise <span>{{output_rise_ms}}</span> ms</core-tooltip>
-              </div>
-
-              <!-- output fall time -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_fall_ms}}" min="1" max="10" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="envelope fall time">Fall <span>{{output_fall_ms}}</span> ms</core-tooltip>
-              </div>
-
-              <!-- output dah length -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="Dash length.">Dah <span>{{output_dah}}</span> dits</core-tooltip>
-              </div>
-
-              <!-- output inter-element space length -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="Inter-element spacing.">IES <span>{{output_ies}}</span> dits</core-tooltip>
-              </div>
-
-              <!-- output inter-letter space length -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="Inter-letter spacing.">ILS <span>{{output_ils}}</span> dits</core-tooltip>
-              </div>
-
-              <!-- output inter-word space length -->
-              <div layout horizontal block center>
-                <paper-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" pin="true" snap="true"></paper-slider>
-                <core-tooltip label="Inter-word spacing.">IWS <span>{{output_iws}}</span> dits</core-tooltip>
-              </div>
-
-              <!-- output midi device -->
-              <div layout horizontal block center>
-                <paper-dropdown-menu label="MIDI Device">
-                  <paper-dropdown class="dropdown">
-                    <core-menu class="menu" valueattr="label" selected="{{output_midi}}">
-                      <paper-item label="none">None</paper-item>
-                    </core-menu>
-                  </paper-dropdown>
-                </paper-dropdown-menu>MIDI Device<core-tooltip label="Reload the MIDI device list.">
-                  <paper-icon-button icon="refresh" on-click="{{output_midi_refresh}}"></paper-icon-button>
-                </core-tooltip>
-              </div>
-            </div>
-          </core-collapse>
-
-        </div>
       </core-collapse>
 
       <!-- output information -->
-      <div class="heading" layout horizontal block center on-click="{{info_toggle}}" hero-id="information" hero>
-        <core-icon icon="info-outline"></core-icon>
-        Info
-        <span layout flex></span>
-        <paper-icon-button icon="expand-more"></paper-icon-button>
-      </div>
-
+      <morse-collapse-heading class="heading" on-click="{{info_toggle}}" hero-id="information" hero icon="info-outline">Info</morse-collapse-heading>
       <core-collapse id="info" hero-id="information2" hero>
-        <div class="content" layout vertical block>
-          <p>
-            The original morse code output device was an electromagnet
-            that moved a stylus to make a mark on a paper strip, the
-            whole assembly was called a register.  The electromagnet
-            made a click when the key was closed and a different click
-            when the key was opened and telegraph operators learned to
-            recognize the length of time between the two clicks.
-          </p><p>
-            When telegraphy evolved into radio-telegraphy what was
-            heard in the receiver was the presence or absence of the
-            transmitter's carrier.  By tuning several hundred Hertz
-            away from the carrier frequency, the receiver would
-            produce a whistle at the frequency offset.
-          </p><p>
-	    The <b>pitch</b> setting refers to the frequency of the
-            tone measured in Hertz.  You'll want this to be something
-            comfortable for listening and different from the pitch you
-            choose on the <b>Input</b> settings.
-	  </p><p>
-	    The <b>level</b> is the volume level of the tone produced
-            measured in decibels below the maximum.  The level is set
-            low enough for headphones in a quiet environment by
-            default.
-	  </p><p>
-	    The <b>speed</b> is given in units of words per minute
-            (WPM).  A average word is taken as 50 (or 60) dits in
-            length in the easier (or more difficult) formulation.
-            Thus 15 WPM comes to 750 dits per minute, 12.5 dits per
-            second, or about 80 milliseconds per dit.
-	  </p><p>
-            <h3>More Settings</h3>
-	  </p><p>
-            There are more settings but you probably don't need to
-            worry about them, they are provided for completeness,
-            but most users will have no interest in them.
-          </p><p>
-	    The <b>rise</b> and <b>fall</b> define the steepness of the
-	    keying envelope in milliseconds.  A steeper keying
-            envelope slope leads to clicks, a shallower envelope leads
-            to difficulty hearing where the elements start and end.
-          </p><p>
-            The <b>dah</b>, <b>ies</b>, <b>ils</b>, and <b>iws</b>
-            settings allow the ratios of elements and spaces to be
-            tweaked away from the standard 1:3:7 pattern.
- 	  </p><p>
-            The <b>MIDI Device</b> selector will allow you to select a
-            MIDI device for keying events.  Oh, that won't work, I'd
-            need a MIDI output device for input key events, too.
-	  </p><p>
-            <h3>Caveats</h3>
-	  </p><p>
-	    The plan for this page was that the <b>Output Text
-            Decoded</b> would display text as it was sounded.  But it
-            doesn't presently work that way.
-	  </p>
-          There are several ways to key.
-</p><p>
-</p>
-        </div>
+        <p>
+          The original morse code output device was an electromagnet
+          that moved a stylus to make a mark on a paper strip, the
+          whole assembly was called a register.  The electromagnet
+          made a click when the key was closed and a different click
+          when the key was opened and telegraph operators learned to
+          recognize the length of time between the two clicks.
+        </p><p>
+          When telegraphy evolved into radio-telegraphy what was
+          heard in the receiver was the presence or absence of the
+          transmitter's carrier.  By tuning several hundred Hertz
+          away from the carrier frequency, the receiver would
+          produce a whistle at the frequency offset.
+        </p><p>
+	  The <b>pitch</b> setting refers to the frequency of the
+          tone measured in Hertz.  You'll want this to be something
+          comfortable for listening and different from the pitch you
+          choose on the <b>Input</b> settings.
+	</p><p>
+	  The <b>level</b> is the volume level of the tone produced
+          measured in decibels below the maximum.  The level is set
+          low enough for headphones in a quiet environment by
+          default.
+	</p><p>
+	  The <b>speed</b> is given in units of words per minute
+          (WPM).  A average word is taken as 50 (or 60) dits in
+          length in the easier (or more difficult) formulation.
+          Thus 15 WPM comes to 750 dits per minute, 12.5 dits per
+          second, or about 80 milliseconds per dit.
+	</p><p>
+          <h3>More Settings</h3>
+	</p><p>
+          There are more settings but you probably don't need to
+          worry about them, they are provided for completeness,
+          but most users will have no interest in them.
+        </p><p>
+	  The <b>rise</b> and <b>fall</b> define the steepness of the
+	  keying envelope in milliseconds.  A steeper keying
+          envelope slope leads to clicks, a shallower envelope leads
+          to difficulty hearing where the elements start and end.
+        </p><p>
+          The <b>dah</b>, <b>ies</b>, <b>ils</b>, and <b>iws</b>
+          settings allow the ratios of elements and spaces to be
+          tweaked away from the standard 1:3:7 pattern.
+ 	</p><p>
+          The <b>MIDI Device</b> selector will allow you to select a
+          MIDI device for keying events.  Oh, that won't work, I'd
+          need a MIDI output device for input key events, too.
+	</p><p>
+          <h3>Caveats</h3>
+	</p><p>
+	  The plan for this page was that the <b>Output Text
+          Decoded</b> would display text as it was sounded.  But it
+          doesn't presently work that way.
+	</p><p>
+	</p>
       </core-collapse>
 
     </section>
@@ -283,6 +165,8 @@
     ready : function() {
       this.$.decoder.set_keystation(this.$.station);
       this.$.key.set_keystation(this.$.station);
+      this.$.input.set_station(this.$.station);
+      this.$.input.set_key(this.$.key);
     },
 
     output_midi_refresh : function() { this.$.station.output_midi_refresh(); },
@@ -291,33 +175,6 @@
     settings_toggle : function() { this.$.settings.toggle(); },
     more_settings_toggle : function() { this.$.more_settings.toggle(); },
     info_toggle : function() { this.$.info.toggle(); },
-
-    output_send : function(text) { this.$.station.output_send(text); },
-    output_cancel : function() { this.$.station.output_cancel(); },
-
-    onkeydown : function(event, detail, sender) {
-      switch (event.keyCode) {
-	case 13: {
-	  this.output_send(this.$.input.value);
-	  this.$.input.value = "";
-	  return false;
-	}
-	case 17: case 18: {
-	  this.$.key.keydown(event);
-	  return false;
-	}
-	default: {
-	  // console.log("keycode:", event.keyCode);
-	  return true;
-	}
-      }
-    },
-
-    clear_input : function(event, detail, sender) { this.$.input.value = ""; },
-    send_input : function(event, detail, sender) {
-      this.output_send(this.$.input.value);
-      this.$.input.value = "";
-    },
 
     set_keytarget : function(target) { this.$.key.set_keytarget(target); },
 
@@ -336,8 +193,6 @@
   });
   </script>
 </polymer-element>
-  </body>
-</html>
 <!-- Local Variables: -->
 <!-- mode: web -->
 <!-- indent-tabs-mode: t -->

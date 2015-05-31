@@ -16,40 +16,32 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
-<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="morse-slider" attributes="snap pin min max step value label prefix suffix" layout block horizontal center>
+<polymer-element name="morse-collapse-heading" attributes="icon on-click" horizontal layout block center >
   <template>
     <style>    
     :host {
       width: 100%;
       height: 100%;
       box-sizing: border-box;
-      display: block
+      display: block;
     }
     </style>
 
-    <paper-slider id="slider" pin="{{pin}}" snap="{{snap}}" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}"></paper-slider>
-    <core-tooltip label="{{label}}"><span>{{prefix}}</span> <span>{{value}}</span> <span>{{suffix}}</span></core-tooltip>
+    <core-icon icon="{{icon}}"></core-icon><content></content><span flex></span><paper-icon-button icon="expand-more"></paper-icon-button>
 
   </template>
   <script>
   Polymer({
-    publish : {
-      snap : true,
-      pin : true,
-      min : 0,
-      max : 100,
-      step : 1,
-      value : 50,
-      label : "",
-      prefix : "",
-      suffix : "",
-    },
+    publish: { icon: "blank", },
   });
   </script>
+
 </polymer-element>
+
 <!-- Local Variables: -->
 <!-- mode: web -->
 <!-- indent-tabs-mode: t -->
@@ -57,4 +49,3 @@
 <!-- web-mode-css-indent-offset: 2 -->
 <!-- web-mode-code-indent-offset: 2 -->
 <!-- End: -->
-

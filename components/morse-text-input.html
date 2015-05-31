@@ -1,0 +1,90 @@
+<!--
+  Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<polymer-element name="morse-text-input" layout horizontal block center>
+  <template>
+    <style>    
+    :host {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: block
+    }
+    </style>
+
+    <paper-input flex id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
+    <core-tooltip label="clear input text">
+      <paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
+    </core-tooltip>
+    <core-tooltip label="send input text">
+      <paper-icon-button icon="send" on-click="{{send_input}}"></paper-icon-button>
+    </core-tooltip>
+    <core-tooltip label="cancel output">
+      <paper-icon-button icon="cancel" on-click="{{cancel_output}}"></paper-icon-button>
+    </core-tooltip>
+
+  </template>
+  <script>
+  Polymer({
+    key : null,
+    set_key : function(key) { this.key = key; },
+    station : null,
+    set_station : function(station) { this.station = station; },
+    onkeydown : function(event, detail, sender) {
+      switch (event.keyCode) {
+	case 13: {
+	  this.output_send(this.$.input.value);
+	  this.$.input.value = "";
+	  return false;
+	}
+	case 17: case 18: {
+	  this.key.keydown(event);
+	  return false;
+	}
+	default: {
+	  // console.log("keycode:", event.keyCode);
+	  return true;
+	}
+      }
+    },
+
+    clear_input : function(event, detail, sender) { this.$.input.value = ""; },
+
+    send_input : function(event, detail, sender) {
+      this.output_send(this.$.input.value);
+      this.$.input.value = "";
+    },
+
+    output_send : function(text) { this.station.output_send(text); },
+    output_cancel : function() { this.station.output_cancel(); },
+
+  });
+  </script>
+</polymer-element>
+<!-- Local Variables: -->
+<!-- mode: web -->
+<!-- indent-tabs-mode: t -->
+<!-- web-mode-markup-indent-offset: 2 -->
+<!-- web-mode-css-indent-offset: 2 -->
+<!-- web-mode-code-indent-offset: 2 -->
+<!-- End: -->
+
