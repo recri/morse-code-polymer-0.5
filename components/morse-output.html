@@ -163,9 +163,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     },
 
     ready : function() {
-      this.$.decoder.set_keystation(this.$.station);
-      this.$.key.set_keystation(this.$.station);
-      this.$.input.set_station(this.$.station);
       this.$.input.set_key(this.$.key);
     },
 
@@ -175,8 +172,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     settings_toggle : function() { this.$.settings.toggle(); },
     more_settings_toggle : function() { this.$.more_settings.toggle(); },
     info_toggle : function() { this.$.info.toggle(); },
-
-    set_keytarget : function(target) { this.$.key.set_keytarget(target); },
 
     onblur : function() {
       // console.log('output.onblur');

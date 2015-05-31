@@ -161,12 +161,6 @@
       }
       this.items_per_session = this.progress.items_per_session;
       this.reps_per_item = this.progress.reps_per_item;
-      this.$.decoder.set_keystation(this.$.station);
-      this.$.key.set_keystation(this.$.station);
-    },
-
-    set_keytarget: function(target) {
-      this.$.key.set_keytarget(target);
     },
 
     onblur: function() {

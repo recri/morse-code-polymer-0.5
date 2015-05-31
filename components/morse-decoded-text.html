@@ -17,6 +17,7 @@
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="morse-station.html">
 
 <polymer-element name="morse-decoded-text">
   <template>
@@ -49,6 +50,7 @@
     }
     </style>
     <div>
+      <morse-station id="station"></morse-station>
       <textarea id="textarea" rows="8" readonly="true" value="{{decoded_text}}"></textarea>
       <paper-icon-button class="clear-icon" icon="clear" on-click="{{clear_decoded_text}}"></paper-icon-button>
     </div>
@@ -61,22 +63,16 @@
       decoded_text: "",
     },
 
-    // key station target
-    keystation: null,
-    set_keystation: function(station) {
-      this.keystation = station;
-    },
-
     onblur: function() {
       // console.log('decoder.onblur');
-      this.keystation.output_decoder_off_letter(this.onletter_output, this);
-      this.keystation.input_decoder_off_letter(this.onletter_input, this);
+      this.$.station.output_decoder_off_letter(this.onletter_output, this);
+      this.$.station.input_decoder_off_letter(this.onletter_input, this);
     },
 
     onfocus: function() {
       // console.log('decoder.onfocus');
-      this.keystation.output_decoder_on_letter(this.onletter_output, this);
-      this.keystation.input_decoder_on_letter(this.onletter_input, this);
+      this.$.station.output_decoder_on_letter(this.onletter_output, this);
+      this.$.station.input_decoder_on_letter(this.onletter_input, this);
     },
     lastout: null,
     switchto: function(tag, ltr) {

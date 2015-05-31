@@ -33,6 +33,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 
     <!-- the application sources -->
+    <link rel="import" href="components/morse-station.html">
     <link rel="import" href="components/morse-app.html">
     <link rel="import" href="components/morse-output.html">
     <link rel="import" href="components/morse-input.html">
@@ -52,6 +53,7 @@
     </style>
   </head>
   <body unresolved fullbleed layout vertical>
+    <morse-station id="station" ></morse-station>
     <template id="template" is="auto-binding">
       <morse-app selected="Mimic" decoded_text="{{decoded_text}}">
 

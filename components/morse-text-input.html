@@ -19,6 +19,7 @@
 <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="morse-station.html">
 
 <polymer-element name="morse-text-input" layout horizontal block center>
   <template>
@@ -30,7 +31,7 @@
       display: block
     }
     </style>
-
+    <morse-station id="station" ></morse-station>
     <paper-input flex id="input" label="Text to send:" on-keydown="{{onkeydown}}"></paper-input>
     <core-tooltip label="clear input text">
       <paper-icon-button icon="clear" on-click="{{clear_input}}"></paper-icon-button>
@@ -47,8 +48,7 @@
   Polymer({
     key : null,
     set_key : function(key) { this.key = key; },
-    station : null,
-    set_station : function(station) { this.station = station; },
+
     onkeydown : function(event, detail, sender) {
       switch (event.keyCode) {
 	case 13: {
@@ -74,8 +74,8 @@
       this.$.input.value = "";
     },
 
-    output_send : function(text) { this.station.output_send(text); },
-    output_cancel : function() { this.station.output_cancel(); },
+    output_send : function(text) { this.$.station.output_send(text); },
+    output_cancel : function() { this.$.station.output_cancel(); },
 
   });
   </script>

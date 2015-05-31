@@ -17,6 +17,7 @@
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="morse-station.html">
 
 <polymer-element name="morse-key">
   <template>
@@ -32,8 +33,11 @@
       margin: 10px;
       font-size: 35px;
       font-weight: bold;
+      -ms-touch-action: none;
+      touch-action: none;   
     }
     </style>
+    <morse-station id="station"></morse-station>
     <div layout horizontal center-justified>
       <paper-button class="key" id="left" raised block
 	      on-touchstart="{{left_touchstart}}" on-touchend="{{left_touchend}}"
@@ -53,13 +57,6 @@
   Polymer({
     properties : {
     },
-    // key handler target
-    keytarget : null,
-    set_keytarget : function(target) { this.keytarget = target; },
-
-    // key station target
-    keystation : null,
-    set_keystation : function(station) { this.keystation = station; },
 
     // key event handlers with backed in reference to this
     keydownhandler : null,
@@ -76,44 +73,63 @@
     },
     ready : function() {
       this.keyhandlers();
+      // if we're running on touch platform, ignore mouse?
     },
 
     onblur : function() {
       // console.log('key.onblur');
-      if (this.keytarget) {
-	this.keytarget.removeEventListener('keydown', this.keydownhandler);
-	this.keytarget.removeEventListener('keyup', this.keyuphandler);
+      var keytarget = this.$.station.get_keytarget();
+      if (keytarget) {
+	keytarget.removeEventListener('keydown', this.keydownhandler);
+	keytarget.removeEventListener('keyup', this.keyuphandler);
       } else {
 	console.log('no keytarget on blur');
       }
-      this.keystation.input_blur();
+      this.$.station.input_blur();
     },
 
     onfocus : function() {
       // console.log('key.onfocus');
-      if (this.keytarget) {
-	this.keytarget.addEventListener('keydown', this.keydownhandler);
-	this.keytarget.addEventListener('keyup', this.keyuphandler);
-	this.keytarget.focus();
+      var keytarget = this.$.station.get_keytarget();
+      if (keytarget) {
+	keytarget.addEventListener('keydown', this.keydownhandler);
+	keytarget.addEventListener('keyup', this.keyuphandler);
+	// keytarget.focus();
       } else {
 	console.log('no keytarget on focus');
       }
-      this.keystation.input_focus();
+      this.$.station.input_focus();
 
     },
 
-    keydown : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keydown((e.keyCode&1)^1); },
-    keyup : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.keystation.input_keyup((e.keyCode&1)^1); },
+    keydown : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.$.station.input_keydown((e.keyCode&1)^1); },
+    keyup : function(e) { if (e.keyCode == 17 || e.keyCode === 18) this.$.station.input_keyup((e.keyCode&1)^1); },
 
-    left_touchstart : function(e) { this.keystation.input_keydown(1); },
-    left_touchend : function(e) { this.keystation.input_keyup(1); },
-    right_touchstart : function(e) { this.keystation.input_keydown(0); },
-    right_touchend : function(e) { this.keystation.input_keyup(0);  },
+    using_touch : false,
 
-    left_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 1); },
-    left_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 1); },
-    right_mousedown : function(e) { this.keystation.input_keydown((e.button==0 ? 0 : 1) ^ 0); },
-    right_mouseup : function(e) {  this.keystation.input_keyup((e.button==0 ? 0 : 1) ^ 0); },
+    left_touchstart : function(e) { 
+      this.using_touch = true;
+      this.$.station.input_keydown(1);
+    },
+    left_touchend : function(e) { this.$.station.input_keyup(1); },
+    right_touchstart : function(e) { 
+      this.using_touch = true;
+      this.$.station.input_keydown(0);
+    },
+    right_touchend : function(e) { this.$.station.input_keyup(0);  },
+
+    left_mousedown : function(e) { 
+      if ( ! this.using_touch) this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 1);
+    },
+    left_mouseup : function(e) { 
+      if ( ! this.using_touch) this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 1);
+    },
+    right_mousedown : function(e) {
+      if ( ! this.using_touch) this.$.station.input_keydown((e.button==0 ? 0 : 1) ^ 0);
+    },
+    right_mouseup : function(e) {  
+      if ( ! this.using_touch) this.$.station.input_keyup((e.button==0 ? 0 : 1) ^ 0);
+    },
   });
   </script>
 

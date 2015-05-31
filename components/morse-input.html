@@ -184,8 +184,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
     ready: function() {
       // console.log('ready in morse-input', this.$.key, this.$.station);
-      this.$.decoder.set_keystation(this.$.station);
-      this.$.key.set_keystation(this.$.station);
     },
 
     settings_toggle: function() {
@@ -210,10 +208,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     },
     input_midi_names: function() {
       return this.$.station.input_midi_names();
-    },
-
-    set_keytarget: function(target) {
-      this.$.key.set_keytarget(target);
     },
 
     onblur: function() {
