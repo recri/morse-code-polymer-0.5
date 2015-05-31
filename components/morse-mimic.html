@@ -16,19 +16,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 -->
 <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
-<link rel="import" href="../bower_components/core-icon/core-icon.html">
-<link rel="import" href="../bower_components/core-icons/core-icons.html">
-<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="morse-station.html">
 <link rel="import" href="morse-decoded-text.html">
 <link rel="import" href="morse-key.html">
+<link rel="import" href="morse-slider.html">
+<link rel="import" href="morse-collapse-heading.html">
 
 <polymer-element name="morse-mimic">
   <template>
@@ -66,9 +60,6 @@
       border-top: none;
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
-    }
-    .heading core-icon {
-      margin: 0px 10px;
     }
     .buttons {
 	margin: 0 0 10px 0;
@@ -163,10 +154,10 @@
       var station = this.$.station.get_station();
       if (!localStorage['morse-mimic']) {
         this.progress = study_progress(word_list_by_name('comb', station.table), station)
-          console.log('progress', 'new', this.progress);
+          // console.log('progress', 'new', this.progress);
       } else {
         this.progress = study_progress(null, station).restore('morse-mimic');
-        console.log('progress', 'old', this.progress);
+        // console.log('progress', 'old', this.progress);
       }
       this.items_per_session = this.progress.items_per_session;
       this.reps_per_item = this.progress.reps_per_item;

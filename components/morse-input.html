@@ -64,103 +64,103 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
     </style>
     <section layout vertical block>
-    <morse-station id="station" input_pitch="{{input_pitch}}" input_gain_dB="{{input_gain_dB}}" input_wpm="{{input_wpm}}"
-            input_rise_ms="{{input_rise_ms}}" input_fall_ms="{{input_fall_ms}}" input_dah="{{input_dah}}" input_ies="{{input_ies}}"
-            input_ils="{{input_ils}}" input_iws="{{input_iws}}" input_midi="{{input_midi}}" input_swapped="{{input_swapped}}"
-            input_type="{{input_type}}"></morse-station>
-    <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}" hero-id="decoder" hero></morse-decoded-text>
-    <morse-key id="key" hero-id="key" hero></morse-key>
+      <morse-station id="station" input_pitch="{{input_pitch}}" input_gain_dB="{{input_gain_dB}}" input_wpm="{{input_wpm}}"
+              input_rise_ms="{{input_rise_ms}}" input_fall_ms="{{input_fall_ms}}" input_dah="{{input_dah}}" input_ies="{{input_ies}}"
+              input_ils="{{input_ils}}" input_iws="{{input_iws}}" input_midi="{{input_midi}}" input_swapped="{{input_swapped}}"
+              input_type="{{input_type}}"></morse-station>
+      <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}" hero-id="decoder" hero></morse-decoded-text>
+      <morse-key id="key" hero-id="key" hero></morse-key>
 
-    <!-- input settings -->
-    <morse-collapse-heading class="heading" icon="settings" on-click="{{settings_toggle}}" hero-id="settings" hero>Settings</morse-collapse-heading>
-    <core-collapse id="settings" hero-id="settings2" hero>
-      <div class="content" layout vertical block>
-
-        <div layout horizontal block center>
-          <paper-dropdown-menu>
-            <paper-dropdown class="dropdown">
-              <core-menu class="menu" valueattr="label" selected="{{input_type}}">
-                <paper-item label="straight">Straight Key</paper-item>
-                <paper-item label="iambic">Iambic Paddle</paper-item>
-              </core-menu>
-            </paper-dropdown>
-          </paper-dropdown-menu>Key Type
-        </div>
-
-        <div layout horizontal block center>
-          <paper-toggle-button iambic label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button> Swap Paddles
-        </div>
-
-	<morse-slider value="{{input_pitch}}" min="220" max="1760" pin="true" snap="true" label="sidetone frequency" prefix="Pitch" suffix="Hz"></morse-slider>
-	<morse-slider value="{{input_gain_dB}}" min="-60" max="0" pin="true" snap="true" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
-        <morse-slider iambic value="{{input_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
-        <!-- more input settings -->
-	<morse-collapse-heading class="heading" on-click="{{more_settings_toggle}}" icon="settings">More Settings</morse-collapse-heading>
-        <core-collapse id="more_settings" layout vertical block>
-          <morse-slider value="{{input_rise_ms}}" min="1" max="10" label="envelope rise time" prefix="Rise" suffix="ms"></morse-slider>
-          <morse-slider value="{{input_fall_ms}}" min="1" max="10" label="envelope fall time" prefix="Fall" suffix="ms"></morse-slider>
-	  <morse-slider iambic value="{{input_dah}}" min="2.5" max="3.5" step="0.1" label="dash length" prefix="Dah" suffix="dits"></morse-slider>
-          <morse-slider iambic value="{{input_ies}}" min="0.75" max="1.25" step="0.05" label="inter-element space" prefix="IES" suffix="dits"></morse-slider>
-          <morse-slider iambic value="{{input_ils}}" min="2.5" max="3.5" step="0.1" label="inter-letter space length" prefix="ILS" suffix="dits"></morse-slider>
-          <morse-slider iambic value="{{input_iws}}" min="6.5" max="7.5" step="0.1" label="inter-word space length" prefix="IWS" suffix="dits"></morse-slider>
+      <!-- input settings -->
+      <morse-collapse-heading class="heading" icon="settings" on-click="{{settings_toggle}}" hero-id="settings" hero>Settings</morse-collapse-heading>
+      <core-collapse id="settings" hero-id="settings2" hero>
+	<div class="content" layout vertical block>
 
           <div layout horizontal block center>
-            <paper-dropdown-menu label="MIDI Device">
+            <paper-dropdown-menu>
               <paper-dropdown class="dropdown">
-                <core-menu class="menu" valueattr="label" selected="{{input_midi}}">
-                  <paper-item label="none">None</paper-item>
-                </core-menu>
+		<core-menu class="menu" valueattr="label" selected="{{input_type}}">
+                  <paper-item label="straight">Straight Key</paper-item>
+                  <paper-item label="iambic">Iambic Paddle</paper-item>
+		</core-menu>
               </paper-dropdown>
-            </paper-dropdown-menu>
-            <core-tooltip label="Reload the MIDI device list.">
-              <paper-icon-button id="input_midi_reload" icon="refresh"></paper-icon-button>
-            </core-tooltip>MIDI Device
+            </paper-dropdown-menu>Key Type
           </div>
 
-        </core-collapse>
-      </div>
-    </core-collapse>
+          <div layout horizontal block center>
+            <paper-toggle-button iambic label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button> Swap Paddles
+          </div>
 
-    <!-- input information -->
-    <morse-collapse-heading class="heading" on-click="{{info_toggle}}" hero-id="information" hero icon="info-outline">Info</morse-collapse-heading>
-    <core-collapse id="info" hero-id="information2" hero>
-      <div class="content" layout vertical block>
-        <p>
-          The simplest telegraph key is a hand or straight key.  It
-          is a switch which closes when the key is pressed down and
-          opens when the key is release upwards.
-        </p><p>
-          An iambic or squeeze key consists of two switches which
-          close when pressed toward each other.  Pressing one switch
-          with the thumb sends a sequence of dits, pressing the
-          other switch with the first finger sends a sequence of
-          dahs, squeezing both switches closed at once sends a
-          sequence of alternating dits and dahs.
-        </p><p>
-          The two switches of an iambic paddle are normally wired
-          backwards, so it's always convenient to have some way to
-          swap the paddles.
-        </p><p>
-          The <b>pitch</b>, <b>level</b>, and <b>speed</b> settings
-          have the same significance for <b>input</b> as they do for
-          <b>output</b>.  You should set the input pitch to be
-          different from the output pitch so you can tell them
-          apart.  The levels and speeds should probably be the same
-          for input and output.
-        </p><p>
-          <h3>More Setting</h3>
-        </p><p>
-          The additional settings for <b>input</b> are the same as
-          they are for <b>output</b> and equally esoteric.
-        </p><p>
-          <h3>Caveats</h3>
-        </p><p>
-          I think I am hearing clicks that weren't there a few
-          releases of Chrome ago, maybe I need to add an option to
-          turn the key envelope shaping on and off.
-        </p>
-      </div>
-    </core-collapse>
+	  <morse-slider value="{{input_pitch}}" min="220" max="1760" pin="true" snap="true" label="sidetone frequency" prefix="Pitch" suffix="Hz"></morse-slider>
+	  <morse-slider value="{{input_gain_dB}}" min="-60" max="0" pin="true" snap="true" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
+          <morse-slider iambic value="{{input_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
+          <!-- more input settings -->
+	  <morse-collapse-heading class="heading" on-click="{{more_settings_toggle}}" icon="settings">More Settings</morse-collapse-heading>
+          <core-collapse id="more_settings" layout vertical block>
+            <morse-slider value="{{input_rise_ms}}" min="1" max="10" label="envelope rise time" prefix="Rise" suffix="ms"></morse-slider>
+            <morse-slider value="{{input_fall_ms}}" min="1" max="10" label="envelope fall time" prefix="Fall" suffix="ms"></morse-slider>
+	    <morse-slider iambic value="{{input_dah}}" min="2.5" max="3.5" step="0.1" label="dash length" prefix="Dah" suffix="dits"></morse-slider>
+            <morse-slider iambic value="{{input_ies}}" min="0.75" max="1.25" step="0.05" label="inter-element space" prefix="IES" suffix="dits"></morse-slider>
+            <morse-slider iambic value="{{input_ils}}" min="2.5" max="3.5" step="0.1" label="inter-letter space length" prefix="ILS" suffix="dits"></morse-slider>
+            <morse-slider iambic value="{{input_iws}}" min="6.5" max="7.5" step="0.1" label="inter-word space length" prefix="IWS" suffix="dits"></morse-slider>
+
+            <div layout horizontal block center>
+              <paper-dropdown-menu label="MIDI Device">
+		<paper-dropdown class="dropdown">
+                  <core-menu class="menu" valueattr="label" selected="{{input_midi}}">
+                    <paper-item label="none">None</paper-item>
+                  </core-menu>
+		</paper-dropdown>
+              </paper-dropdown-menu>
+              <core-tooltip label="Reload the MIDI device list.">
+		<paper-icon-button id="input_midi_reload" icon="refresh"></paper-icon-button>
+              </core-tooltip>MIDI Device
+            </div>
+
+          </core-collapse>
+	</div>
+      </core-collapse>
+
+      <!-- input information -->
+      <morse-collapse-heading class="heading" on-click="{{info_toggle}}" hero-id="information" hero icon="info-outline">Info</morse-collapse-heading>
+      <core-collapse id="info" hero-id="information2" hero>
+	<div class="content" layout vertical block>
+          <p>
+            The simplest telegraph key is a hand or straight key.  It
+            is a switch which closes when the key is pressed down and
+            opens when the key is release upwards.
+          </p><p>
+            An iambic or squeeze key consists of two switches which
+            close when pressed toward each other.  Pressing one switch
+            with the thumb sends a sequence of dits, pressing the
+            other switch with the first finger sends a sequence of
+            dahs, squeezing both switches closed at once sends a
+            sequence of alternating dits and dahs.
+          </p><p>
+            The two switches of an iambic paddle are normally wired
+            backwards, so it's always convenient to have some way to
+            swap the paddles.
+          </p><p>
+            The <b>pitch</b>, <b>level</b>, and <b>speed</b> settings
+            have the same significance for <b>input</b> as they do for
+            <b>output</b>.  You should set the input pitch to be
+            different from the output pitch so you can tell them
+            apart.  The levels and speeds should probably be the same
+            for input and output.
+          </p><p>
+            <h3>More Setting</h3>
+          </p><p>
+            The additional settings for <b>input</b> are the same as
+            they are for <b>output</b> and equally esoteric.
+          </p><p>
+            <h3>Caveats</h3>
+          </p><p>
+            I think I am hearing clicks that weren't there a few
+            releases of Chrome ago, maybe I need to add an option to
+            turn the key envelope shaping on and off.
+          </p>
+	</div>
+      </core-collapse>
     </section>
   </template>
 

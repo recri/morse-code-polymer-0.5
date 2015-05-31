@@ -18,9 +18,21 @@
 -->
 <html>
   <head>
-    <title>Morse</title>
+    <title>Morse Mimic</title>
+    <!-- this tells chrome to let me respond to size -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- this tells chrome that we can install as an app -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- this tells chrome to use the supplied color for the toolbar -->
+    <meta name="theme-color" content="rgb(79, 125, 201)">
+    <!-- this tells chrome to fetch my app manifest  -->
+    <link rel="manifest" href="manifest.json">
+    <!-- this selects the preferred icon size -->
+    <link rel="icon" sizes="192x192" href="assets/icon_192.png">
+    <!-- the webcomponent polyfill for non-compliant browsers -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+
+    <!-- the application sources -->
     <link rel="import" href="components/morse-app.html">
     <link rel="import" href="components/morse-output.html">
     <link rel="import" href="components/morse-input.html">
@@ -36,9 +48,6 @@
       user-select: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-touch-callout: none;
-    }
-    section {
-      margin: 20px;
     }
     </style>
   </head>
