@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 -->
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
 <link rel="import" href="../bower_components/core-menu/core-menu.html">
-<link rel="import" href="../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
@@ -26,8 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 <link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="morse-station.html">
 <link rel="import" href="morse-decoded-text.html">
@@ -64,9 +62,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       border-bottom-right-radius: 5px;
     }
 
-    .heading core-icon {
-      margin: 0px 10px;
-    }
     </style>
     <section layout vertical block>
     <morse-station id="station" input_pitch="{{input_pitch}}" input_gain_dB="{{input_gain_dB}}" input_wpm="{{input_wpm}}"
@@ -80,6 +75,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     <morse-collapse-heading class="heading" icon="settings" on-click="{{settings_toggle}}" hero-id="settings" hero>Settings</morse-collapse-heading>
     <core-collapse id="settings" hero-id="settings2" hero>
       <div class="content" layout vertical block>
+
         <div layout horizontal block center>
           <paper-dropdown-menu>
             <paper-dropdown class="dropdown">
@@ -90,9 +86,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
             </paper-dropdown>
           </paper-dropdown-menu>Key Type
         </div>
+
         <div layout horizontal block center>
           <paper-toggle-button iambic label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button> Swap Paddles
         </div>
+
 	<morse-slider value="{{input_pitch}}" min="220" max="1760" pin="true" snap="true" label="sidetone frequency" prefix="Pitch" suffix="Hz"></morse-slider>
 	<morse-slider value="{{input_gain_dB}}" min="-60" max="0" pin="true" snap="true" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
         <morse-slider iambic value="{{input_wpm}}" min="5" max="50" step="2.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
@@ -105,6 +103,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
           <morse-slider iambic value="{{input_ies}}" min="0.75" max="1.25" step="0.05" label="inter-element space" prefix="IES" suffix="dits"></morse-slider>
           <morse-slider iambic value="{{input_ils}}" min="2.5" max="3.5" step="0.1" label="inter-letter space length" prefix="ILS" suffix="dits"></morse-slider>
           <morse-slider iambic value="{{input_iws}}" min="6.5" max="7.5" step="0.1" label="inter-word space length" prefix="IWS" suffix="dits"></morse-slider>
+
           <div layout horizontal block center>
             <paper-dropdown-menu label="MIDI Device">
               <paper-dropdown class="dropdown">
@@ -117,6 +116,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
               <paper-icon-button id="input_midi_reload" icon="refresh"></paper-icon-button>
             </core-tooltip>MIDI Device
           </div>
+
         </core-collapse>
       </div>
     </core-collapse>
