@@ -364,6 +364,7 @@
         return this.cursor += seconds;
       },
       // cancel all scheduled key transitions
+      // should probably cancel all pending text and transition events, too.
       cancel : function() {
         // console.log("cancel at ", context.currentTime);
         this.key.gain.cancelScheduledValues(this.cursor = context.currentTime);
@@ -480,6 +481,9 @@
       oldPower : 0,
       dtime : 0,
       onoff : 0,
+      emitTransition : function(self, transition, time) {
+        return function() { self.emit('transition', transition, time); }
+      },
       onAudioProcess : function(audioProcessingEvent) {
         var inputBuffer = audioProcessingEvent.inputBuffer;
         var outputBuffer = audioProcessingEvent.outputBuffer;
@@ -487,18 +491,24 @@
         var outputData = outputBuffer.getChannelData(0);
         var time = audioProcessingEvent.playbackTime;
         // console.log("onAudioProcess "+inputBuffer.length+" samples at "+time);
+        // rewritten to decouple the transition processing from the audio buffer processing
+        // using setTimeout(..., 0);
         for (var sample = 0; sample < inputBuffer.length; sample++) {
           outputData[sample] = inputData[sample];
           if (this.detone_process(inputData[sample])) {
             this.maxPower = Math.max(this.power, this.maxPower);
-            if (this.onoff === 0 && this.oldPower < 0.6*this.maxPower && this.power > 0.6*this.maxPower)
-              this.emit('transition', this.onoff = 1, time);
-            if (this.onoff == 1 && this.oldPower > 0.4*this.maxPower && this.power < 0.4*this.maxPower)
-              this.emit('transition', this.onoff = 0, time);
+            var threshold = this.maxPower / 2;
+            if (this.onoff === 0 && this.power > threshold) {
+              setTimeout(this.emitTransition(this, this.onoff = 1, time), 0);
+            } else if (this.onoff === 1 && this.power < threshold) {
+              setTimeout(this.emitTransition(this, this.onoff = 0, time), 0);
+            }
           }
-          this.oldPower = this.power;
           time += this.dtime;
         }
+        setTimeout((function (self, data, time) { 
+          return function() { self.emit('buffer', data, time); } 
+        })(this, inputData, time), 0);
       },
       connect : function(node) { this.scriptNode.connect(node); },
       get target() { return this.scriptNode; },
@@ -1034,6 +1044,11 @@
     return self;
   };
 
+  morse.microphone = function(context) {
+    var self = extend(morse.event(), {
+    });
+    return self;
+  };
   // combine inputs and outputs
   morse.station = function(params) {
     var context = window.AudioContext ? new window.AudioContext() : new window.webkitAudioContext();
@@ -1047,6 +1062,8 @@
       input : morse.input(context),
       input_decoder : morse.decode(context),
 
+      microphone : morse.microphone(context),
+      
       // parameters
       defaults : {
         input_pitch : 600, input_gain : -26,
@@ -1152,7 +1169,7 @@
       input_blur : function() { this.input.onblur(); },
     };
 
-    var USE_DETONER = false;
+    var USE_DETONER = true;
 
     if (USE_DETONER) {
       self.output.on('change:pitch', function(pitch) { self.output_decoder.onchangepitch(pitch); });

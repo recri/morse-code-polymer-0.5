@@ -67,14 +67,14 @@
     </style>
     <section layout vertical block>
       <morse-station id="station"></morse-station>
-      <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}" hero-id="decoder" hero></morse-decoded-text>
+      <morse-decoded-text id="decoder" hero-id="decoder" hero></morse-decoded-text>
       <morse-key id="key" hero-id="key" hero></morse-key>
 
-      <div layout horizontal center block>
+      <div layout horizontal center block cross-fade>
         <paper-progress flex id="progress"></paper-progress>Progress
       </div>
 
-      <div class="buttons" layout horizontal center block>
+      <div class="buttons" layout horizontal center block cross-fade>
         <span flex></span>
         <paper-button raised on-click="{{new_session}}">New Session</paper-button>
         <paper-button raised on-click="{{review_session}}">Review Session</paper-button>

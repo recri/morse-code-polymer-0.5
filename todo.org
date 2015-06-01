@@ -40,8 +40,17 @@
   and I still don't get the mobile browser text updated
 * [x] Reverted to <textarea and got things working fine.
 * [x] Autoscroll <textarea> to end when adding text.
-* [ ] use routing to select titles, pages, ...
-* [ ] decide whether the polyserver makes sense
+* [x] CDE mobile push issues
+** [x] confusion when both touch and pointer events are active
+** [x] no text decoding shown
+** [x] try from web deploy?
+* [x] mobile chrome scales screen to too small
+  needs a <meta viewport> found in web starter kit documents
+* [x] enabling detone step slows down the output decoding
+  but decoding stops working at higher speeds in a mystifying way
+* [x] stop the output decoder from getting ahead of itself
+* [?] use routing to select titles, pages, ...
+* [?] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
   but running an app that is loaded from bower uses components
   in ../, polyserver resolves imports and loads
@@ -49,11 +58,10 @@
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
 * [ ] select and implement color choices
   much easier in 1.0
-* [ ] stop the output decoder from getting ahead of itself
 * [ ] make the input decoder track the input speed, if there is one
 * [ ] test whether the decoders are working as expected
   seems that there are dah's read as dit's that would require the
-  estimated speed to change 
+  estimated speed to change.
 * [ ] package as a chrome application and push to the store
 * [ ] move to card based drill, larger issue, make a compelling game
 ** [ ] show didah
@@ -72,9 +80,13 @@
   Test by looking at the distribution of context.currentTime values
   returned.
 * [ ] build a monitor page with scope and logic traces
-* [ ] CDE mobile push issues
-** [ ] confusion when both touch and pointer events are active
-** [ ] no text decoding shown
-** [ ] try from web deploy?
-* [ ] mobile chrome scales screen to too small
-  needs a <meta viewport> found in web starter kit documents
+* [ ] I'm imagining a game where players challenge each other to tap it out
+  so we'd need to allow multiple players on one machine,
+  we'd need to hear the challenge tap,
+  and verify that the challenger could repeat it,
+  and then we'd need to see if the challengee could rise to the challenge,
+  and echo back the challenge tap,
+  so that could repeat itself over multiple rounds,
+  and the challenges need not be morse code,
+  they could be arbitrary prosigns, very long
+  and the spacing, beyond the element, letter, word variety could be significant.

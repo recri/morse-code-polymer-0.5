@@ -20,7 +20,7 @@
 <link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 
-<polymer-element name="morse-app" tabIndex="0">
+<polymer-element name="morse-app" attributes="selected">
   <template>
     <style>
     :host {
@@ -67,17 +67,23 @@
       transitions="slide-from-right"
       transitions="hero-transition"
       -->
-      <core-animated-pages id="pages" valueattr="label" selected="{{selected}}" transitions="hero-transition">
+      <core-animated-pages id="pages" valueattr="label" selected="{{selected}}" transitions="hero-transition cross-fade">
         <content></content>
       </core-animated-pages>
     </core-scaffold>
   </template>
   <script>
   Polymer('morse-app', {
-    publish: {
-      selected: "Mimic",
-      decoded_text: "",
+    oldi : null,
+    newi : null,
+    ready : function() {
+      this.$.pages.addEventListener('core-animated-pages-transition-end', (function(self) { return function() { self.really_focus(); } })(this));
     },
+    really_focus : function() {
+      // console.log("app", "really_focus");
+      if (this.newi && this.newi.onreally_focus) this.newi.onreally_focus();
+    },
+    // not sure why I have to do this myself, doesn't every core-pages need to do the same thing?
     findTargetLabel: function(label) {
       var items = this.$.pages.items;
       for (var i = 0; i < items.length; i += 1) {
@@ -87,26 +93,13 @@
       }
       return null;
     },
+
     selectedChanged: function(oldv, newv) {
       // console.log('app.selectedChange', oldv, newv);
-      var oldi = this.findTargetLabel(oldv);
-      if (oldi) {
-        // this is needed because the binding is in the content, not the static template
-        this.decoded_text = oldi.decoded_text;
-        if (oldi.onblur) oldi.onblur();
-      }
-      var newi = this.findTargetLabel(newv);
-      if (newi) {
-        // this is needed because the binding is in the content, not the static template
-        newi.decoded_text = this.decoded_text;
-        if (newi.onfocus) newi.onfocus();
-      }
-    },
-    attached: function() {
-      this.selectedChanged(undefined, this.selected);
-    },
-    detached: function() {
-      this.selectedChanged(this.selected, undefined);
+      this.oldi = this.findTargetLabel(oldv);
+      if (this.oldi && this.oldi.onblur) this.oldi.onblur();
+      this.newi = this.findTargetLabel(newv);
+      if (this.newi && this.newi.onfocus) this.newi.onfocus();
     },
 
   });

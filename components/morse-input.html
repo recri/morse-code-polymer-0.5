@@ -68,7 +68,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
               input_rise_ms="{{input_rise_ms}}" input_fall_ms="{{input_fall_ms}}" input_dah="{{input_dah}}" input_ies="{{input_ies}}"
               input_ils="{{input_ils}}" input_iws="{{input_iws}}" input_midi="{{input_midi}}" input_swapped="{{input_swapped}}"
               input_type="{{input_type}}"></morse-station>
-      <morse-decoded-text id="decoder" decoded_text="{{decoded_text}}" hero-id="decoder" hero></morse-decoded-text>
+      <morse-decoded-text id="decoder" hero-id="decoder" hero></morse-decoded-text>
       <morse-key id="key" hero-id="key" hero></morse-key>
 
       <!-- input settings -->
@@ -179,7 +179,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       input_midi: "none",
       input_swapped: false,
       input_type: 'iambic',
-      decoded_text: "",
     },
 
     ready: function() {

@@ -44,7 +44,6 @@
       position: absolute;
       top: 0;
       right: 0;
-      // z-index: 1;  // does not change anything
       background-color: transparent;
       cursor: pointer;
     }
@@ -67,13 +66,18 @@
       // console.log('decoder.onblur');
       this.$.station.output_decoder_off_letter(this.onletter_output, this);
       this.$.station.input_decoder_off_letter(this.onletter_input, this);
+      this.$.station.set_lastout(this.lastout);
+      this.$.station.set_decoded_text(this.decoded_text);
     },
 
     onfocus: function() {
       // console.log('decoder.onfocus');
+      this.lastout = this.$.station.get_lastout();
+      this.decoded_text = this.$.station.get_decoded_text();
       this.$.station.output_decoder_on_letter(this.onletter_output, this);
       this.$.station.input_decoder_on_letter(this.onletter_input, this);
     },
+
     lastout: null,
     switchto: function(tag, ltr) {
       if (this.lastout !== tag) {
@@ -84,15 +88,9 @@
       if (ltr) this.decoded_text += ltr;
       this.$.textarea.scrollTop = 1000;
     },
-    onletter_input: function(ltr, code) {
-      this.switchto('in', ltr);
-    },
-    onletter_output: function(ltr, code) {
-      this.switchto('out', ltr);
-    },
-    clear_decoded_text: function() {
-      this.switchto(null);
-    },
+    onletter_input: function(ltr, code) { this.switchto('in', ltr); },
+    onletter_output: function(ltr, code) { this.switchto('out', ltr); },
+    clear_decoded_text: function() { this.switchto(null); },
   });
   </script>
 </polymer-element>

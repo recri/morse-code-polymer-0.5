@@ -24,6 +24,8 @@
     // these variables are shared by all instances of morse-station
     var station = window.morse.station();	// the morse code
     var keytarget = null;			// the body of this page
+    var decoded_text = "";			// the decoded text displayed
+    var lastout = null;				// the last stream decoded
 
     Polymer('morse-station', {
 
@@ -126,6 +128,10 @@
 
       get_station : function() { return station; },
       get_keytarget : function() { return keytarget; },
+      set_decoded_text : function(text) { decoded_text = text; },
+      get_decoded_text : function() { return decoded_text; },
+      set_lastout : function(last) { lastout = last; },
+      get_lastout : function() { return lastout; },
 
     });
   }());
