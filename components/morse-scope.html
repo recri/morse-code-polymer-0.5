@@ -1,0 +1,251 @@
+<!--
+Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+-->
+<link rel="import" href="morse-station.html">
+
+<polymer-element name="morse-scope" ht="48" attributes="ht" >
+  <template>
+    <style>
+    :host {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    canvas {
+      position: normal;
+      border: 1px solid #ffffff;
+      background-color: #000000;
+    }
+    </style>
+    <morse-station id="station"></morse-station>
+    <section layout vertical block>
+      <canvas id="key_gen" height="{{ht}}" width="100%" on-resize="{{onresize}}"></canvas>
+      <canvas id="key_det" height="{{ht}}" width="100%"></canvas>
+      <canvas id="txt_gen" height="{{ht}}" width="100%"></canvas>
+      <canvas id="txt_det" height="{{ht}}" width="100%"></canvas>
+      <canvas id="key_aud" height="{{ht}}" width="100%"></canvas>
+      <canvas id="txt_aud" height="{{ht}}" width="100%"></canvas>
+      <canvas id="mic_aud" height="{{ht}}" width="100%"></canvas>
+      <div layout block horizontal center cross-fade>
+        <span flex></span>
+	<paper-button raised on-click="{{record}}">Record</paper-button>
+	<paper-button raised on-click="{{stop}}">Stop</paper-button>
+	<paper-button raised on-click="{{clear}}">Clear</paper-button>
+        <span flex></span>
+      </div>
+    </section>
+  </template>
+  <script>
+  Polymer({
+    // streams
+    streams : [ 'key_gen', 'key_det', 'txt_gen', 'txt_det', 'key_aud', 'txt_aud', 'mic_aud' ],
+
+    // scaling, panning
+    min_t : 1e6, max_t : 0,
+    off_t : 0, scale_t : 50,
+    scale_key : 1,
+    scale_txt : 1,
+    scale_mic : 1,
+
+    // transitions: [time, 1 or 0, ...]
+    // generated or detected
+    key_gen : [],
+    txt_gen : [],
+    key_det : [],
+    txt_det : [],
+    // audio: [ time, audio, ...]
+    key_aud : [],
+    txt_aud : [],
+    mic_aud : [],
+
+    pusher : {},
+
+    record : function() {
+      var station = this.$.station.get_station();
+      station.input.straight.on('transition', this.pusher.key_gen, this);
+      station.input.iambic.on('transition', this.pusher.key_gen, this);
+      station.output.on('transition', this.pusher.txt_gen, this);
+      station.input_decoder.on('transition', this.pusher.key_det, this);
+      station.output_decoder.on('transition', this.pusher.txt_det, this);
+      station.input_decoder.on('buffer', this.pusher.key_aud, this);
+      station.output_decoder.on('buffer', this.pusher.txt_aud, this);
+      station.microphone.on('buffer', this.pusher.mic_aud, this);
+      this.running = true;
+    },
+
+    stop : function() {
+      var station = this.$.station.get_station();
+      station.input.straight.off('transition', this.pusher.key_gen);
+      station.input.iambic.off('transition', this.pusher.key_gen);
+      station.output.off('transition', this.pusher.txt_gen);
+      station.input_decoder.off('transition', this.pusher.key_det);
+      station.output_decoder.off('transition', this.pusher.txt_det);
+      station.input_decoder.off('buffer', this.pusher.key_aud);
+      station.output_decoder.off('buffer', this.pusher.txt_aud);
+      station.microphone.off('buffer', this.pusher.mic_aud);
+      this.running = false;
+    },
+
+    clear : function() {
+      this.stop();
+      this.streams.forEach(function(stream) {
+	this[stream] = [];
+      }, this);
+      this.min_t = 1e6;
+      this.max_t = 0;
+      this.off_t = 0;
+      this.redraw_all();
+    },
+
+    redraw_path : function(ctx, pts) {
+      if (pts.length) {
+	ctx.beginPath();
+	ctx.moveTo(pts[0],pts[1]);
+	for (var j = 2; j < pts.length; j += 2) ctx.lineTo(pts[j], pts[j+1]);
+	ctx.stroke();
+      }
+    },
+
+    redraw_transition : function(c, id, ctx, data) {
+      var off_x = this.off_t, scale_x = this.scale_t;
+      var xscale = function(t) {
+	var x = (t - off_x) * scale_x;
+	return x;
+      }
+      var off_y = (2 * this.ht / 3), scale_y = (-this.ht / 3);
+      var yscale = function(d) {
+	var y = off_y+d*scale_y;
+	return y;
+      }
+      var lx = xscale(this.min_t), ly = yscale(0), drawn = false, pts = [];
+      if (lx >= 0 && lx < c.width) {
+	pts.push(lx,ly); drawn = true;
+      }
+      for (var i = 0; i < data.length; i += 2) {
+	var x = xscale(data[i]), y1 = yscale(data[i+1]);
+	if (drawn) {
+	  // last was drawn
+	  if (x < c.width) {
+	    // still on screen, draw this, too
+	    pts.push(x,ly,x,y1);
+	  } else {
+	    // going off screen, break
+	    break;
+	  }
+	} else {
+	  // last was not drawn
+	  if (x >= 0) {
+	    // entered screen
+	    if (x < c.width) {
+	      // to be on screen
+	      pts.push(0,ly,x,ly,x,y1); drawn = true;
+	    } else {
+	      // zipped on and off screen in one step, break
+	      pts.push(0,ly); break;
+	    }
+	  } else {
+	    // still off screen left
+	  }
+	}
+	lx = x;
+	ly = y1;
+      }
+      if (pts.length) pts.push(c.width-1,ly);
+      this.redraw_path(ctx, pts);
+    },
+    redraw_audio : function(c, id, ctx, data) {
+    },
+    redraw : function(id, data) {
+      var c = this.$[id];
+      if (c.width != c.clientWidth) c.width = c.clientWidth;
+      // console.log('redraw', id, c.width, c.height);
+      var ctx = c.getContext("2d");
+      ctx.font = "12px Roboto"
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0,0,c.width,c.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#ffffff';
+      ctx.textBaseline = "top"; 
+      ctx.fillText(id,0,0); 
+      switch (id) {
+	case 'key_gen': case 'key_det': case 'txt_gen': case 'txt_det':
+	  this.redraw_transition(c, id, ctx, data);
+	  break;
+	case 'key_aud': case 'txt_aud': case 'mic_aud':
+	  this.redraw_audio(c, id, ctx, data);
+	  break;
+	default:
+	  console.log("redraw", id, "not handled in switch");
+	  break;
+      }
+    },
+    redraw_all : function() {
+      // console.log('redraw_all', this.key_gen.length, this.txt_gen.length, this.key_aud.length, this.txt_aud.length);
+      // console.log('redraw_all', this.min_t, this.max_t, this.off_t, this.scale_t);
+      this.streams.forEach(function(stream) {
+	if (this[stream].length > 0)
+	  if (this.off_t == 0) this.off_t = this.min_t;
+	this.redraw(stream, this[stream]);
+      }, this);
+    },
+    onreally_focus : function() {
+      console.log('scope', 'really_focus');
+      this.redraw_all();
+    },
+    onfocus : function() {
+      // console.log('scope', 'focus');
+      // this.redraw_all();
+    },
+    onblur : function() {
+      // console.log('scope', 'blur');
+    },
+    transition_pusher : function(list) { 
+      return function(onoff, time) { 
+	this.min_t = Math.min(time, this.min_t);
+	this.max_t = Math.max(time, this.max_t);
+	this[list].push(time, onoff);
+      }
+    },
+    audio_pusher : function( list) { 
+      return function(samples, time) {
+	// Int16Array.from(samples, function(x) { return x*0x7FFF; });
+	this.min_t = Math.min(time, this.min_t);
+	this.max_t = Math.max(time, this.max_t);
+	this[list].push(time, new Float32Array(samples));
+      }
+    },
+    ready : function() {
+      // generate functions to receive data
+      this.pusher.key_gen = this.transition_pusher('key_gen');
+      this.pusher.txt_gen = this.transition_pusher('txt_gen');
+      this.pusher.key_det = this.transition_pusher('key_det');
+      this.pusher.txt_det = this.transition_pusher('txt_det');
+      this.pusher.key_aud = this.audio_pusher('key_aud');
+      this.pusher.txt_aud = this.audio_pusher('txt_aud');
+      this.pusher.mic_aud = this.audio_pusher('mic_aud');
+    },
+  });
+  </script>
+</polymer-element>
+<!-- Local Variables: -->
+<!-- mode: web -->
+<!-- indent-tabs-mode: t -->
+<!-- web-mode-markup-indent-offset: 2 -->
+<!-- web-mode-css-indent-offset: 2 -->
+<!-- web-mode-code-indent-offset: 2 -->
+<!-- End: -->

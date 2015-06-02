@@ -90,3 +90,6 @@
   and the challenges need not be morse code,
   they could be arbitrary prosigns, very long
   and the spacing, beyond the element, letter, word variety could be significant.
+* [ ] Now the Android is struggling to keep up with the audio,
+  may need to adjust the audio buffer size in detone or disable it.
+
