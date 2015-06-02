@@ -15,9 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 -->
+
+<!- 
+Oh, I need a morse-scope-channel component.
+-->
+
 <link rel="import" href="morse-station.html">
 
-<polymer-element name="morse-scope" ht="48" attributes="ht" >
+<polymer-element name="morse-scope" ht="48" attributes="ht" 
+	on-mousedown="{{onmousedown}}" 
+	on-mouseup="{{onmouseup}}"
+	on-dblclick="{{ondblclick}}">
   <template>
     <style>
     :host {
@@ -45,6 +53,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
         <span flex></span>
 	<paper-button raised on-click="{{record}}">Record</paper-button>
 	<paper-button raised on-click="{{stop}}">Stop</paper-button>
+	<paper-button raised on-click="{{zoomout}}">Zoom Out</paper-button>
 	<paper-button raised on-click="{{clear}}">Clear</paper-button>
         <span flex></span>
       </div>
@@ -73,8 +82,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     txt_aud : [],
     mic_aud : [],
 
+    // object dictionary of data event handlers
     pusher : {},
 
+    // data event handler for keying transitions
+    transition_pusher : function(list) { 
+      return function(onoff, time) { 
+	this.min_t = Math.min(time, this.min_t);
+	this.max_t = Math.max(time, this.max_t);
+	this[list].push(time, onoff);
+      }
+    },
+
+    // data event hander for audio buffers
+    audio_pusher : function( list) { 
+      return function(samples, time) {
+	// Int16Array.from(samples, function(x) { return x*0x7FFF; });
+	this.min_t = Math.min(time, this.min_t);
+	this.max_t = Math.max(time, this.max_t);
+	this[list].push(time, new Float32Array(samples));
+      }
+    },
+
+    // ready life cycle function, create data event handlers
+    ready : function() {
+      // generate functions to receive data
+      this.pusher.key_gen = this.transition_pusher('key_gen');
+      this.pusher.txt_gen = this.transition_pusher('txt_gen');
+      this.pusher.key_det = this.transition_pusher('key_det');
+      this.pusher.txt_det = this.transition_pusher('txt_det');
+      this.pusher.key_aud = this.audio_pusher('key_aud');
+      this.pusher.txt_aud = this.audio_pusher('txt_aud');
+      this.pusher.mic_aud = this.audio_pusher('mic_aud');
+    },
+
+    // start recording
     record : function() {
       var station = this.$.station.get_station();
       station.input.straight.on('transition', this.pusher.key_gen, this);
@@ -88,6 +130,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       this.running = true;
     },
 
+    // stop recording
     stop : function() {
       var station = this.$.station.get_station();
       station.input.straight.off('transition', this.pusher.key_gen);
@@ -101,6 +144,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       this.running = false;
     },
 
+    // clear the saved data
     clear : function() {
       this.stop();
       this.streams.forEach(function(stream) {
@@ -112,6 +156,45 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       this.redraw_all();
     },
 
+    // zoom
+    zoomout : function() {
+      // set time scale so entire recording is visible
+    },
+    ondblclick : function(e) {
+      // zoom in centered on the click 
+      console.log("ondblclick", e.x);
+    },
+
+    // scroll
+    mouse_start_x : 0,
+    mouse_move_x : 0,
+    scrolling : false,
+    onmousedown : function(e) {
+      this.mouse_start_x = e.x;
+      this.addEventListener('mousemove', this.onmousemove);
+    },
+    onmousemove : function(e) {
+      this.mouse_move_x = e.x;
+      requestAnimationFrame((function(self) { return function() { self.scroll(); } })(this))
+    },
+    onmouseup : function(e) {
+      this.removeEventListener('mousemove', this.onmousemove);
+    },
+    scroll : function() {
+      if ( ! this.scrolling) {
+	this.scrolling = true;
+	var dx = this.mouse_move_x - this.mouse_start_x;
+	this.mouse_start_x = this.mouse_move_x;
+	if (dx != 0) {
+	  console.log("scroll", dx, dx/this.scale_t);
+	  this.off_t -= dx/this.scale_t;
+	  this.redraw_all();
+	}
+	this.scrolling = false;
+      }
+    },
+
+    // redraw
     redraw_path : function(ctx, pts) {
       if (pts.length) {
 	ctx.beginPath();
@@ -133,39 +216,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 	return y;
       }
       var lx = xscale(this.min_t), ly = yscale(0), drawn = false, pts = [];
-      if (lx >= 0 && lx < c.width) {
-	pts.push(lx,ly); drawn = true;
-      }
+      pts.push(lx,ly); drawn = true;
       for (var i = 0; i < data.length; i += 2) {
 	var x = xscale(data[i]), y1 = yscale(data[i+1]);
-	if (drawn) {
-	  // last was drawn
-	  if (x < c.width) {
-	    // still on screen, draw this, too
-	    pts.push(x,ly,x,y1);
-	  } else {
-	    // going off screen, break
-	    break;
-	  }
-	} else {
-	  // last was not drawn
-	  if (x >= 0) {
-	    // entered screen
-	    if (x < c.width) {
-	      // to be on screen
-	      pts.push(0,ly,x,ly,x,y1); drawn = true;
-	    } else {
-	      // zipped on and off screen in one step, break
-	      pts.push(0,ly); break;
-	    }
-	  } else {
-	    // still off screen left
-	  }
-	}
+	pts.push(x,ly,x,y1);
 	lx = x;
 	ly = y1;
       }
-      if (pts.length) pts.push(c.width-1,ly);
       this.redraw_path(ctx, pts);
     },
     redraw_audio : function(c, id, ctx, data) {
@@ -213,31 +270,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     },
     onblur : function() {
       // console.log('scope', 'blur');
-    },
-    transition_pusher : function(list) { 
-      return function(onoff, time) { 
-	this.min_t = Math.min(time, this.min_t);
-	this.max_t = Math.max(time, this.max_t);
-	this[list].push(time, onoff);
-      }
-    },
-    audio_pusher : function( list) { 
-      return function(samples, time) {
-	// Int16Array.from(samples, function(x) { return x*0x7FFF; });
-	this.min_t = Math.min(time, this.min_t);
-	this.max_t = Math.max(time, this.max_t);
-	this[list].push(time, new Float32Array(samples));
-      }
-    },
-    ready : function() {
-      // generate functions to receive data
-      this.pusher.key_gen = this.transition_pusher('key_gen');
-      this.pusher.txt_gen = this.transition_pusher('txt_gen');
-      this.pusher.key_det = this.transition_pusher('key_det');
-      this.pusher.txt_det = this.transition_pusher('txt_det');
-      this.pusher.key_aud = this.audio_pusher('key_aud');
-      this.pusher.txt_aud = this.audio_pusher('txt_aud');
-      this.pusher.mic_aud = this.audio_pusher('mic_aud');
     },
   });
   </script>
