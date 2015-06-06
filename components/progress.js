@@ -139,7 +139,7 @@ function study_session(progress, type) {
   }
 
   function output_send(text) {
-    console.log('output_send', text);
+    // console.log('output_send', text);
     progress.station.output_send(text);
   }
 
@@ -234,7 +234,7 @@ function study_session(progress, type) {
       // console.log("continue");
       self.session_progress();
       self.current = self.words[self.reps_done];
-      console.log("session_continue", self.current);
+      console.log("session_continue", self.reps_done+"/"+self.reps_to_do, self.current);
       self.test_word();
     },
     session_score: function() {
@@ -268,9 +268,9 @@ function study_session(progress, type) {
       self.reps_done = 0;
       self.score = 0;
       self.words = repeat(progress.reps_per_item, words);
-      console.log('session_new', 'self.words', self.words.length, self.words);
+      // console.log('session_new', 'self.words', self.words.length, self.words);
       self.words = shuffle(self.words);
-      console.log('session_new', 'self.words', self.words.length, self.words);
+      // console.log('session_new', 'self.words', self.words.length, self.words);
       self.tests = [];
       progress.station.input_decoder_on_letter(function(ltr, code) { self.oninputletter(ltr, code); });
       progress.station.output_decoder_on_letter(function(ltr, code) { self.onoutputletter(ltr, code); });
