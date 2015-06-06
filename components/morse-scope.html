@@ -18,14 +18,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 <!- 
 Oh, I need a morse-scope-channel component.
+  <morse-scope>
+    <morse-scope-channel id="ch1"></morse-scope-channel>
+    <morse-scope-channel id="ch2"></morse-scope-channel>
+  </morse-scope>
 -->
 
 <link rel="import" href="morse-station.html">
 
-<polymer-element name="morse-scope" ht="48" attributes="ht" 
-	on-mousedown="{{onmousedown}}" 
-	on-mouseup="{{onmouseup}}"
-	on-dblclick="{{ondblclick}}">
+<polymer-element name="morse-scope" ht="48" attributes="ht" on-mousedown="{{onmousedown}}"
+	oncontextmenu="return false">
   <template>
     <style>
     :host {
@@ -33,6 +35,8 @@ Oh, I need a morse-scope-channel component.
       height: 100%;
       box-sizing: border-box;
       display: block;
+      -ms-touch-action: none;
+      touch-action: none;   
     }
     canvas {
       position: normal;
@@ -168,29 +172,62 @@ Oh, I need a morse-scope-channel component.
     // scroll
     mouse_start_x : 0,
     mouse_move_x : 0,
-    scrolling : false,
+    mouse_zoom_x : 0,
+    mouse_move_button : 0,
+    mouse_moving : false,
     onmousedown : function(e) {
-      this.mouse_start_x = e.x;
-      this.addEventListener('mousemove', this.onmousemove);
+      switch (e.button) {
+	case 0:/* left button */
+	  this.mouse_button = e.button;
+	  this.mouse_start_x = e.x;
+	  this.mouse_zoom_x = 1;
+	  this.addEventListener('mousemove', this.onmousemove);
+	  this.addEventListener('mouseup', this.onmouseup);
+	  break;
+	case 1:/* middle button */
+	  console.log("middle tap");
+	  break;
+	case 2:/* right button */
+	  console.log("right tap");
+	  break;
+      }
     },
     onmousemove : function(e) {
+      //if (this.mouse_move_buttons != 0 && this.mouse_move_buttons != e.buttons) {
+	// cancel if the buttons pressed change
+	// this.mouse_move_buttons = 0;
+      //}
       this.mouse_move_x = e.x;
-      requestAnimationFrame((function(self) { return function() { self.scroll(); } })(this))
+      requestAnimationFrame((function(self) { return function() { self.mousemotion(); } })(this))
     },
     onmouseup : function(e) {
       this.removeEventListener('mousemove', this.onmousemove);
+      this.removeEventListener('mouseup', this.onmouseup);
     },
-    scroll : function() {
-      if ( ! this.scrolling) {
-	this.scrolling = true;
+    mousemotion : function() {
+      if ( ! this.mouse_moving) {
+	this.mouse_moving = true;
+	// console.log("mousemotion", this.mouse_move_button, this.mouse_move_x);
 	var dx = this.mouse_move_x - this.mouse_start_x;
-	this.mouse_start_x = this.mouse_move_x;
-	if (dx != 0) {
-	  console.log("scroll", dx, dx/this.scale_t);
-	  this.off_t -= dx/this.scale_t;
-	  this.redraw_all();
+	switch (this.mouse_move_button) {
+	  case 0:/* left mouse, scroll scope channels */
+	    this.mouse_start_x = this.mouse_move_x;
+	    if (dx != 0) {
+	      // console.log("scroll", dx, dx/this.scale_t);
+	      this.off_t -= dx/this.scale_t;
+	      this.redraw_all();
+	    }
+	    break;
+	  case 2:/* right mouse, zoom scope channels */
+	    var zoom_x = Math.pow(10, dx/100);
+	    if (zoom_x != 1) {
+	      this.scale_t *= zoom_x / this.mouse_zoom_x;
+	      this.mouse_zoom_x = zoom_x;
+	      this.redraw_all;
+	    }
+	    break;
 	}
-	this.scrolling = false;
+	this.mouse_moving = false;
       }
     },
 
@@ -261,7 +298,7 @@ Oh, I need a morse-scope-channel component.
       }, this);
     },
     onreally_focus : function() {
-      console.log('scope', 'really_focus');
+      // console.log('scope', 'really_focus');
       this.redraw_all();
     },
     onfocus : function() {

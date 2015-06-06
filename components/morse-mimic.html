@@ -78,6 +78,7 @@
         <span flex></span>
         <paper-button raised on-click="{{new_session}}">New Session</paper-button>
         <paper-button raised on-click="{{review_session}}">Review Session</paper-button>
+	<paper-button raised on-click="{{new_course}}">New Course</paper-button>
         <span flex></span>
       </div>
 
@@ -142,6 +143,12 @@
       this.session = study_session(this.progress, 'review');
       this.start_session();
     },
+    new_course : function() {
+      var station = this.$.station.get_station();
+      this.progress = study_progress(word_list_by_name('comb', station.table), station)
+      this.items_per_session = this.progress.items_per_session;
+      this.reps_per_item = this.progress.reps_per_item;
+    },
 
     settingsToggle: function() {
       this.$.settings.toggle();
@@ -164,16 +171,16 @@
     },
 
     onblur: function() {
-      // console.log('mimic.onblur');
+      console.log('mimic.onblur');
       this.$.decoder.onblur();
       this.$.key.onblur();
       this.progress.save('morse-mimic');
     },
 
     onfocus: function() {
-      // console.log('mimic.onfocus');
-      this.$.decoder.onfocus();
+      console.log('mimic.onfocus');
       this.$.key.onfocus();
+      this.$.decoder.onfocus();
       // update progress bar
     },
   });
