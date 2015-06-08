@@ -66,7 +66,7 @@
               result.push(self.code[c]);
               result.push(' ');
             } else if (c == ' ') {
-              result.push('  ');
+              result.push('\t');
             }
           }
         }
@@ -407,18 +407,43 @@
         var time = this.cursor;
         for (var i = 0; i < code.length; i += 1) {
           var c = code.charAt(i);
-          if (c == '.' || c == '-') {
+          switch (c) {
+          case ' ':             // inter-letter space at the beginning
+            time = this.keyHoldFor(this.ils * this.dit);
+            this.emit('element', c, time);
+            continue;
+          case '\t':            // inter-word space at the beginning
+            time = this.keyHoldFor(this.iws * this.dit);
+            this.emit('element', c, time);
+            continue;
+          case '.':
             this.keyOnAt(time);
-            time = this.keyHoldFor((c == '.' ? 1 : this.dah) * this.dit);
+            time = this.keyHoldFor(this.dit);
             this.keyOffAt(time);
+            this.emit('element', c, time);
+            break;
+          case '-':
+            this.keyOnAt(time);
+            time = this.keyHoldFor(this.dah * this.dit);
+            this.keyOffAt(time);
+            this.emit('element', c, time);
+            break;
+          }
+          if (i+1 == code.length) {
             time = this.keyHoldFor(this.ies * this.dit);
-          } else if (c == ' ') {
-            if (i+2 < code.length && code.charAt(i+1) == ' ' && code.charAt(i+2) == ' ') {
-              time = this.keyHoldFor((this.iws-this.ies) * this.dit);
-              i += 2;
-            } else {
-              time = this.keyHoldFor((this.ils-this.ies) * this.dit);
-            }
+            this.emit('element', '', time);
+            continue;
+          }
+          c = code.charAt(i+1);
+          switch (c) {
+          case '.':
+          case '-':
+            time = this.keyHoldFor(this.ies * this.dit);
+            this.emit('element', '', time);
+            continue;
+          case ' ':
+          case '\t':
+            continue;
           }
         }
       },
@@ -429,7 +454,6 @@
 
   //
   // translate keyed audio tone to keyup/keydown events
-  // this doesn't seem to work correctly at present.
   //
   morse.detone = function(context) {
     /*
@@ -732,6 +756,7 @@
     var _wpm = 20;          // words per minute
     var _dahLen = 3;                // dits per dah
     var _iesLen = 1;                // dits per space between dits and dahs
+    var _ilsLen = 3;                // dits per space between letters
 
     // update the clock computations
     // for reference a dit is
@@ -746,6 +771,7 @@
       _perDit = 60.0 / (_wpm * 50);
       _perDah = _perDit * _dahLen;
       _perIes = _perDit * _iesLen;
+      _perIls = _perDit * _ilsLen;
     }
 
     // extends player
@@ -764,9 +790,27 @@
         this.keyHoldFor(_perIes);
       },
 
-      make_dit : function() { this.transition(DIT, _perDit); },
-      make_dah : function() { this.transition(DAH, _perDah); },
-
+      make_dit : function() {
+        this.transition(DIT, _perDit);
+        this.emit('element', '.', this.cursor+_perDit);
+      },
+      make_dah : function() {
+        this.transition(DAH, _perDah);
+        this.emit('element', '-', this.cursor+_perDah);
+      },
+      make_ies_dit : function() {
+        this.emit('element', '', this.cursor);
+        this.make_dit();
+      },
+      make_ies_dah : function() {
+        this.emit('element', '', this.cursor);
+        this.make_dah();
+      },
+      make_ils : function() {
+        keyer_state = IDLE;
+        this.keyHoldFor(_perIls-_perIes);
+        this.emit('element', ' ', this.cursor);
+      },
       clock : function(raw_dit_on, raw_dah_on, ticks) {
         var dit_on = _swapped ? raw_dah_on : raw_dit_on;
         var dah_on = _swapped ? raw_dit_on : raw_dah_on;
@@ -782,11 +826,11 @@
           if (keyer_state == DIT) {
             if ( dah_pending || dah_on ) self.make_dah();
             else if (dit_on) self.make_dit();
-            else keyer_state = IDLE;
+            else self.make_ils();
           } else if (keyer_state == DAH) {
             if ( dit_pending || dit_on ) self.make_dit();
             else if (dah_on) self.make_dah();
-            else keyer_state = IDLE;
+            else self.make_ils();
           }
         }
 
@@ -1169,16 +1213,21 @@
       input_blur : function() { this.input.onblur(); },
     };
 
-    var USE_DETONER = true;
+    var USE_DETONER = false;    // decode from sidetone
+    var USE_DETIMER = false;    // decode from transitions
+    // decode from elements, meaning no decoding straight key
 
     if (USE_DETONER) {
       self.output.on('change:pitch', function(pitch) { self.output_decoder.onchangepitch(pitch); });
       self.output_decoder.onchangepitch(self.output.pitch);
       self.output.connect(self.output_decoder.target);
       self.output_decoder.connect(context.destination);
-    } else {
+    } else if (USE_DETIMER) {
       self.output.connect(context.destination);
       self.output.on('transition', self.output_decoder.ontransition, self.output_decoder);
+    } else {
+      self.output.connect(context.destination);
+      self.output.on('element', self.output_decoder.onelement, self.output_decoder);
     }
 
     if (USE_DETONER) {
@@ -1187,11 +1236,15 @@
       self.input_decoder.onchangepitch(self.input.pitch);
       self.input.connect(self.input_decoder.target);
       self.input_decoder.connect(context.destination);
-    } else {
+    } else if (USE_DETIMER) {
       self.input.connect(context.destination);
       self.input.straight.on('transition', self.input_decoder.ontransition, self.input_decoder);
       self.input.iambic.on('transition', self.input_decoder.ontransition, self.input_decoder);
+    } else {
+      self.input.connect(context.destination); 
+      self.input.iambic.on('element', self.input_decoder.onelement, self.input_decoder);
     }
+      
 
     self.table = self.output.table;
     self.output_decoder.table = self.table;

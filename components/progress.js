@@ -131,7 +131,7 @@ function study_session(progress, type) {
   }
 
   function repeat(n, list) {
-    console.log('repeat', n, list);
+    // console.log('repeat', n, list);
     var result = [];
     for (var i = 0; i < n; i += 1)
       result = result.concat(list);
@@ -148,7 +148,7 @@ function study_session(progress, type) {
   }
 
   function next_words(n) {
-    console.log('next_words', n);
+    // console.log('next_words', n);
     return progress.word_list.next(n);
   }
   // 1 / (words/minute * dits/word * minutes/second * second/millisecond)
@@ -234,7 +234,7 @@ function study_session(progress, type) {
       // console.log("continue");
       self.session_progress();
       self.current = self.words[self.reps_done];
-      console.log("session_continue", self.reps_done+"/"+self.reps_to_do, self.current);
+      // console.log("session_continue", self.reps_done+"/"+self.reps_to_do, self.current);
       self.test_word();
     },
     session_score: function() {
@@ -263,7 +263,7 @@ function study_session(progress, type) {
 
     session_new: function() {
       var words = self.session_new_words(type);
-      console.log('session_new', 'words', words.length, words);
+      // console.log('session_new', 'words', words.length, words);
       self.reps_to_do = progress.items_per_session * progress.reps_per_item;
       self.reps_done = 0;
       self.score = 0;

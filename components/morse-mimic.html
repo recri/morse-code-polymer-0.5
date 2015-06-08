@@ -18,6 +18,7 @@
 <link rel="import" href="../bower_components/core-collapse/core-collapse.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
 <link rel="import" href="morse-station.html">
 <link rel="import" href="morse-decoded-text.html">
 <link rel="import" href="morse-key.html">
@@ -64,14 +65,36 @@
     .buttons {
 	margin: 0 0 10px 0;
     }
+    .session {
+      position: absolute;
+      width: 80%; left: 10%;
+      height: 100%; top: 10%;
+      box-sizing: border-box;
+      display: none;
+    }
     </style>
+
     <section layout vertical block>
       <morse-station id="station"></morse-station>
-      <morse-decoded-text id="decoder" hero-id="decoder" hero></morse-decoded-text>
+      <!--  <morse-decoded-text id="decoder" hero-id="decoder" hero></morse-decoded-text> -->
       <morse-key id="key" hero-id="key" hero></morse-key>
 
       <div layout horizontal center block cross-fade>
         <paper-progress flex id="progress"></paper-progress>Progress
+      </div>
+
+      <div layout horizontal center block cross-fade>Sent Text: <span id="sent_text"></span></div>
+      <div layout horizontal center block cross-fade>Sent Code: <span id="sent_code"></span></div>
+      <div layout horizontal center block cross-fade>Reply Text: <span id="reply_text"></span></div>
+      <div layout horizontal center block cross-fade>Reply Code: <span id="reply_code"></span></div>
+      <div layout horizontal center block cross-fade>Card Number: <span id="card_number"></span></div>
+
+      <div class="buttons" layout horizontal center block cross-fade>
+	<span flex></span>
+	<paper-button raised on-click="{{skip_card}}">Skip</paper-button>
+	<paper-button raised on-click="{{retry_card}}">Retry</paper-button>
+	<paper-button raised on-click="{{quit_session}}">Quit</paper-button>
+	<span flex></span>
       </div>
 
       <div class="buttons" layout horizontal center block cross-fade>
@@ -110,6 +133,8 @@
           how well you do.
         </p>
       </core-collapse>
+      <paper-shadow class="session" id="session" layout vertical center block>
+      </paper-shadow>
 
     </section>
   </template>
@@ -122,49 +147,64 @@
       reps_per_item: 5,
     },
 
-    items_per_sessionChanged: function(oldv, newv) {
-      this.progress.items_per_session = newv;
-    },
-    reps_per_itemChanged: function(oldv, newv) {
-      this.progress.reps_per_item = newv;
-    },
+    items_per_sessionChanged: function(oldv, newv) { this.progress.items_per_session = newv; },
+    reps_per_itemChanged: function(oldv, newv) { this.progress.reps_per_item = newv; },
 
     session: null,
 
-    start_session: function() {
-      // make session card
-      // start session testing
+    start_session: function(which) {
+      if (this.session == null) {
+	console.log("start_session", which);
+	this.session = study_session(this.progress, which);
+	this.start_session();
+	// make session card
+	// start session testing
+	this.$.session.style.display = "block";
+	// disable start session buttons
+	// periodically check status of session
+	// for progress and completion
+	this.monitor_session();
+      }
     },
-    new_session: function() {
-      this.session = study_session(this.progress, 'new');
-      this.start_session();
+    monitor_session: function() {
+      if (this.session) {
+	var progress = this.session.session_progress();
+	if (progress < 1) {
+	  setTimeout((function(self) { return function() { self.monitor_session() } }(this)), 250);
+	} else {
+	  this.finish_session();
+	}
+      }
     },
-    review_session: function() {
-      this.session = study_session(this.progress, 'review');
-      this.start_session();
-    },
-    new_course : function() {
-      var station = this.$.station.get_station();
-      this.progress = study_progress(word_list_by_name('comb', station.table), station)
-      this.items_per_session = this.progress.items_per_session;
-      this.reps_per_item = this.progress.reps_per_item;
+    finish_session() {
+      console.log("finish_session");
+      this.$.session.style.display = "none";
+      this.session = null;
     },
 
-    settingsToggle: function() {
-      this.$.settings.toggle();
+    new_session: function() { this.start_session('new'); },
+    review_session: function() {this.start_session('review'); },
+
+    new_course: function() {
+      if (this.session == null) {
+	var station = this.$.station.get_station();
+	this.progress = study_progress(word_list_by_name('comb', station.table), station);
+	this.items_per_session = this.progress.items_per_session;
+	this.reps_per_item = this.progress.reps_per_item;
+      }
     },
-    infoToggle: function() {
-      this.$.info.toggle();
-    },
+
+    settingsToggle: function() { this.$.settings.toggle(); },
+    infoToggle: function() { this.$.info.toggle(); },
 
     ready: function() {
       var station = this.$.station.get_station();
       if (!localStorage['morse-mimic']) {
-        this.progress = study_progress(word_list_by_name('comb', station.table), station)
-          // console.log('progress', 'new', this.progress);
+        this.progress = study_progress(word_list_by_name('comb', station.table), station);
+        console.log('progress', 'new', this.progress);
       } else {
         this.progress = study_progress(null, station).restore('morse-mimic');
-        // console.log('progress', 'old', this.progress);
+        console.log('progress', 'old', this.progress);
       }
       this.items_per_session = this.progress.items_per_session;
       this.reps_per_item = this.progress.reps_per_item;
@@ -172,7 +212,7 @@
 
     onblur: function() {
       console.log('mimic.onblur');
-      this.$.decoder.onblur();
+      // this.$.decoder.onblur();
       this.$.key.onblur();
       this.progress.save('morse-mimic');
     },
@@ -180,7 +220,7 @@
     onfocus: function() {
       console.log('mimic.onfocus');
       this.$.key.onfocus();
-      this.$.decoder.onfocus();
+      // this.$.decoder.onfocus();
       // update progress bar
     },
   });
