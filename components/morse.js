@@ -275,12 +275,14 @@
        *  on: listen to events
        */
       on : function(type, func, ctx) {
+        // console.log('on', type, func, ctx);
         (this.events[type] = this.events[type] || []).push({f:func, c:ctx});
       },
       /**
        *  Off: stop listening to event / specific callback
        */
       off : function(type, func) {
+        // console.log('off', type, func);
         if ( ! type) this.events = {};
         var list = this.events[type] || [],
             i = list.length = func ? list.length : 0;
@@ -292,6 +294,10 @@
       emit : function() {
         var args = Array.apply([], arguments), list = this.events[args.shift()] || [], i=0;
         for (var j=list[i++]; j; j=list[i++]) j.f.apply(j.c, args);
+      },
+      event_debug: function(type) {
+        //console.log('event.debug', type, this.events[type]);
+        //console.log('event.debug', this.events);
       },
     };
     return self;
@@ -361,7 +367,7 @@
       // hold the last scheduled key state for seconds
       keyHoldFor : function(seconds) {
         // console.log("keyHoldFor until", this.cursor+seconds, "at", context.currentTime);
-        return this.cursor += seconds;
+        return this.cursor = this.cursor + seconds;
       },
       // cancel all scheduled key transitions
       // should probably cancel all pending text and transition events, too.
@@ -670,11 +676,14 @@
         self.elementTimeout = null;
         if (self.elements.length > 0) {
           var code = self.elements.join('');
-          self.emit('letter', self.table.decode(code) || '\u25a1', code);
+          var ltr = self.table.decode(code) || '\u25a1';
+          // console.log('decode.emit.letter timeout', ltr, code);
+          self.emit('letter', ltr, code);
           self.elements = [];
         }
       },
       onelement : function(elt, timeEnded) {
+        // console.log('decode.onelement("'+elt+'", '+timeEnded+')');
         if (this.elementTimeout) {
           clearTimeout(this.elementTimeout);
           this.elementTimeout = null;
@@ -689,7 +698,9 @@
         }
         if (this.elements.length > 0) {
           var code = this.elements.join('');
-          this.emit('letter', this.table.decode(code)  || '\u25a1', code);
+          var ltr = this.table.decode(code)  || '\u25a1';
+          // console.log('decode.emit.letter space', ltr, code);
+          this.emit('letter', ltr, code);
           this.elements = [];
         }
         if (elt == '\t') {
@@ -709,7 +720,7 @@
     ** 2012, and the length of the dah and inter-element-space has been
     ** made into configurable multiples of the dit clock.
     **
-    ** And then,
+    ** And then, I added element events to allow easy decoding.
     */
     /*
      * newkeyer.c  an electronic keyer with programmable outputs
@@ -741,22 +752,25 @@
     var DAH =      2;  // making a dah or the space after
 
     // state variables
-    var keyer_state = IDLE; // the keyer state
-    var dit_pending = false;        // memory for dit seen while playing a dah
-    var dah_pending = false;        // memory for dah seen while playing a dit
-    var timer = 0;          // seconds counting down to next decision
+    var keyer_state = IDLE;  // the keyer state
+    var dit_pending = false; // memory for dit seen while playing a dah
+    var dah_pending = false; // memory for dah seen while playing a dit
+    var timer = 0;           // seconds counting down to next decision
 
     // seconds per feature
     var _perDit = 0;
     var _perDah = 0;
     var _perIes = 0;
+    var _perIls = 0;
+    var _perIws = 0;
 
     // parameters
     var _swapped = false;   // true if paddles are swapped
     var _wpm = 20;          // words per minute
-    var _dahLen = 3;                // dits per dah
-    var _iesLen = 1;                // dits per space between dits and dahs
-    var _ilsLen = 3;                // dits per space between letters
+    var _dahLen = 3;        // dits per dah
+    var _iesLen = 1;        // dits per space between dits and dahs
+    var _ilsLen = 3;        // dits per space between letters
+    var _iwsLen = 7;        // dits per space between words
 
     // update the clock computations
     // for reference a dit is
@@ -772,46 +786,48 @@
       _perDah = _perDit * _dahLen;
       _perIes = _perDit * _iesLen;
       _perIls = _perDit * _ilsLen;
+      _perIws = _perDit * _iwsLen;
+      // console.log('iambic_keyer.update', '_perIes', _perIes);
+      // console.log('iambic_keyer.update', '_perIls', _perIls);
+      // console.log('iambic_keyer.update', '_perIws', _perIws);
     }
 
     // extends player
     var self = extend(morse.player(context), {
 
-      transition : function(state, len) {
+      transition: function(state, len) {
+        // emit a space
+        if (keyer_state == IDLE) {
+          if (timer > -((_perIes + _perIls)/2 - _perIes)) {
+            // the timer has not reached the boundary between ies and ils
+            this.emit('element', '', this.cursor);
+          } else if (timer > -((_perIls + _perIws)/2 - _perIes)) {
+            // the timer has not reached the boundary between ils and iws
+            this.emit('element', ' ', this.cursor);
+          } else {
+            // the timer has reached the iws boundary
+            this.emit('element', '\t', this.cursor);
+          }
+        } else {
+          this.emit('element', '', this.cursor);
+        }
+
+        // emit the element itself
+        this.emit('element', state==DIT ? '.' : '-', this.cursor+len);
+
         // mark the new state
         keyer_state = state;
-        // reset the timer
+        // reset the timer, count down to length of element plus inter-element space
         if (timer < 0) timer = 0;
         timer += len+_perIes;
-        // sound the element
+        // schedule the element and the inter-element space
         var time = this.cursor;
         this.keyOnAt(time);
         this.keyOffAt(time+len);
         this.keyHoldFor(_perIes);
       },
 
-      make_dit : function() {
-        this.transition(DIT, _perDit);
-        this.emit('element', '.', this.cursor+_perDit);
-      },
-      make_dah : function() {
-        this.transition(DAH, _perDah);
-        this.emit('element', '-', this.cursor+_perDah);
-      },
-      make_ies_dit : function() {
-        this.emit('element', '', this.cursor);
-        this.make_dit();
-      },
-      make_ies_dah : function() {
-        this.emit('element', '', this.cursor);
-        this.make_dah();
-      },
-      make_ils : function() {
-        keyer_state = IDLE;
-        this.keyHoldFor(_perIls-_perIes);
-        this.emit('element', ' ', this.cursor);
-      },
-      clock : function(raw_dit_on, raw_dah_on, ticks) {
+      clock: function(raw_dit_on, raw_dah_on, ticks) {
         var dit_on = _swapped ? raw_dah_on : raw_dit_on;
         var dah_on = _swapped ? raw_dit_on : raw_dah_on;
 
@@ -820,17 +836,17 @@
 
         // keyer state machine
         if (keyer_state == IDLE) {
-          if (dit_on) self.make_dit();
-          else if (dah_on) self.make_dah();
+          if (dit_on) self.transition(DIT, _perDit);
+          else if (dah_on) self.transition(DAH, _perDah);
         } else if ( timer <= _perIes/2 ) {
           if (keyer_state == DIT) {
-            if ( dah_pending || dah_on ) self.make_dah();
-            else if (dit_on) self.make_dit();
-            else self.make_ils();
+            if ( dah_pending || dah_on ) self.transition(DAH, _perDah);
+            else if (dit_on) self.transition(DIT, _perDit);
+            else keyer_state = IDLE;
           } else if (keyer_state == DAH) {
-            if ( dit_pending || dit_on ) self.make_dit();
-            else if (dah_on) self.make_dah();
-            else self.make_ils();
+            if ( dit_pending || dit_on ) self.transition(DIT, _perDit);
+            else if (dah_on) self.transition(DAH, _perDah);
+            else keyer_state = IDLE;
           }
         }
 
@@ -861,8 +877,16 @@
       // set the inter-element length in dits
       set ies(iesLen) { _iesLen = iesLen; update(); },
       get ies() { return _iesLen; },
+
+      // set the inter-letter length in dits
+      set ils(ilsLen) { _ilsLen = ilsLen; update(); },
+      get ils() { return _ilsLen; },
+
+      // set the inter-word length in dits
+      set iws(iwsLen) { _iwsLen = iwsLen; update(); },
+      get iws() { return _iwsLen; },
     });
-    //
+
     update();
     return self;
   };
@@ -934,9 +958,7 @@
       },
       interval : null,
       start : function() {
-        if (this.interval) {
-          this.stop();
-        }
+        if (this.interval) this.stop();
         this.interval = setInterval(this.intervalFunction, 1);
       },
       stop : function() {
@@ -1108,17 +1130,29 @@
 
       microphone : morse.microphone(context),
       
+      progress : {
+        items_per_session : 5,
+        reps_per_item : 5,
+      },
+
       // parameters
       defaults : {
-        input_pitch : 600, input_gain : -26,
+        input_pitch: 622.25,	/* Eb5 */
+        output_pitch: 523.25,	/* C5 */
+
+        input_gain : -26,
         input_wpm : 15, input_rise : 4, input_fall : 4,
         input_dah : 3, input_ies : 1, input_ils : 3, input_iws : 7,
         input_midi : 'none', input_swapped : false, input_type : 'iambic',
-        output_pitch : 550, output_gain : -26,
+
+        output_gain : -26,
         output_wpm : 15, output_rise : 4, output_fall : 4,
         output_dah : 3, output_ies : 1, output_ils : 3, output_iws : 7,
-        output_midi : 'none'
+
+        items_per_session : 5,
+        reps_per_item : 5,
       },
+
       get_params : function() {
         var params = {};
         for (var name in this.defaults) {
@@ -1135,6 +1169,33 @@
       // direct getters and setters on properties
       get input_pitch() { return this.input.pitch; },
       set input_pitch(v) { this.input.pitch = v; },
+      get output_pitch() { return this.output.pitch; },
+      set output_pitch(v) { this.output.pitch = v; },
+
+      get gain() { return this.input.gain; },
+      set gain(v) { this.input.gain = this.output.gain = v; },
+      get rise() { return this.input.rise; },
+      set rise(v) { this.input.rise = this.output.rise = v; },
+      get fall() { return this.input.fall; },
+      set fall(v) { this.input.fall = this.output.fall = v; },
+      get wpm() { return this.input.wpm; },
+      set wpm(v) { this.input.wpm = this.output.wpm = v; },
+      get dah() { return this.input.dah; },
+      set dah(v) { this.input.dah = this.output.dah = v; },
+      get ies() { return this.input.ies; },
+      set ies(v) { this.input.ies = this.output.ies = v; },
+      get ils() { return this.input.ils; },
+      set ils(v) { this.input.ils = this.output.ils = v; },
+      get iws() { return this.input.iws; },
+      set iws(v) { this.input.iws = this.output.iws = v; },
+
+      get gain_dB() { return this.input_gain; },
+      set gain_dB(v) { this.input_gain = v = this.input_outin = v; },
+      get rise_ms() { return this.input_rise; },
+      set rise_ms(v) { this.input_rise = v = this.input_outse = v; },
+      get fall_ms() { return this.input_fall; },
+      set fall_ms(v) { this.input_fall = v = this.input_outll = v; },
+
       get input_gain() { return this.input.gain; },
       set input_gain(v) { this.input.gain = v; },
       get input_rise() { return this.input.rise; },
@@ -1195,6 +1256,11 @@
       get output_fall_ms() { return  this.output_fall; },
       set output_fall_ms(v) { this.output_fall = v; },
 
+      get items_per_session() { return this.progress.items_per_session; },
+      set items_per_session(v) { this.progress.items_per_session = v; },
+      get reps_per_item() { return this.progress.reps_per_item; },
+      set reps_per_item(v) { this.progress.reps_per_item = v; },
+
       // useful actions
       output_midi_refresh : function() { this.output.midi_refresh(); },
       output_midi_names : function() { this.output.midi_names(); },
@@ -1215,7 +1281,7 @@
 
     var USE_DETONER = false;    // decode from sidetone
     var USE_DETIMER = false;    // decode from transitions
-    // decode from elements, meaning no decoding straight key
+    // decode from elements, except for decoding straight key
 
     if (USE_DETONER) {
       self.output.on('change:pitch', function(pitch) { self.output_decoder.onchangepitch(pitch); });
@@ -1242,9 +1308,9 @@
       self.input.iambic.on('transition', self.input_decoder.ontransition, self.input_decoder);
     } else {
       self.input.connect(context.destination); 
+      self.input.straight.on('transition', self.input_decoder.ontransition, self.input_decoder);
       self.input.iambic.on('element', self.input_decoder.onelement, self.input_decoder);
     }
-      
 
     self.table = self.output.table;
     self.output_decoder.table = self.table;

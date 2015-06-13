@@ -49,16 +49,11 @@ function study_progress(word_list, station) {
     p.innerText = "" + val + "/" + max;
   }
 
-  var ITEMS_PER_SESSION = 5,
-      REPS_PER_ITEM = 5;
-
   var self = {
     word_list: word_list, // the word list we are studying
-    station: station, // the tester we use to examine the student
+    station: station,     // the tester we use to examine the student
     table: station.output.table,
-    items_per_session: ITEMS_PER_SESSION,
-    reps_per_item: REPS_PER_ITEM,
-    words: {}, // the dictionary of words studied
+    words: {},     // the dictionary of words studied
     // number of times seen, recording percent correct,
 
     // proportion complete of course
@@ -82,8 +77,6 @@ function study_progress(word_list, station) {
 
     save: function(name) {
       var save = {
-        items_per_session: self.items_per_session,
-        reps_per_item: self.reps_per_item,
         word_list_name: self.word_list.name,
         word_list_next_i: self.word_list.next_i,
         table_name: self.table.name,
@@ -99,8 +92,6 @@ function study_progress(word_list, station) {
       self.table = morse.table(save.table_name);
       self.word_list = word_list_by_name(save.word_list_name, self.table, save.word_list_next_i);
       self.station = morse.station(save.station_params);
-      self.items_per_session = save.items_per_session;
-      self.reps_per_item = save.reps_per_item;
       self.words = save.words;
       return self;
     },
@@ -113,7 +104,7 @@ function study_progress(word_list, station) {
   return self;
 }
 
-function study_session(progress, type) {
+function study_session(progress, type, items_per_session, reps_per_item) {
   function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
@@ -176,16 +167,17 @@ function study_session(progress, type) {
 
     onoutputletter: function(ltr, code) {
       // console.log("onoutputletter("+ltr+", "+code+")");
-      self.output_text += ltr;
-      self.output_code += code;
+      this.output_text += ltr;
+      this.output_code += code;
     },
     oninputletter: function(ltr, code) {
-      self.input_text += ltr;
-      self.input_code += code;
+      this.input_text += ltr;
+      this.input_code += code;
       // console.log("oninputletter "+self.input_text+" vs "+self.current);
-      if (self.input_text.trim().endsWith(self.current)) {
-        self.test_next();
+      if (this.input_text.trim().endsWith(this.current)) {
+        this.test_next();
       }
+
     },
 
     test_word: function() {
@@ -220,7 +212,6 @@ function study_session(progress, type) {
       // console.log("test_next");
       self.test_score();
       if (self.reps_done == self.reps_to_do) {
-        self.session_progress();
         self.session_score();
       } else {
         self.session_continue();
@@ -248,32 +239,30 @@ function study_session(progress, type) {
     },
 
     worst: function(n) {
-      var worst = Object.keys(self.words).sort(function(a, b) {
-        a = self.words[a];
-        b = self.words[b];
+      var worst = Object.keys(progress.words).sort(function(a, b) {
+        a = progress.words[a];
+        b = progress.words[b];
         return (b.score - a.score) || (a.n - b.n);
       });
       // for (var i = 0; i < worst.length; i += 1) console.log(worst[i], self.words[worst[i]]);
-      return worst.slice(0, self.items_per_session);
+      return worst.slice(0, items_per_session);
     },
 
     session_new_words: function(type) {
-      return (type === 'review') ? self.worst(progress.items_per_session) : next_words(progress.items_per_session);
+      return (type === 'review') ? self.worst(items_per_session) : next_words(items_per_session);
     },
 
     session_new: function() {
       var words = self.session_new_words(type);
-      // console.log('session_new', 'words', words.length, words);
-      self.reps_to_do = progress.items_per_session * progress.reps_per_item;
+      console.log('session_new', 'words', words.length, words);
+      self.reps_to_do = items_per_session * reps_per_item;
       self.reps_done = 0;
       self.score = 0;
-      self.words = repeat(progress.reps_per_item, words);
+      self.words = repeat(reps_per_item, words);
       // console.log('session_new', 'self.words', self.words.length, self.words);
       self.words = shuffle(self.words);
       // console.log('session_new', 'self.words', self.words.length, self.words);
       self.tests = [];
-      progress.station.input_decoder_on_letter(function(ltr, code) { self.oninputletter(ltr, code); });
-      progress.station.output_decoder_on_letter(function(ltr, code) { self.onoutputletter(ltr, code); });
       self.log("<strong>start " + type + " session</strong><br>" + words + "<br>");
       self.session_continue();
       return self;

@@ -1,0 +1,239 @@
+<!--
+Copyright (C) 2015 by Roger E Critchlow Jr, Santa Fe, NM, USA.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../bower_components/core-tooltip/core-tooltip.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="morse-station.html">
+<link rel="import" href="morse-slider.html">
+<link rel="import" href="morse-collapse-heading.html">
+
+<polymer-element name="morse-settings">
+  <template>
+    <style>
+    :host {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    section { margin: 20px; }
+    .heading {
+      padding: 10px 15px;
+      background-color: #f3f3f3;
+      border: 1px solid #dedede;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    .content {
+      padding: 15px;
+      border: 1px solid #dedede;
+      border-top: none;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    </style>
+    <section layout vertical block>
+      <morse-station id="station" input_pitch="{{input_pitch}}" output_pitch="{{output_pitch}}"
+	      gain_dB="{{gain_dB}}" wpm="{{wpm}}" rise_ms="{{rise_ms}}" fall_ms="{{fall_ms}}"
+	      dah="{{dah}}" ies="{{ies}}" ils="{{ils}}" iws="{{iws}}"
+	      input_midi="{{input_midi}}" input_swapped="{{input_swapped}}" input_type="{{input_type}}"
+	      items_per_session="{{items_per_session}}" reps_per_item="{{reps_per_item}}"></morse-station>
+
+      <morse-collapse-heading class="heading" icon="settings" on-click="{{settings_toggle}}" cross-fade>Settings</morse-collapse-heading>
+      <core-collapse id="settings" allowOverflow="true" cross-fade>
+	<div layout vertical block>
+	  <morse-slider value="{{input_pitch}}" min="220" max="1760" step="0.01" pin="true" snap="true" label="sidetone frequency" prefix="Input Pitch" suffix="Hz"></morse-slider>
+	  <morse-slider value="{{output_pitch}}" min="220" max="1760" step="0.01" pin="true" snap="true" label="sidetone frequency" prefix="Output Pitch" suffix="Hz"></morse-slider>
+	  <morse-slider value="{{gain_dB}}" min="-60" max="0" pin="true" snap="true" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
+          <morse-slider iambic value="{{wpm}}" min="5" max="50" step="2.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
+	</div>
+      </core-collapse>
+
+      <morse-collapse-heading class="heading" on-click="{{game_settings_toggle}}" cross-fade icon="settings">Game Settings</morse-collapse-heading>
+      <core-collapse id="game_settings" allowOverflow="true" cross-fade>
+	<div layout vertical block>
+	  <morse-slider value="{{items_per_session}}" min="2" max="50" step="1" prefix="" suffix="Items/Sessions"></morse-slider>
+          <morse-slider value="{{reps_per_item}}" min="2" max="50" step="1" prefix="" suffix="Repetitions/Item"></morse-slider>
+	</div>
+      </core-collapse>
+
+      <morse-collapse-heading class="heading" on-click="{{input_settings_toggle}}" icon="settings" cross-fade>Input Settings</morse-collapse-heading>
+      <core-collapse id="input_settings" allowOverflow="true" cross-fade>
+	<div layout vertical block>
+	  <!-- -
+        <div layout horizontal block center>
+          <paper-dropdown-menu>
+            <paper-dropdown class="dropdown">
+	      <core-menu class="menu" valueattr="label" selected="{{input_type}}">
+                <paper-item label="straight">Straight Key</paper-item>
+                <paper-item label="iambic">Iambic Paddle</paper-item>
+	      </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>Key Type
+        </div>
+	 -->
+        <div layout horizontal block center>
+          <paper-toggle-button iambic label="Swap Paddles" checked="{{input_swapped}}"></paper-toggle-button> Swap Paddles
+        </div>
+        <div layout horizontal block center>
+          <paper-dropdown-menu label="MIDI Device">
+	    <paper-dropdown class="dropdown">
+              <core-menu class="menu" valueattr="label" selected="{{input_midi}}">
+                <paper-item label="none">None</paper-item>
+              </core-menu>
+	    </paper-dropdown>
+          </paper-dropdown-menu>
+          <core-tooltip label="Reload the MIDI device list.">
+	    <paper-icon-button id="input_midi_reload" icon="refresh"></paper-icon-button>
+          </core-tooltip>MIDI Device
+        </div>
+	</div>
+      </core-collapse>
+
+      <morse-collapse-heading class="heading" on-click="{{envelope_settings_toggle}}" icon="settings" cross-fade>Key Envelope Settings</morse-collapse-heading>
+      <core-collapse id="envelope_settings" allowOverflow="true" cross-fade>
+	<div layout vertical block>
+          <morse-slider value="{{rise_ms}}" min="1" max="10" label="envelope rise time" prefix="Rise" suffix="ms"></morse-slider>
+          <morse-slider value="{{fall_ms}}" min="1" max="10" label="envelope fall time" prefix="Fall" suffix="ms"></morse-slider>
+	</div>
+      </core-collapse>
+
+      <morse-collapse-heading class="heading" on-click="{{keyer_settings_toggle}}" icon="settings" cross-fade>Keyer Settings</morse-collapse-heading>
+      <core-collapse id="keyer_settings" allowOverflow="true" cross-fade>
+	<div layout vertical block>
+	  <morse-slider iambic value="{{dah}}" min="2.5" max="3.5" step="0.1" label="dash length" prefix="Dah" suffix="dits"></morse-slider>
+          <morse-slider iambic value="{{ies}}" min="0.75" max="1.25" step="0.05" label="inter-element space" prefix="IES" suffix="dits"></morse-slider>
+          <morse-slider iambic value="{{ils}}" min="2.5" max="3.5" step="0.1" label="inter-letter space length" prefix="ILS" suffix="dits"></morse-slider>
+          <morse-slider iambic value="{{iws}}" min="6.5" max="7.5" step="0.1" label="inter-word space length" prefix="IWS" suffix="dits"></morse-slider>
+	</div>
+      </core-collapse>
+	
+      <div class="content" layout vertical block>
+          <p>
+            The simplest telegraph key is a hand or straight key.  It
+            is a switch which closes when the key is pressed down and
+            opens when the key is release upwards.
+          </p><p>
+            An iambic or squeeze key consists of two switches which
+            close when pressed toward each other.  Pressing one switch
+            with the thumb sends a sequence of dits, pressing the
+            other switch with the first finger sends a sequence of
+            dahs, squeezing both switches closed at once sends a
+            sequence of alternating dits and dahs.
+          </p><p>
+            The two switches of an iambic paddle are normally wired
+            backwards, so it's always convenient to have some way to
+            swap the paddles.
+          </p><p>
+            The <b>pitch</b>, <b>level</b>, and <b>speed</b> settings
+            have the same significance for <b>input</b> as they do for
+            <b>output</b>.  You should set the input pitch to be
+            different from the output pitch so you can tell them
+            apart.  The levels and speeds should probably be the same
+            for input and output.
+          </p><p>
+            <h3>More Setting</h3>
+          </p><p>
+            The additional settings for <b>input</b> are the same as
+            they are for <b>output</b> and equally esoteric.
+          </p><p>
+            <h3>Caveats</h3>
+          </p><p>
+            I think I am hearing clicks that weren't there a few
+            releases of Chrome ago, maybe I need to add an option to
+            turn the key envelope shaping on and off.
+          </p>
+	</div>
+      </core-collapse>
+    </section>
+  </template>
+
+  <script>
+  Polymer({
+    publish: {
+      input_pitch: 622.25,	/* E5 */
+      output_pitch: 523.25,	/* C5 */
+
+      gain_dB: -26,
+      wpm: 15,
+      rise_ms: 4,
+      fall_ms: 4,
+      dah: 3,
+      ies: 1,
+      ils: 3,
+      iws: 7,
+
+      input_midi: "none",
+      input_swapped: false,
+      input_type: 'iambic',
+
+      items_per_session: 5,
+      reps_per_item: 5,
+    },
+
+    ready: function() {
+      // console.log('ready in morse-input', this.$.key, this.$.station);
+    },
+
+    settings_toggle: function() { this.$.settings.toggle(); },
+    game_settings_toggle: function() { this.$.game_settings.toggle(); },
+    input_settings_toggle: function() { this.$.input_settings.toggle(); },
+    envelope_settings_toggle: function() { this.$.envelope_settings.toggle(); },
+    keyer_settings_toggle: function() { this.$.keyer_settings.toggle(); },
+
+    input_typeChanged: function(oldv, newv) {
+      var disabled = newv != 'iambic';
+      var elts = this.shadowRoot.querySelectorAll("[iambic]");
+      for (var i = 0; i < elts.length; i += 1) elts[i].disabled = disabled;
+      // this.attrChanged('input_type', oldv, newv);
+    },
+
+    input_midi_refresh: function() { this.$.station.input_midi_refresh(); },
+    input_midi_names: function() { return this.$.station.input_midi_names(); },
+
+    onblur: function() {
+      // console.log('input.onblur');
+      this.$.station.onblur();
+    },
+
+    onfocus: function() {
+      // console.log('input.onfocus');
+      this.$.station.onfocus();
+    },
+  });
+  </script>
+</polymer-element>
+<!-- Local Variables: -->
+<!-- mode: web -->
+<!-- indent-tabs-mode: t -->
+<!-- web-mode-markup-indent-offset: 2 -->
+<!-- web-mode-css-indent-offset: 2 -->
+<!-- web-mode-code-indent-offset: 2 -->
+<!-- End: -->

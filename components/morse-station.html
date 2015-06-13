@@ -52,9 +52,69 @@
         output_ies : 1,
         output_ils : 3,
         output_iws : 7,
+	
+	gain_dB : -26,
+        wpm : 15,
+        rise_ms : 4,
+        fall_ms : 4,
+        dah : 3,
+        ies : 1,
+        ils : 3,
+        iws : 7,
+ 
+	items_per_session: 5,
+	reps_per_item: 5,
       },
 
       ready: function() {
+	this.refresh();
+	var body = document.querySelector("body");
+	if (body) keytarget = body;
+      },
+
+      input_pitchChanged: function(oldv, newv) { this.attrChanged('input_pitch', oldv, newv); },
+      input_gain_dBChanged: function(oldv, newv) { this.attrChanged('input_gain_dB', oldv, newv); },
+      input_wpmChanged: function(oldv, newv) { this.attrChanged('input_wpm', oldv, newv); },
+      input_rise_msChanged: function(oldv, newv) { this.attrChanged('input_rise_ms', oldv, newv); },
+      input_fall_msChanged: function(oldv, newv) { this.attrChanged('input_fall_ms', oldv, newv); },
+      input_dahChanged: function(oldv, newv) { this.attrChanged('input_dah', oldv, newv); },
+      input_iesChanged: function(oldv, newv) { this.attrChanged('input_ies', oldv, newv); },
+      input_ilsChanged: function(oldv, newv) { this.attrChanged('input_ils', oldv, newv); },
+      input_iwsChanged: function(oldv, newv) { this.attrChanged('input_iws', oldv, newv); },
+      input_midiChanged: function(oldv, newv) { this.attrChanged('input_midi', oldv, newv); },
+      input_swappedChanged: function(oldv, newv) { this.attrChanged('input_swapped', oldv, newv); },
+      input_typeChanged: function(oldv, newv) { this.attrChanged('input_type', oldv, newv); },
+
+      output_pitchChanged: function(oldv, newv) { this.attrChanged('output_pitch', oldv, newv); },
+      output_gain_dBChanged: function(oldv, newv) { this.attrChanged('output_gain_dB', oldv, newv); },
+      output_wpmChanged: function(oldv, newv) { this.attrChanged('output_wpm', oldv, newv); },
+      output_rise_msChanged: function(oldv, newv) { this.attrChanged('output_rise_ms', oldv, newv); },
+      output_fall_msChanged: function(oldv, newv) { this.attrChanged('output_fall_ms', oldv, newv); },
+      output_dahChanged: function(oldv, newv) { this.attrChanged('output_dah', oldv, newv); },
+      output_iesChanged: function(oldv, newv) { this.attrChanged('output_ies', oldv, newv); },
+      output_ilsChanged: function(oldv, newv) { this.attrChanged('output_ils', oldv, newv); },
+      output_iwsChanged: function(oldv, newv) { this.attrChanged('output_iws', oldv, newv); },
+	
+      gain_dBChanged: function(oldv, newv) { this.attrChanged('gain_dB', oldv, newv); },
+      wpmChanged: function(oldv, newv) { this.attrChanged('wpm', oldv, newv); },
+      rise_msChanged: function(oldv, newv) { this.attrChanged('rise_ms', oldv, newv); },
+      fall_msChanged: function(oldv, newv) { this.attrChanged('fall_ms', oldv, newv); },
+      dahChanged: function(oldv, newv) { this.attrChanged('dah', oldv, newv); },
+      iesChanged: function(oldv, newv) { this.attrChanged('ies', oldv, newv); },
+      ilsChanged: function(oldv, newv) { this.attrChanged('ils', oldv, newv); },
+      iwsChanged: function(oldv, newv) { this.attrChanged('iws', oldv, newv); },
+ 
+      items_per_sessionChanged: function(oldv, newv) { this.attrChanged('items_per_session', oldv, newv); },
+      reps_per_itemChanged: function(oldv, newv) { this.attrChanged('reps_per_item', oldv, newv); },
+
+      attrChanged: function(attr, oldv, newv) {
+	station[attr] = newv;
+      },
+
+      onblur: function() { },
+      onfocus: function() { this.refresh() },
+
+      refresh: function() {
         this.input_pitch = station.input_pitch;
         this.input_gain_dB = station.input_gain_dB;
         this.input_wpm = station.input_wpm;
@@ -78,60 +138,41 @@
         this.output_ils = station.output_ils;
         this.output_iws = station.output_iws;
 
-	var body = document.querySelector("body");
-	if (body) keytarget = body;
+	this.gain_dB = station.gain_dB;
+        this.wpm = station.wpm;
+        this.rise_ms = station.rise_ms;
+        this.fall_ms = station.fall_ms;
+        this.dah = station.dah;
+        this.ies = station.ies;
+        this.ils = station.ils;
+        this.iws = station.iws;
+
+	this.items_per_session = station.items_per_session;
+	this.reps_per_item = station.reps_per_item;
       },
 
-      input_pitchChanged : function(oldv, newv) { this.attrChanged('input_pitch', oldv, newv); },
-      input_gain_dBChanged : function(oldv, newv) { this.attrChanged('input_gain_dB', oldv, newv); },
-      input_wpmChanged : function(oldv, newv) { this.attrChanged('input_wpm', oldv, newv); },
-      input_rise_msChanged : function(oldv, newv) { this.attrChanged('input_rise_ms', oldv, newv); },
-      input_fall_msChanged : function(oldv, newv) { this.attrChanged('input_fall_ms', oldv, newv); },
-      input_dahChanged : function(oldv, newv) { this.attrChanged('input_dah', oldv, newv); },
-      input_iesChanged : function(oldv, newv) { this.attrChanged('input_ies', oldv, newv); },
-      input_ilsChanged : function(oldv, newv) { this.attrChanged('input_ils', oldv, newv); },
-      input_iwsChanged : function(oldv, newv) { this.attrChanged('input_iws', oldv, newv); },
-      input_midiChanged : function(oldv, newv) { this.attrChanged('input_midi', oldv, newv); },
-      input_swappedChanged : function(oldv, newv) { this.attrChanged('input_swapped', oldv, newv); },
-      input_typeChanged : function(oldv, newv) { this.attrChanged('input_type', oldv, newv); },
+      output_send: function(text) { station.output_send(text); },
+      output_cancel: function() { station.output.cancel(); },
+      output_decoder_on_letter: function(callback, context) { station.output_decoder_on_letter(callback, context); },
+      input_decoder_on_letter: function(callback, context) { station.input_decoder_on_letter(callback, context); },
+      output_decoder_off_letter: function(callback, context) { station.output_decoder_off_letter(callback, context); },
+      input_decoder_off_letter: function(callback, context) { station.input_decoder_off_letter(callback, context); },
 
-      output_pitchChanged : function(oldv, newv) { this.attrChanged('output_pitch', oldv, newv); },
-      output_gain_dBChanged : function(oldv, newv) { this.attrChanged('output_gain_dB', oldv, newv); },
-      output_wpmChanged : function(oldv, newv) { this.attrChanged('output_wpm', oldv, newv); },
-      output_rise_msChanged : function(oldv, newv) { this.attrChanged('output_rise_ms', oldv, newv); },
-      output_fall_msChanged : function(oldv, newv) { this.attrChanged('output_fall_ms', oldv, newv); },
-      output_dahChanged : function(oldv, newv) { this.attrChanged('output_dah', oldv, newv); },
-      output_iesChanged : function(oldv, newv) { this.attrChanged('output_ies', oldv, newv); },
-      output_ilsChanged : function(oldv, newv) { this.attrChanged('output_ils', oldv, newv); },
-      output_iwsChanged : function(oldv, newv) { this.attrChanged('output_iws', oldv, newv); },
+      input_blur: function() { station.input_blur(); },
+      input_focus: function() { station.input_focus(); },
 
-      attrChanged : function(attr, oldv, newv) {
-        // console.log("station:"+attr, "oldv="+oldv, "newv="+newv);
-        if (newv != oldv) station[attr] = newv;
-      },
+      input_keydown: function(isleft) { station.input_keydown(isleft); },
+      input_keyup: function(isleft) { station.input_keyup(isleft); },
 
-      output_send : function(text) { station.output_send(text); },
-      output_cancel : function() { station.output.cancel(); },
-      output_decoder_on_letter : function(callback, context) { station.output_decoder_on_letter(callback, context); },
-      input_decoder_on_letter : function(callback, context) { station.input_decoder_on_letter(callback, context); },
-      output_decoder_off_letter : function(callback, context) { station.output_decoder_off_letter(callback, context); },
-      input_decoder_off_letter : function(callback, context) { station.input_decoder_off_letter(callback, context); },
+      input_midi_names: function() { return station.input_midi_names(); },
+      input_midi_refresh: function() { station.input_midi_refresh(); },
 
-      input_blur : function() { station.input_blur(); },
-      input_focus : function() { station.input_focus(); },
-
-      input_keydown : function(isleft) { station.input_keydown(isleft); },
-      input_keyup : function(isleft) { station.input_keyup(isleft); },
-
-      input_midi_names : function() { return station.input_midi_names(); },
-      input_midi_refresh : function() { station.input_midi_refresh(); },
-
-      get_station : function() { return station; },
-      get_keytarget : function() { return keytarget; },
-      set_decoded_text : function(text) { decoded_text = text; },
-      get_decoded_text : function() { return decoded_text; },
-      set_lastout : function(last) { lastout = last; },
-      get_lastout : function() { return lastout; },
+      get_station: function() { return station; },
+      get_keytarget: function() { return keytarget; },
+      set_decoded_text: function(text) { decoded_text = text; },
+      get_decoded_text: function() { return decoded_text; },
+      set_lastout: function(last) { lastout = last; },
+      get_lastout: function() { return lastout; },
 
     });
   }());

@@ -63,26 +63,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       <morse-key id="key" hero-id="key" hero></morse-key>
       <morse-text-input id="input" layout horizontal block center cross-fade></morse-text-input>
 
-      <!-- output settings -->
-      <morse-collapse-heading class="heading" on-click="{{settings_toggle}}" hero-id="settings" hero icon="settings">Settings</morse-collapse-heading>
-      <core-collapse id="settings" hero-id="settings2" hero>
-        <morse-slider value="{{output_pitch}}" min="220" max="1760" label="sidetone frequency" prefix="Pitch" suffix="Hz" ></morse-slider>
-        <morse-slider value="{{output_gain_dB}}" min="-60" max="0" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
-	<morse-slider value="{{output_wpm}}" min="5" max="50" step="2.5" label="keying speed" prefix="Speed" suffix="wpm"></morse-slider>
-
-	<!-- more output settings -->
-	<morse-collapse-heading class="heading" on-click="{{more_settings_toggle}}" icon="settings">More Settings</morse-collapse-heading>
-        <core-collapse id="more_settings">
-          <morse-slider value="{{output_rise_ms}}" min="1" max="10" label="envelope rise time" prefix="Rise" suffix="ms"></morse-slider>
-          <morse-slider value="{{output_fall_ms}}" min="1" max="10" label="envelope fall time" prefix="Fall" suffix="ms"></morse-slider>
-	  <morse-slider value="{{output_dah}}" min="2.5" max="3.5" step="0.1" label="Dash length" prefix="Dah" suffix="dits"></morse-slider>
-          <morse-slider value="{{output_ies}}" min="0.75" max="1.25" step="0.05" label="Inter-element spacing." prefix="IES" suffix="dits"></morse-slider>
-          <morse-slider value="{{output_ils}}" min="2.5" max="3.5" step="0.1" label="Inter-letter spacing." prefix="ILS" suffix="dits"></morse-slider>
-          <morse-slider value="{{output_iws}}" min="6.5" max="7.5" step="0.1" label="Inter-word spacing." prefix="IWS" suffix="dits"></morse-slider>
-        </core-collapse>
-
-      </core-collapse>
-
       <!-- output information -->
       <morse-collapse-heading class="heading" on-click="{{info_toggle}}" hero-id="information" hero icon="info-outline">Info</morse-collapse-heading>
       <core-collapse id="info" hero-id="information2" hero>
@@ -174,12 +154,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
     onblur : function() {
       // console.log('output.onblur');
-      this.$.decoder.onblur();
       this.$.key.onblur();
+      this.$.decoder.onblur();
+      this.$.station.onblur();
     },
 
     onfocus : function() {
       // console.log('output.onfocus');
+      this.$.station.onfocus();
       this.$.decoder.onfocus();
       this.$.key.onfocus();
     },

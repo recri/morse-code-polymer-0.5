@@ -20,9 +20,7 @@
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
 <link rel="import" href="morse-station.html">
-<link rel="import" href="morse-decoded-text.html">
 <link rel="import" href="morse-key.html">
-<link rel="import" href="morse-slider.html">
 <link rel="import" href="morse-collapse-heading.html">
 
 <polymer-element name="morse-mimic">
@@ -75,7 +73,7 @@
     </style>
 
     <section layout vertical block>
-      <morse-station id="station"></morse-station>
+      <morse-station id="station" items_per_session="{{items_per_session}}" reps_per_session="{{reps_per_session}}"></morse-station>
       <!--  <morse-decoded-text id="decoder" hero-id="decoder" hero></morse-decoded-text> -->
       <morse-key id="key" hero-id="key" hero></morse-key>
 
@@ -105,12 +103,6 @@
         <span flex></span>
       </div>
 
-      <morse-collapse-heading class="heading" on-click="{{settingsToggle}}" hero-id="settings" hero icon="settings">Settings</morse-collapse-heading>
-      <core-collapse id="settings" allowOverflow="true" hero-id="settings2" hero>
-	<morse-slider value="{{items_per_session}}" min="2" max="50" step="1" prefix="" suffix="Items/Sessions"></morse-slider>
-        <morse-slider value="{{reps_per_item}}" min="2" max="50" step="1" prefix="" suffix="Repetitions/Item"></morse-slider>
-      </core-collapse>
-
       <morse-collapse-heading class="heading" center on-click="{{infoToggle}}" hero-id="information" hero icon="info-outline">Info</morse-collapse-heading>
       <core-collapse id="info" hero-id="information2" hero class="content">
         <p>
@@ -133,8 +125,7 @@
           how well you do.
         </p>
       </core-collapse>
-      <paper-shadow class="session" id="session" layout vertical center block>
-      </paper-shadow>
+      <div id="log"></div>
 
     </section>
   </template>
@@ -143,42 +134,53 @@
   <script>
   Polymer({
     publish: {
-      items_per_session: 5,
-      reps_per_item: 5,
     },
-
-    items_per_sessionChanged: function(oldv, newv) { this.progress.items_per_session = newv; },
-    reps_per_itemChanged: function(oldv, newv) { this.progress.reps_per_item = newv; },
 
     session: null,
 
     start_session: function(which) {
       if (this.session == null) {
-	console.log("start_session", which);
-	this.session = study_session(this.progress, which);
-	this.start_session();
+	// console.log("start_session", which, this.$.station.items_per_session, this.$.station.get_station().items_per_session);
+	this.session = study_session(this.progress, which, this.$.station.items_per_session, this.$.station.reps_per_item);
+	// ??? this.start_session();
 	// make session card
 	// start session testing
-	this.$.session.style.display = "block";
 	// disable start session buttons
 	// periodically check status of session
 	// for progress and completion
-	this.monitor_session();
+	this.$.station.input_decoder_on_letter(this.oninputletter, this);
+	this.$.station.output_decoder_on_letter(this.onoutputletter, this);
+	// this.$.station.get_station().output_decoder.event_debug();
+	this.$.log.innerHTML = "";
       }
     },
-    monitor_session: function() {
-      if (this.session) {
-	var progress = this.session.session_progress();
-	if (progress < 1) {
-	  setTimeout((function(self) { return function() { self.monitor_session() } }(this)), 250);
-	} else {
-	  this.finish_session();
-	}
-      }
+
+    oninputletter: function(ltr, code) {
+      this.session.oninputletter(ltr, code);
+      this.$.reply_text.innerText = this.session.input_text;
+      this.$.reply_code.innerText = this.session.input_code;
+      this.$.log.innerHTML = this.session.logtext;
+      // console.log('oninputletter', ltr, code, this.session.input_text, this.session.input_code);
+      if (this.session.session_progress() >= 1)
+	this.finish_session();
     },
+    onoutputletter: function(ltr, code) {
+      this.session.onoutputletter(ltr, code);
+      this.$.sent_text.innerText = this.session.output_text;
+      this.$.sent_code.innerText = this.session.output_code;
+      this.$.card_number.innerText = (this.session.reps_done+1)+" / "+this.session.reps_to_do;
+      this.$.log.innerHTML = this.session.logtext;
+      // console.log('onoutputletter', ltr, code, this.session.output_text, this.session.output_code);
+    },
+
+    retry_card: function() { this.session.test_again(); },
+    skip_card: function() { this.session.test_next(); },
+    quit_session: function() { this.finish_session(); },
+    
     finish_session() {
-      console.log("finish_session");
-      this.$.session.style.display = "none";
+      // console.log("finish_session");
+      this.$.station.input_decoder_off_letter(this.oninputletter, this);
+      this.$.station.output_decoder_off_letter(this.onoutputletter, this);
       this.session = null;
     },
 
@@ -189,8 +191,6 @@
       if (this.session == null) {
 	var station = this.$.station.get_station();
 	this.progress = study_progress(word_list_by_name('comb', station.table), station);
-	this.items_per_session = this.progress.items_per_session;
-	this.reps_per_item = this.progress.reps_per_item;
       }
     },
 
@@ -201,26 +201,24 @@
       var station = this.$.station.get_station();
       if (!localStorage['morse-mimic']) {
         this.progress = study_progress(word_list_by_name('comb', station.table), station);
-        console.log('progress', 'new', this.progress);
+        // console.log('progress', 'new', this.progress);
       } else {
         this.progress = study_progress(null, station).restore('morse-mimic');
-        console.log('progress', 'old', this.progress);
+        // console.log('progress', 'old', this.progress);
       }
-      this.items_per_session = this.progress.items_per_session;
-      this.reps_per_item = this.progress.reps_per_item;
     },
 
     onblur: function() {
-      console.log('mimic.onblur');
-      // this.$.decoder.onblur();
+      // console.log('mimic.onblur');
       this.$.key.onblur();
+      this.$.station.onblur();
       this.progress.save('morse-mimic');
     },
 
     onfocus: function() {
-      console.log('mimic.onfocus');
+      // console.log('mimic.onfocus');
+      this.$.station.onfocus();
       this.$.key.onfocus();
-      // this.$.decoder.onfocus();
       // update progress bar
     },
   });
