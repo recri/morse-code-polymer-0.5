@@ -63,7 +63,7 @@
     },
 
     onblur: function() {
-      console.log('decoder.onblur', this);
+      // console.log('decoder.onblur', this);
       this.$.station.output_decoder_off_letter(this.onletter_output, this);
       this.$.station.input_decoder_off_letter(this.onletter_input, this);
       this.$.station.set_lastout(this.lastout);
@@ -71,7 +71,7 @@
     },
 
     onfocus: function() {
-      console.log('decoder.onfocus', this);
+      // console.log('decoder.onfocus', this);
       this.lastout = this.$.station.get_lastout();
       this.decoded_text = this.$.station.get_decoded_text();
       this.$.station.input_decoder_on_letter(this.onletter_input, this);

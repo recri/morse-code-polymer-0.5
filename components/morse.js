@@ -943,7 +943,13 @@
       },
       // common handlers
       keyset : function(key, on) {
-        if (key) this.raw_dit_on = on; else this.raw_dah_on = on;
+        if (key) {
+          this.raw_dit_on = on;
+          this.emit('key:dit', on, context.currentTime);
+        } else {
+          this.raw_dah_on = on;
+          this.emit('key:dah', on, context.currentTime);
+        }
         this.intervalFunction();
       },
       keydown : function(key) { self.keyset(key, true); },

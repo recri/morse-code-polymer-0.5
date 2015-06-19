@@ -46,8 +46,10 @@ Oh, I need a morse-scope-channel component.
     </style>
     <morse-station id="station"></morse-station>
     <section layout vertical block>
-      <canvas id="key_gen" height="{{ht}}" width="100%" on-resize="{{onresize}}"></canvas>
-      <canvas id="key_det" height="{{ht}}" width="100%"></canvas>
+      <canvas id="key_dit" height="{{ht}}" width="100%" on-resize="{{onresize}}"></canvas>
+      <canvas id="key_dah" height="{{ht}}" width="100%"></canvas>
+      <canvas id="key_gen" height="{{ht}}" width="100%"></canvas>
+      <canvas id="key_det" height="{{ht}}" width="100%"></canvas> 
       <canvas id="txt_gen" height="{{ht}}" width="100%"></canvas>
       <canvas id="txt_det" height="{{ht}}" width="100%"></canvas>
       <canvas id="key_aud" height="{{ht}}" width="100%"></canvas>
@@ -66,7 +68,7 @@ Oh, I need a morse-scope-channel component.
   <script>
   Polymer({
     // streams
-    streams : [ 'key_gen', 'key_det', 'txt_gen', 'txt_det', 'key_aud', 'txt_aud', 'mic_aud' ],
+    streams : [ 'key_dit', 'key_dah', 'key_gen', 'key_det', 'txt_gen', 'txt_det', 'key_aud', 'txt_aud', 'mic_aud' ],
 
     // scaling, panning
     min_t : 1e6, max_t : 0,
@@ -77,6 +79,8 @@ Oh, I need a morse-scope-channel component.
 
     // transitions: [time, 1 or 0, ...]
     // generated or detected
+    key_dit : [],
+    key_dah : [],
     key_gen : [],
     txt_gen : [],
     key_det : [],
@@ -94,7 +98,7 @@ Oh, I need a morse-scope-channel component.
       return function(onoff, time) { 
 	this.min_t = Math.min(time, this.min_t);
 	this.max_t = Math.max(time, this.max_t);
-	this[list].push(time, onoff);
+	this[list].push(time, onoff?1:0);
       }
     },
 
@@ -111,6 +115,8 @@ Oh, I need a morse-scope-channel component.
     // ready life cycle function, create data event handlers
     ready : function() {
       // generate functions to receive data
+      this.pusher.key_dit = this.transition_pusher('key_dit');
+      this.pusher.key_dah = this.transition_pusher('key_dah');
       this.pusher.key_gen = this.transition_pusher('key_gen');
       this.pusher.txt_gen = this.transition_pusher('txt_gen');
       this.pusher.key_det = this.transition_pusher('key_det');
@@ -123,6 +129,8 @@ Oh, I need a morse-scope-channel component.
     // start recording
     record : function() {
       var station = this.$.station.get_station();
+      station.input.iambic.on('key:dit', this.pusher.key_dit, this);
+      station.input.iambic.on('key:dah', this.pusher.key_dah, this);
       station.input.straight.on('transition', this.pusher.key_gen, this);
       station.input.iambic.on('transition', this.pusher.key_gen, this);
       station.output.on('transition', this.pusher.txt_gen, this);
@@ -137,6 +145,8 @@ Oh, I need a morse-scope-channel component.
     // stop recording
     stop : function() {
       var station = this.$.station.get_station();
+      station.input.iambic.off('key:dit', this.pusher.key_dit);
+      station.input.iambic.off('key:dah', this.pusher.key_dah);
       station.input.straight.off('transition', this.pusher.key_gen);
       station.input.iambic.off('transition', this.pusher.key_gen);
       station.output.off('transition', this.pusher.txt_gen);
@@ -277,6 +287,7 @@ Oh, I need a morse-scope-channel component.
       ctx.textBaseline = "top"; 
       ctx.fillText(id,0,0); 
       switch (id) {
+	case 'key_dit': case 'key_dah':	
 	case 'key_gen': case 'key_det': case 'txt_gen': case 'txt_det':
 	  this.redraw_transition(c, id, ctx, data);
 	  break;

@@ -83,7 +83,7 @@
 	keytarget.removeEventListener('keydown', this.keydownhandler);
 	keytarget.removeEventListener('keyup', this.keyuphandler);
       } else {
-	console.log('no keytarget on blur');
+	// console.log('no keytarget on blur');
       }
       this.$.station.input_blur();
     },
@@ -96,7 +96,7 @@
 	keytarget.addEventListener('keyup', this.keyuphandler);
 	// keytarget.focus();
       } else {
-	console.log('no keytarget on focus');
+	// console.log('no keytarget on focus');
       }
       this.$.station.input_focus();
 
