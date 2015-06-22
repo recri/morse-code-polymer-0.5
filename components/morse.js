@@ -772,6 +772,11 @@
     var _ilsLen = 3;        // dits per space between letters
     var _iwsLen = 7;        // dits per space between words
 
+    // timer, 1/4 dit of samples
+    var _buffer; 
+    var _source;
+    var _running = false;
+
     // update the clock computations
     // for reference a dit is
     //              80ms at 15wpm
@@ -790,10 +795,44 @@
       // console.log('iambic_keyer.update', '_perIes', _perIes);
       // console.log('iambic_keyer.update', '_perIls', _perIls);
       // console.log('iambic_keyer.update', '_perIws', _perIws);
+      _buffer = context.createBuffer(1, Math.floor(context.sampleRate*_perDit/4), context.sampleRate);
+      // console.log("update:_buffer", _buffer.length, _buffer.duration, _buffer.sampleRate);
+      // console.log("update:_data", _buffer.getChannelData(0)[0], _buffer.getChannelData(0)[1], _buffer.getChannelData(0)[2]);
     }
 
     // extends player
     var self = extend(morse.player(context), {
+      raw_dit_on : false,
+      raw_dah_on : false,
+      last_tick : context.currentTime,
+
+      start_clock : function() {
+        console.log("start_clock");
+        this.last_tick = context.currentTime;
+        _running = true;
+        this.start_tick();
+      },
+
+      stop_clock : function() {
+        console.log("stop_clock");
+        _running = false;
+        if (_source) _source.stop();
+      },
+
+      end_tick : function() {
+        _source = null;
+        self.clock();
+        if (_running)
+          self.start_tick();
+      },
+      
+      start_tick : function() {
+        _source = context.createBufferSource();
+        _source.buffer = _buffer;
+        _source.onended = self.end_tick;
+        _source.connect(context.destination); // not sure why I needed this, but it doesn't help
+        _source.start();
+      },
 
       transition: function(state, len) {
         // emit a space
@@ -817,9 +856,11 @@
 
         // mark the new state
         keyer_state = state;
+
         // reset the timer, count down to length of element plus inter-element space
         if (timer < 0) timer = 0;
         timer += len+_perIes;
+
         // schedule the element and the inter-element space
         var time = this.cursor;
         this.keyOnAt(time);
@@ -827,9 +868,17 @@
         this.keyHoldFor(_perIes);
       },
 
-      clock: function(raw_dit_on, raw_dah_on, ticks) {
-        var dit_on = _swapped ? raw_dah_on : raw_dit_on;
-        var dah_on = _swapped ? raw_dit_on : raw_dah_on;
+      clock: function() {
+
+        var dit_on = _swapped ? this.raw_dah_on : this.raw_dit_on;
+        var dah_on = _swapped ? this.raw_dit_on : this.raw_dah_on;
+
+        // compute time
+        var now = context.currentTime;
+        var ticks = now - self.last_tick;
+        self.last_tick = now;
+
+        // console.log("clock dit", dit_on, "dah", dah_on, "ticks", ticks);
 
         // update timer
         timer -= ticks;
@@ -859,7 +908,6 @@
         dah_pending = dah_pending ?
           keyer_state != DAH :
           (dah_on && keyer_state == DIT && timer < _perDit/2+_perIes);
-
       },
 
       // swap the dit and dah paddles
@@ -891,6 +939,47 @@
     return self;
   };
 
+  morse.iambic_input = function(context) {
+    // extend iambic keyer
+    var self = extend(morse.iambic_keyer(context), {
+      // handlers for focus
+      onfocus : function() { self.start(); },
+      onblur : function() { self.stop(); },
+      // handlers for MIDI
+      onmidievent : function(event) {
+        if (event.data.length == 3) {
+          // console.log("onmidievent "+event.data[0]+" "+event.data[1]+" "+event.data[2].toString(16));
+          switch (event.data[0]&0xF0) {
+          case 0x90: self.keyset(event.data[1]&1, true); break;
+          case 0x80: self.keyset(event.data[1]&1, false); break;
+          }
+        }
+      },
+      // common handlers
+      keyset : function(key, on) {
+        if (key) {
+          this.raw_dit_on = on;
+          this.emit('key:dit', on, context.currentTime);
+        } else {
+          this.raw_dah_on = on;
+          this.emit('key:dah', on, context.currentTime);
+        }
+        this.clock();
+      },
+      keydown : function(key) { self.keyset(key, true); },
+      keyup : function(key) { self.keyset(key, false); },
+      start : function() { this.start_clock(); },
+      stop : function() {
+        this.raw_dit_on = false;
+        this.raw_dah_on = false;
+        this.clock();
+        this.cancel();
+        this.stop_clock()
+      },
+    });
+    return self;
+  };
+
   morse.straight_input = function(context) {
     // extends player
     var self = extend(morse.player(context), {
@@ -918,63 +1007,6 @@
           case 0x80: self.keyset(0, false); break;
           }
         }
-      },
-    });
-    return self;
-  };
-
-  morse.iambic_input = function(context) {
-    // extend iambic keyer
-    var self = extend(morse.iambic_keyer(context), {
-      raw_dit_on : false,
-      raw_dah_on : false,
-      // handlers for focus
-      onfocus : function() { self.start(); },
-      onblur : function() { self.stop(); },
-      // handlers for MIDI
-      onmidievent : function(event) {
-        if (event.data.length == 3) {
-          // console.log("onmidievent "+event.data[0]+" "+event.data[1]+" "+event.data[2].toString(16));
-          switch (event.data[0]&0xF0) {
-          case 0x90: self.keyset(event.data[1]&1, true); break;
-          case 0x80: self.keyset(event.data[1]&1, false); break;
-          }
-        }
-      },
-      // common handlers
-      keyset : function(key, on) {
-        if (key) {
-          this.raw_dit_on = on;
-          this.emit('key:dit', on, context.currentTime);
-        } else {
-          this.raw_dah_on = on;
-          this.emit('key:dah', on, context.currentTime);
-        }
-        this.intervalFunction();
-      },
-      keydown : function(key) { self.keyset(key, true); },
-      keyup : function(key) { self.keyset(key, false); },
-      intervalLast : context.currentTime,
-      intervalFunction : function() {
-        var time = context.currentTime;
-        var tick = time - self.intervalLast;
-        self.intervalLength = (self.intervalLength + tick) / 2;
-        self.intervalLast = time;
-        self.clock(self.raw_dit_on, self.raw_dah_on, tick);
-      },
-      interval : null,
-      start : function() {
-        if (this.interval) this.stop();
-        this.interval = setInterval(this.intervalFunction, 1);
-      },
-      stop : function() {
-        if (this.interval) {
-          clearInterval(this.interval);
-          this.interval = null;
-        }
-        this.raw_dit_on = false;
-        this.raw_dah_on = false;
-        this.cancel();
       },
     });
     return self;
