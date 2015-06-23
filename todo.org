@@ -49,16 +49,39 @@
 * [x] enabling detone step slows down the output decoding
   but decoding stops working at higher speeds in a mystifying way
 * [x] stop the output decoder from getting ahead of itself
+* [x] make the input decoder track the input speed, if there is one
+  switched to decoding elements rather than transitions
+* [x] fix the key clicks 
+  I suspect timing jitter induced by a sample clock that only changes
+  once per buffer and jumps by a buffer worth of samples. when I pick
+  up the buffer time near the start or end of the buffer, I get
+  different results for placing activities into the future.
+  Test by looking at the distribution of context.currentTime values
+  returned.
+  The clicks were probably from key repeat, bounce, and erratic interval timer
+  appear much improved with the web audio based keyer timing.d
+* [x] Now the Android is struggling to keep up with the audio,
+  may need to adjust the audio buffer size in detone or disable it.
+  Switch to element decoding worked nicely, but android is clicky.
+* [x] build a monitor page with scope and logic traces
+  did the logic traces, the audio is scary, and neither are necessary for the generic app.
 * [?] use routing to select titles, pages, ...
 * [?] decide whether the polyserver makes sense
   so, building an app uses components in ./bower_components
   but running an app that is loaded from bower uses components
   in ../, polyserver resolves imports and loads
+* [x] lost timer which you can hear
+  because the key repeat becomes the clock for the keyer, pause after first keydown
+  before auto repeat begins.
+* [x] restart timer when letter starts after IDLE
+* [x] save progress after every session
+* [ ] make param changes persistent
+  they get overwritten by the default morse-station start without parameters.
+  save station params independent of morse-mimic parameters.
 * [ ] follow guide to material design
   tooltip specs http://www.google.com/design/spec/components/tooltips.html#tooltips-tooltips-desktop-
 * [ ] select and implement color choices
   much easier in 1.0
-* [ ] make the input decoder track the input speed, if there is one
 * [ ] test whether the decoders are working as expected
   seems that there are dah's read as dit's that would require the
   estimated speed to change.
@@ -72,14 +95,6 @@
 ** [ ] add replay, skip, and quit buttons to each card
 ** [ ] review cards at end of session
 * [ ] Morse Mimic - teach your muscles
-* [ ] fix the key clicks 
-  I suspect timing jitter induced by a sample clock that only changes
-  once per buffer and jumps by a buffer worth of samples. when I pick
-  up the buffer time near the start or end of the buffer, I get
-  different results for placing activities into the future.
-  Test by looking at the distribution of context.currentTime values
-  returned.
-* [ ] build a monitor page with scope and logic traces
 * [ ] I'm imagining a game where players challenge each other to tap it out
   so we'd need to allow multiple players on one machine,
   we'd need to hear the challenge tap,
@@ -90,6 +105,10 @@
   and the challenges need not be morse code,
   they could be arbitrary prosigns, very long
   and the spacing, beyond the element, letter, word variety could be significant.
-* [ ] Now the Android is struggling to keep up with the audio,
-  may need to adjust the audio buffer size in detone or disable it.
-
+  This is pretty Smulish, they're running millions in revenues now.
+* [ ] Separate the one-letter, two-letter, three-letter, and longer words
+  into separate tranches.
+* [ ] make progress displays that show progress through different tranches
+* [ ] dump overall progress,
+  suspect I'm favoring hardest over keeping practice evenly distributed over
+  entire lexicon.

@@ -807,16 +807,22 @@
       last_tick : context.currentTime,
 
       start_clock : function() {
-        console.log("start_clock");
+        // console.log("start_clock");
         this.last_tick = context.currentTime;
         _running = true;
         this.start_tick();
       },
 
       stop_clock : function() {
-        console.log("stop_clock");
+        // console.log("stop_clock");
         _running = false;
         if (_source) _source.stop();
+      },
+
+      restart_clock : function() {
+        // console.log("restart_clock");
+        this.stop_clock();
+        this.start_clock();
       },
 
       end_tick : function() {
@@ -847,6 +853,7 @@
             // the timer has reached the iws boundary
             this.emit('element', '\t', this.cursor);
           }
+          this.restart_clock();
         } else {
           this.emit('element', '', this.cursor);
         }
@@ -1354,6 +1361,7 @@
     self.output_decoder.table = self.table;
     self.input_decoder.table = self.table;
 
+    console.log("station", params);
     if (params)
       self.set_params(params);
     else

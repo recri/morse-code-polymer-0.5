@@ -182,6 +182,8 @@
       this.$.station.input_decoder_off_letter(this.oninputletter, this);
       this.$.station.output_decoder_off_letter(this.onoutputletter, this);
       this.session = null;
+      this.$.progress.value = this.progress.progress();
+      this.progress.save('morse-mimic');
     },
 
     new_session: function() { this.start_session('new'); },
@@ -191,6 +193,7 @@
       if (this.session == null) {
 	var station = this.$.station.get_station();
 	this.progress = study_progress(word_list_by_name('comb', station.table), station);
+	this.$.progress.value = this.progress.progress();
       }
     },
 
@@ -206,6 +209,7 @@
         this.progress = study_progress(null, station).restore('morse-mimic');
         // console.log('progress', 'old', this.progress);
       }
+      this.$.progress.value = this.progress.progress();
     },
 
     onblur: function() {
@@ -220,6 +224,7 @@
       this.$.station.onfocus();
       this.$.key.onfocus();
       // update progress bar
+      
     },
   });
   </script>
