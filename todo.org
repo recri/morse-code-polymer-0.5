@@ -112,3 +112,7 @@
 * [ ] dump overall progress,
   suspect I'm favoring hardest over keeping practice evenly distributed over
   entire lexicon.
+* [ ] record time per session
+* [ ] control time per session
+* [ ] disable irrelevant buttons
+* [ ] figure out which words got lost when quitting new sessions

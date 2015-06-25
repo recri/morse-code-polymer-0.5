@@ -202,7 +202,7 @@
 	  '~' : '.-.-',
 	  '%' : '.-...',
           '>' : '...-.-',
-	  '<' : '-.--.',
+	  // '<' : '-.--.', this conflicts with '('
 	  '}' : '....--',
 	  '{' : '...-.',
         },
@@ -1322,6 +1322,8 @@
       input_keyup : function(isleft) { this.input.keyup(isleft); },
       input_focus : function() { this.input.onfocus(); },
       input_blur : function() { this.input.onblur(); },
+
+      current_time : function() { return this.context.currentTime; },
     };
 
     var USE_DETONER = false;    // decode from sidetone

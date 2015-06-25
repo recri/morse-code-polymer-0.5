@@ -125,7 +125,8 @@
           how well you do.
         </p>
       </core-collapse>
-      <div id="log"></div>
+      <div id="log1"></div>
+      <div id="log2"></div>
 
     </section>
   </template>
@@ -142,6 +143,7 @@
       if (this.session == null) {
 	// console.log("start_session", which, this.$.station.items_per_session, this.$.station.get_station().items_per_session);
 	this.session = study_session(this.progress, which, this.$.station.items_per_session, this.$.station.reps_per_item);
+	this.session.time = this.$.station.current_time();
 	// ??? this.start_session();
 	// make session card
 	// start session testing
@@ -151,7 +153,7 @@
 	this.$.station.input_decoder_on_letter(this.oninputletter, this);
 	this.$.station.output_decoder_on_letter(this.onoutputletter, this);
 	// this.$.station.get_station().output_decoder.event_debug();
-	this.$.log.innerHTML = "";
+	this.$.log2.innerHTML = "";
       }
     },
 
@@ -159,7 +161,7 @@
       this.session.oninputletter(ltr, code);
       this.$.reply_text.innerText = this.session.input_text;
       this.$.reply_code.innerText = this.session.input_code;
-      this.$.log.innerHTML = this.session.logtext;
+      this.$.log2.innerHTML = this.session.logtext;
       // console.log('oninputletter', ltr, code, this.session.input_text, this.session.input_code);
       if (this.session.session_progress() >= 1)
 	this.finish_session();
@@ -169,7 +171,7 @@
       this.$.sent_text.innerText = this.session.output_text;
       this.$.sent_code.innerText = this.session.output_code;
       this.$.card_number.innerText = (this.session.reps_done+1)+" / "+this.session.reps_to_do;
-      this.$.log.innerHTML = this.session.logtext;
+      this.$.log2.innerHTML = this.session.logtext;
       // console.log('onoutputletter', ltr, code, this.session.output_text, this.session.output_code);
     },
 
@@ -179,11 +181,16 @@
     
     finish_session() {
       // console.log("finish_session");
+      var time = this.$.station.current_time()-this.session.time;
+      var score = this.session.score;
+      var dict = this.session.dict;
+      var type = this.session.type;
       this.$.station.input_decoder_off_letter(this.oninputletter, this);
       this.$.station.output_decoder_off_letter(this.onoutputletter, this);
       this.session = null;
       this.$.progress.value = this.progress.progress();
       this.progress.save('morse-mimic');
+      this.$.log1.innerHTML += type + "[" + dict + "], " + time.toFixed(2) + "s, "+score+"<br>";
     },
 
     new_session: function() { this.start_session('new'); },

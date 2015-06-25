@@ -235,16 +235,18 @@ function study_session(progress, type, items_per_session, reps_per_item) {
         progress.score_word(t[0], t[1]);
       }
       progress.progress();
-      self.log("<br>session completed with overall score: " + (self.score / self.reps_done).toFixed(2));
+      self.score = (self.score / self.reps_done).toFixed(2);
+      self.log("<br>session completed with overall score: " + self.score);
     },
 
+    // worst in score is one thing, worst in times reviewed is another
     worst: function(n) {
       var worst = Object.keys(progress.words).sort(function(a, b) {
         a = progress.words[a];
         b = progress.words[b];
-        return (b.score - a.score) || (a.n - b.n);
+        return (a.n - b.n) || (b.score - a.score) || (Math.random-0.5);
       });
-      // for (var i = 0; i < worst.length; i += 1) console.log(worst[i], self.words[worst[i]]);
+      // for (var i = 0; i < worst.length; i += 1) console.log(worst[i], progress.words[worst[i]]);
       return worst.slice(0, items_per_session);
     },
 
@@ -253,17 +255,18 @@ function study_session(progress, type, items_per_session, reps_per_item) {
     },
 
     session_new: function() {
-      var words = self.session_new_words(type);
-      console.log('session_new', 'words', words.length, words);
+      self.type = type;
+      self.dict = self.session_new_words(type).sort();
+      // console.log('session_new', 'words', self.dict.length, self.dict);
       self.reps_to_do = items_per_session * reps_per_item;
       self.reps_done = 0;
       self.score = 0;
-      self.words = repeat(reps_per_item, words);
+      self.words = repeat(reps_per_item, self.dict);
       // console.log('session_new', 'self.words', self.words.length, self.words);
       self.words = shuffle(self.words);
       // console.log('session_new', 'self.words', self.words.length, self.words);
       self.tests = [];
-      self.log("<strong>start " + type + " session</strong><br>" + words + "<br>");
+      self.log("<strong>start " + type + " session</strong><br>[" + self.dict + "]<br>");
       self.session_continue();
       return self;
     }
