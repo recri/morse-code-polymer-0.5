@@ -42,12 +42,6 @@
 //
 
 function study_progress(word_list, station) {
-  function progress_bar(id, val, max) {
-    var p = document.getElementById(id);
-    p.max = max;
-    p.value = val;
-    p.innerText = "" + val + "/" + max;
-  }
 
   var self = {
     word_list: word_list, // the word list we are studying
@@ -58,7 +52,7 @@ function study_progress(word_list, station) {
 
     // proportion complete of course
     progress: function() {
-      return self.word_list.next_i / self.word_list.length;
+      return 100 * self.word_list.next_i / self.word_list.length;
     },
 
     score_word: function(word, score) {
@@ -93,14 +87,42 @@ function study_progress(word_list, station) {
       self.word_list = word_list_by_name(save.word_list_name, self.table, save.word_list_next_i);
       self.station = morse.station(save.station_params);
       self.words = save.words;
+      self.check_words();
       return self;
     },
     delete: function(name) {
       localStorage.removeItem(name);
     },
 
+    check_words : function() {
+      if (self.word_list && self.table && self.words) {
+        console.log("check_words");
+        console.log("self.word_list", self.word_list);
+        console.log("self.table", self.table);
+        console.log("self.words", self.words);
+        var dup = word_list_by_name(self.word_list.name, self.table, 0);
+        var count = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+        var total = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+        while (dup.next_i < self.word_list.next_i) {
+          var word = dup.next(1)[0];
+          if ( ! self.words[word]) {
+            console.log("missing", word);
+            self.score_word(word, 1.0);
+          }
+          count[word.length] += 1;
+          total[word.length] += 1;
+        }
+        while (dup.any_more()) {
+          word = dup.next(1)[0];
+          total[word.length] += 1;
+        }
+      }
+      console.log("count", count);
+      console.log("total", total);
+    },
+      
+    
   };
-
   return self;
 }
 
