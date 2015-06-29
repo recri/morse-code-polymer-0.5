@@ -114,5 +114,12 @@
   entire lexicon.
 * [ ] record time per session
 * [ ] control time per session
+* [ ] record overall time spent in training
 * [ ] disable irrelevant buttons
-* [ ] figure out which words got lost when quitting new sessions
+* [x] figure out which words got lost when quitting new sessions
+  they get lost when you quit a new session because there was no score for them
+* [ ] symbols which are all dit or all dah are simpler because of the keying mechanics
+  the symbols and words could be classified in difficulty according
+  to the number of hand motions required
+  and the number of direction changes required
+* [ ] getting the inter-letter spacing is important 
