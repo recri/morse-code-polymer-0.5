@@ -85,7 +85,7 @@ function study_progress(word_list, station) {
       var save = JSON.parse(localStorage.getItem(name));
       self.table = morse.table(save.table_name);
       self.word_list = word_list_by_name(save.word_list_name, self.table, save.word_list_next_i);
-      self.station = morse.station(save.station_params);
+      self.station.set_params(save.station_params);
       self.words = save.words;
       self.check_words();
       return self;

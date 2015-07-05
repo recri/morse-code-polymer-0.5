@@ -75,6 +75,13 @@
   before auto repeat begins.
 * [x] restart timer when letter starts after IDLE
 * [x] save progress after every session
+* [x] disable irrelevant buttons
+* [x] figure out which words got lost when quitting new sessions
+  they get lost when you quit a new session because there was no score for them
+* [x] redo the display during session
+* [x] make wpm changes for both input and output
+  the progress.station was getting disconnected from the morse-station
+  probably explains problems getting output letter events, too.
 * [ ] make param changes persistent
   they get overwritten by the default morse-station start without parameters.
   save station params independent of morse-mimic parameters.
@@ -115,11 +122,7 @@
 * [ ] record time per session
 * [ ] control time per session
 * [ ] record overall time spent in training
-* [x] disable irrelevant buttons
-* [x] figure out which words got lost when quitting new sessions
-  they get lost when you quit a new session because there was no score for them
 * [ ] don't lose words when quitting a session
-* [x] redo the display during session
 * [ ] symbols which are all dit or all dah are simpler because of the keying mechanics
   the symbols and words could be classified in difficulty according
   to the number of hand motions required
