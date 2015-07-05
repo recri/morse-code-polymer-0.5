@@ -134,3 +134,5 @@
 * [ ] skip moves the word to the end of the list
 * [ ] offer lessons by word length in clocks, dits/dahs/spaces
 * [ ] offer lessons with words differing only in spaces, like: [ete,ae,en,r]
+* [ ] save settings to google drive?
+
