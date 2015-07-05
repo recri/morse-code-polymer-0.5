@@ -81,25 +81,23 @@
         <paper-progress flex id="progress"></paper-progress>Progress
       </div>
 
-      <div layout horizontal center block cross-fade>Sent Text: <span id="sent_text"></span></div>
-      <div layout horizontal center block cross-fade>Sent Code: <span id="sent_code"></span></div>
-      <div layout horizontal center block cross-fade>Reply Text: <span id="reply_text"></span></div>
-      <div layout horizontal center block cross-fade>Reply Code: <span id="reply_code"></span></div>
-      <div layout horizontal center block cross-fade>Card Number: <span id="card_number"></span></div>
+      <div layout horizontal center block cross-fade>Sent: <span>{{sent_text}}</span></div>
+      <div layout horizontal center block cross-fade>Reply: <span>{{reply_text}}</span></div>
+      <div layout horizontal center block cross-fade>Item: <span>{{card_number}}</span></div>
 
       <div class="buttons" layout horizontal center block cross-fade>
 	<span flex></span>
-	<paper-button raised on-click="{{skip_card}}">Skip</paper-button>
-	<paper-button raised on-click="{{retry_card}}">Retry</paper-button>
-	<paper-button raised on-click="{{quit_session}}">Quit</paper-button>
+	<paper-button class="session1" raised on-click="{{skip_card}}">Skip</paper-button>
+	<paper-button class="session1" raised on-click="{{retry_card}}">Retry</paper-button>
+	<paper-button class="session1" raised on-click="{{quit_session}}">Quit</paper-button>
 	<span flex></span>
       </div>
 
       <div class="buttons" layout horizontal center block cross-fade>
         <span flex></span>
-        <paper-button raised on-click="{{new_session}}">New Session</paper-button>
-        <paper-button raised on-click="{{review_session}}">Review Session</paper-button>
-	<paper-button raised on-click="{{new_course}}">New Course</paper-button>
+        <paper-button class="progress1" raised on-click="{{new_session}}">New Session</paper-button>
+        <paper-button class="progress1" raised on-click="{{review_session}}">Review Session</paper-button>
+	<paper-button class="progress1" raised on-click="{{new_course}}">New Course</paper-button>
         <span flex></span>
       </div>
 
@@ -125,9 +123,11 @@
           how well you do.
         </p>
       </core-collapse>
-      <div id="log1"></div>
-      <div id="log2"></div>
-
+      <hr>
+      <div>{{log1}}</div>
+      <hr>
+      <div>{{log2}}</div>
+      <hr>
     </section>
   </template>
   <script src="words.js"></script>
@@ -135,46 +135,66 @@
   <script>
   Polymer({
     publish: {
+      sent_text: "",
+      sent_code: "",
+      reply_text: "",
+      reply_code: "",
+      card_number: "",
+      log1: "",
+      log2: "",
     },
 
     session: null,
 
+    disable_selector: function(selector, disabled) {
+      var elts = this.shadowRoot.querySelectorAll(selector);
+      for (var i = 0; i < elts.length; i += 1) { elts[i].disabled = disabled; }
+    },
+    
     start_session: function(which) {
       if (this.session == null) {
 	// console.log("start_session", which, this.$.station.items_per_session, this.$.station.get_station().items_per_session);
-	this.session = study_session(this.progress, which, this.$.station.items_per_session, this.$.station.reps_per_item);
+	this.$.station.input_decoder_on_letter(this.oninputletter, this);
+	// this.$.station.output_decoder_on_letter(this.onoutputletter, this);
+	this.session = study_session(this, this.progress, which, this.$.station.items_per_session, this.$.station.reps_per_item);
 	this.session.time = this.$.station.current_time();
+	this.disable_selector(".session1", false);
+	this.disable_selector(".progress1", true);
 	// ??? this.start_session();
 	// make session card
 	// start session testing
 	// disable start session buttons
 	// periodically check status of session
 	// for progress and completion
-	this.$.station.input_decoder_on_letter(this.oninputletter, this);
-	this.$.station.output_decoder_on_letter(this.onoutputletter, this);
 	// this.$.station.get_station().output_decoder.event_debug();
-	this.$.log2.innerHTML = "";
+	this.log2 = "";
+	this.session.session_continue();
       }
     },
 
     oninputletter: function(ltr, code) {
       this.session.oninputletter(ltr, code);
-      this.$.reply_text.innerText = this.session.input_text;
-      this.$.reply_code.innerText = this.session.input_code;
-      this.$.log2.innerHTML = this.session.logtext;
+      this.reply_text = this.session.input_text;
+      this.reply_code = this.session.input_code;
+      this.log2 = this.session.logtext;
       // console.log('oninputletter', ltr, code, this.session.input_text, this.session.input_code);
       if (this.session.session_progress() >= 1)
 	this.finish_session();
     },
+
     onoutputletter: function(ltr, code) {
-      this.session.onoutputletter(ltr, code);
-      this.$.sent_text.innerText = this.session.output_text;
-      this.$.sent_code.innerText = this.session.output_code;
-      this.$.card_number.innerText = (this.session.reps_done+1)+" / "+this.session.reps_to_do;
-      this.$.log2.innerHTML = this.session.logtext;
+      // this.session.onoutputletter(ltr, code);
       // console.log('onoutputletter', ltr, code, this.session.output_text, this.session.output_code);
     },
 
+    next_word: function() {
+      // console.log('next_word', this.session.current);
+      this.sent_text = this.session.current;
+      this.sent_code = this.session.output_code;
+      this.card_number = (this.session.reps_done+1)+" / "+this.session.reps_to_do;
+      this.log2 = this.session.logtext;
+    },
+    
     retry_card: function() { this.session.test_again(); },
     skip_card: function() { this.session.test_next(); },
     quit_session: function() { this.finish_session(); },
@@ -186,11 +206,15 @@
       var dict = this.session.dict;
       var type = this.session.type;
       this.$.station.input_decoder_off_letter(this.oninputletter, this);
-      this.$.station.output_decoder_off_letter(this.onoutputletter, this);
+      // this.$.station.output_decoder_off_letter(this.onoutputletter, this);
+      // if this is a new session, and we're quitting early, arrange to unsee
+      // the symbols so they won't get lost
       this.session = null;
       this.$.progress.value = this.progress.progress();
       this.progress.save('morse-mimic');
-      this.$.log1.innerHTML += type + "[" + dict + "], " + time.toFixed(2) + "s, "+score+"<br>";
+      this.log1 += type + "[" + dict + "], " + time.toFixed(2) + "s, "+score+"; ";
+      this.disable_selector(".session1", true);
+      this.disable_selector(".progress1", false);
     },
 
     new_session: function() { this.start_session('new'); },
@@ -217,6 +241,8 @@
         // console.log('progress', 'old', this.progress);
       }
       this.$.progress.value = this.progress.progress();
+      this.disable_selector(".session1", true);
+      this.disable_selector(".progress1", false);
     },
 
     onblur: function() {
