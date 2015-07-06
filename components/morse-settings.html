@@ -225,7 +225,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       // this.$.midi_menu.innerHTML = '<paper-item label="None">None</paper-item>'
       if (names) {
 	for (var i = 0; i < names.length; i += 1) {
-	  if (names[i].startsWith('Teensy MIDI')) this.input_midi = names[i];
+	  if (names[i].startsWith('Teensy MIDI')) {
+	    this.input_midi = names[i];
+	    alert("setting MIDI input to "+names[i]);
+	  }
 	  // this.$.midi_menu.innerHTML += '<paper-item label="'+names[i]+'">'+names[i]+'</paper-item>';
 	}
       }
