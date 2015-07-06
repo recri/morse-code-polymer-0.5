@@ -44,12 +44,12 @@
 function study_progress(word_list, station) {
 
   var self = {
-    word_list: word_list, // the word list we are studying
-    station: station,     // the tester we use to examine the student
+    word_list: word_list,       // the word list we are studying
+    station: station,           // the tester we use to examine the student
     table: station.output.table,
-    words: {},     // the dictionary of words studied
-    // number of times seen, recording percent correct,
-
+    words: {},                  // the dictionary of words studied
+    // number of times seen, recording percent correct, first time, last time
+    time: 0.0,                  // cumulative time spent in study
     // proportion complete of course
     progress: function() {
       return 100 * self.word_list.next_i / self.word_list.length;
@@ -85,7 +85,7 @@ function study_progress(word_list, station) {
       var save = JSON.parse(localStorage.getItem(name));
       self.table = morse.table(save.table_name);
       self.word_list = word_list_by_name(save.word_list_name, self.table, save.word_list_next_i);
-      self.station = morse.station(save.station_params);
+      self.station.set_params(save.station_params);
       self.words = save.words;
       self.check_words();
       return self;
@@ -96,10 +96,10 @@ function study_progress(word_list, station) {
 
     check_words : function() {
       if (self.word_list && self.table && self.words) {
-        console.log("check_words");
-        console.log("self.word_list", self.word_list);
-        console.log("self.table", self.table);
-        console.log("self.words", self.words);
+        // console.log("check_words");
+        // console.log("self.word_list", self.word_list);
+        // console.log("self.table", self.table);
+        // console.log("self.words", self.words);
         var dup = word_list_by_name(self.word_list.name, self.table, 0);
         var count = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
         var total = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
@@ -117,8 +117,8 @@ function study_progress(word_list, station) {
           total[word.length] += 1;
         }
       }
-      console.log("count", count);
-      console.log("total", total);
+      // console.log("count", count);
+      // console.log("total", total);
     },
       
     
@@ -126,7 +126,7 @@ function study_progress(word_list, station) {
   return self;
 }
 
-function study_session(progress, type, items_per_session, reps_per_item) {
+function study_session(mimic, progress, type, items_per_session, reps_per_item) {
   function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
@@ -167,6 +167,7 @@ function study_session(progress, type, items_per_session, reps_per_item) {
   // 1 / (words/minute * dits/word * minutes/second * second/millisecond)
   var msPerDit = 1 / (progress.station.output_wpm * 50 * (1 / 60) * (1 / 1000));
   var self = {
+
     reps_to_do: 0,
     reps_done: 0,
     score: 0,
@@ -183,6 +184,7 @@ function study_session(progress, type, items_per_session, reps_per_item) {
 
     logtext: "",
 
+    
     log: function(text) {
       self.logtext += text;
     },
@@ -211,12 +213,14 @@ function study_session(progress, type, items_per_session, reps_per_item) {
       output_send(self.current);
       self.test_output_time = Date.now(); // time in milliseconds since epoch
     },
+
     test_again: function() {
       // test a word again, ie send it once more
       self.output_text = "";
       self.output_code = "";
       output_send(self.current);
     },
+
     test_score: function() {
       self.reps_done += 1;
       // length of code to be sent, with word space appended
@@ -228,8 +232,9 @@ function study_session(progress, type, items_per_session, reps_per_item) {
       var score = timescore * lenscore;
       self.score += score;
       self.tests.push([self.current, score]);
-      self.log("'" + self.current + "' = " + score.toFixed(2) + "(" + (self.score / self.reps_done).toFixed(2) + "), ");
+      self.log("'" + self.current + "' = " + score.toFixed(2)+", ");
     },
+
     test_next: function() {
       // console.log("test_next");
       self.test_score();
@@ -249,6 +254,7 @@ function study_session(progress, type, items_per_session, reps_per_item) {
       self.current = self.words[self.reps_done];
       // console.log("session_continue", self.reps_done+"/"+self.reps_to_do, self.current);
       self.test_word();
+      mimic.next_word(self.current);
     },
     session_score: function() {
       var n = self.tests.length;
@@ -258,7 +264,7 @@ function study_session(progress, type, items_per_session, reps_per_item) {
       }
       progress.progress();
       self.score = (self.score / self.reps_done).toFixed(2);
-      self.log("<br>session completed with overall score: " + self.score);
+      self.log(" score: " + self.score);
     },
 
     // worst in score is one thing, worst in times reviewed is another
@@ -288,8 +294,8 @@ function study_session(progress, type, items_per_session, reps_per_item) {
       self.words = shuffle(self.words);
       // console.log('session_new', 'self.words', self.words.length, self.words);
       self.tests = [];
-      self.log("<strong>start " + type + " session</strong><br>[" + self.dict + "]<br>");
-      self.session_continue();
+      self.log("start " + type + " session [" + self.dict + "]");
+      //self.session_continue();
       return self;
     }
   };

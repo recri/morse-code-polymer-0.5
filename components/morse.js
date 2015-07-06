@@ -1032,7 +1032,7 @@
   **  don't work now even though the browser continues to list them;
   */
   morse.midi_input = function() {
-    var self = {
+    var self = extend(morse.event(), {
       midiOptions : { },
       midi : null,  // global MIDIAccess object
       onMIDIMessage : function ( event ) {
@@ -1043,11 +1043,12 @@
         console.log( str );
       },
       onMIDISuccess : function( midiAccess ) {
-        // console.log( "MIDI ready!" );
-        this.midi = midiAccess;
+        self.midi = midiAccess;
+        self.emit('refresh', self.names());
+        // console.log( "MIDI ready!", self.names() );
       },
       onMIDIFailure : function(msg) {
-        // console.log( "Failed to get MIDI access - " + msg );
+        console.log( "Failed to get MIDI access - " + msg );
       },
       names : function() {
         var names = [];
@@ -1076,12 +1077,15 @@
           }
         }
       },
-    };
-    if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess().then( self.onMIDISuccess, self.onMIDIFailure );
-    } else {
-      console.log("no navigator.requestMIDIAccess found");
-    }
+      refresh : function() {
+        if (navigator.requestMIDIAccess) {
+          navigator.requestMIDIAccess().then( self.onMIDISuccess, self.onMIDIFailure );
+        } else {
+          console.log("no navigator.requestMIDIAccess found");
+        }
+      },
+    });
+    self.refresh();
     return self;
   };
 
@@ -1149,7 +1153,8 @@
         this._midi = midi;
         this.midi_input.connect(midi, this.onmidievent);
       },
-      midi_refresh : function() { this.midi_input = morse.midi_input(); },
+      midi_on_refresh : function(callback, context) { this.midi_input.on('refresh', callback, context); },
+      midi_refresh : function() { this.midi_input.refresh(); },
       midi_names : function() { return this.midi_input.names(); },
     };
     return self;
@@ -1217,29 +1222,29 @@
       get output_pitch() { return this.output.pitch; },
       set output_pitch(v) { this.output.pitch = v; },
 
-      get gain() { return this.input.gain; },
-      set gain(v) { this.input.gain = this.output.gain = v; },
-      get rise() { return this.input.rise; },
-      set rise(v) { this.input.rise = this.output.rise = v; },
-      get fall() { return this.input.fall; },
-      set fall(v) { this.input.fall = this.output.fall = v; },
-      get wpm() { return this.input.wpm; },
-      set wpm(v) { this.input.wpm = this.output.wpm = v; },
-      get dah() { return this.input.dah; },
-      set dah(v) { this.input.dah = this.output.dah = v; },
-      get ies() { return this.input.ies; },
-      set ies(v) { this.input.ies = this.output.ies = v; },
-      get ils() { return this.input.ils; },
-      set ils(v) { this.input.ils = this.output.ils = v; },
-      get iws() { return this.input.iws; },
-      set iws(v) { this.input.iws = this.output.iws = v; },
+      get gain() { return this.input_gain; },
+      set gain(v) { this.input_gain = v; this.output_gain = v; },
+      get rise() { return this.input_rise; },
+      set rise(v) { this.input_rise = v; this.output_rise = v; },
+      get fall() { return this.input_fall; },
+      set fall(v) { this.input_fall = v; this.output_fall = v; },
+      get wpm() { return this.input_wpm; },
+      set wpm(v) { this.input_wpm = v; this.output_wpm = v; },
+      get dah() { return this.input_dah; },
+      set dah(v) { this.input_dah = v; this.output_dah = v; },
+      get ies() { return this.input_ies; },
+      set ies(v) { this.input_ies = v; this.output_ies = v; },
+      get ils() { return this.input_ils; },
+      set ils(v) { this.input_ils = v; this.output_ils = v; },
+      get iws() { return this.input_iws; },
+      set iws(v) { this.input_iws = v; this.output_iws = v; },
 
       get gain_dB() { return this.input_gain; },
-      set gain_dB(v) { this.input_gain = v = this.input_outin = v; },
+      set gain_dB(v) { this.input_gain = v; this.output_gain = v; },
       get rise_ms() { return this.input_rise; },
-      set rise_ms(v) { this.input_rise = v = this.input_outse = v; },
+      set rise_ms(v) { this.input_rise = v; this.output_rise = v; },
       get fall_ms() { return this.input_fall; },
-      set fall_ms(v) { this.input_fall = v = this.input_outll = v; },
+      set fall_ms(v) { this.input_fall = v; this.output_fall = v; },
 
       get input_gain() { return this.input.gain; },
       set input_gain(v) { this.input.gain = v; },
@@ -1282,8 +1287,6 @@
       set output_ils(v) { this.output.ils = v; },
       get output_iws() { return this.output.iws; },
       set output_iws(v) { this.output.iws = v; },
-      get output_midi() { return this.output.midi; },
-      set output_midi(v) { this.output.midi = v; },
 
       // unconverted property getters and setters
       // changed to make these the natural units
@@ -1307,15 +1310,14 @@
       set reps_per_item(v) { this.progress.reps_per_item = v; },
 
       // useful actions
-      output_midi_refresh : function() { this.output.midi_refresh(); },
-      output_midi_names : function() { this.output.midi_names(); },
       output_send : function(text) { this.output.send(text); },
       output_cancel : function() { this.output.keyOff(); },
       output_decoder_on_letter : function(callback, context) { this.output_decoder.on('letter', callback, context); },
       output_decoder_off_letter : function(callback, context) { this.output_decoder.off('letter', callback, context); },
 
+      input_midi_on_refresh: function(callback, context) { this.input.midi_on_refresh(callback, context); },
       input_midi_refresh : function() { this.input.midi_refresh(); },
-      input_midi_names : function() { this.input.midi_names(); },
+      input_midi_names : function() { return this.input.midi_names(); },
       input_decoder_on_letter : function(callback, context) { this.input_decoder.on('letter', callback, context); },
       input_decoder_off_letter : function(callback, context) { this.input_decoder.off('letter', callback, context); },
       input_keydown : function(isleft) { this.input.keydown(isleft); },
@@ -1363,7 +1365,7 @@
     self.output_decoder.table = self.table;
     self.input_decoder.table = self.table;
 
-    console.log("station", params);
+    // console.log("station", params);
     if (params)
       self.set_params(params);
     else

@@ -75,6 +75,13 @@
   before auto repeat begins.
 * [x] restart timer when letter starts after IDLE
 * [x] save progress after every session
+* [x] disable irrelevant buttons
+* [x] figure out which words got lost when quitting new sessions
+  they get lost when you quit a new session because there was no score for them
+* [x] redo the display during session
+* [x] make wpm changes for both input and output
+  the progress.station was getting disconnected from the morse-station
+  probably explains problems getting output letter events, too.
 * [ ] make param changes persistent
   they get overwritten by the default morse-station start without parameters.
   save station params independent of morse-mimic parameters.
@@ -115,11 +122,22 @@
 * [ ] record time per session
 * [ ] control time per session
 * [ ] record overall time spent in training
-* [ ] disable irrelevant buttons
-* [x] figure out which words got lost when quitting new sessions
-  they get lost when you quit a new session because there was no score for them
+* [ ] don't lose words when quitting a session
 * [ ] symbols which are all dit or all dah are simpler because of the keying mechanics
   the symbols and words could be classified in difficulty according
   to the number of hand motions required
   and the number of direction changes required
 * [ ] getting the inter-letter spacing is important 
+* [ ] record the time each word was first shown
+* [ ] record the time each word was last shown
+* [ ] remember if a word required replay, but not if skipped
+* [ ] skip moves the word to the end of the list
+* [ ] offer lessons by word length in clocks, dits/dahs/spaces
+* [ ] offer lessons with words differing only in spaces, like: [ete,ae,en,r]
+* [ ] save settings to google drive?
+
+* [ ] need a [Pause/Resume] button to postpone session
+* [ ] need to throw out the worst scores, or at least bound their badness
+* [ ] another training thread is the attack, there are a series of symbols
+  that begin with a squeeze A/R/~/+/. or N/K/C//;
+* [ ] adjust wpm in 0.5 steps not 2.5
