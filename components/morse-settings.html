@@ -222,10 +222,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     input_midi_names: function() { return this.$.station.input_midi_names(); },
     input_midi_is_refreshed(names) {
       // console.log('morse-settings', 'input_midi_is_refreshed', names, this.input_midi);
-      this.$.midi_menu.innerHTML = '<paper-item label="None">None</paper-item>'
+      // this.$.midi_menu.innerHTML = '<paper-item label="None">None</paper-item>'
       if (names) {
 	for (var i = 0; i < names.length; i += 1) {
-	  this.$.midi_menu.innerHTML += '<paper-item label="'+names[i]+'">'+names[i]+'</paper-item>';
+	  if (names[i].startsWith('Teensy MIDI')) this.input_midi = names[i];
+	  // this.$.midi_menu.innerHTML += '<paper-item label="'+names[i]+'">'+names[i]+'</paper-item>';
 	}
       }
     },
