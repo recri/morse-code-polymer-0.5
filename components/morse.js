@@ -19,7 +19,6 @@
 (function() {
   var root = this;
   var morse = {};
-
   // our personal extender function for inheritance
   // lucky choice, turns out that _.extend() doesn't do setters and getters
   function extend(obj, props) {
@@ -1033,6 +1032,7 @@
   */
   morse.midi_input = function() {
     var self = extend(morse.event(), {
+      log : "",
       midiOptions : { },
       midi : null,  // global MIDIAccess object
       onMIDIMessage : function ( event ) {
@@ -1045,10 +1045,12 @@
       onMIDISuccess : function( midiAccess ) {
         self.midi = midiAccess;
         self.emit('refresh', self.names());
+        self.log += "onMIDIsuccess"+self.names()+"\n";
         // console.log( "MIDI ready!", self.names() );
       },
       onMIDIFailure : function(msg) {
         console.log( "Failed to get MIDI access - " + msg );
+        self.log += "onMIDIfailure"+"\n";
       },
       names : function() {
         var names = [];
@@ -1085,6 +1087,7 @@
         }
       },
     });
+    self.log = navigator.platform + "\n";
     self.refresh();
     return self;
   };

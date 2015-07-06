@@ -172,6 +172,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
           </p>
 	</div>
       </core-collapse>
+      <div>{{log}}</div>
     </section>
   </template>
 
@@ -196,6 +197,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
       items_per_session: 5,
       reps_per_item: 5,
+      log: "",
     },
 
     ready: function() {
@@ -227,11 +229,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 	for (var i = 0; i < names.length; i += 1) {
 	  if (names[i].startsWith('Teensy MIDI')) {
 	    this.input_midi = names[i];
-	    alert("setting MIDI input to "+names[i]);
+	    // alert("setting MIDI input to "+names[i]);
 	  }
 	  // this.$.midi_menu.innerHTML += '<paper-item label="'+names[i]+'">'+names[i]+'</paper-item>';
 	}
       }
+      console.log(this.$.station.get_station().input.midi_input.log);
+      this.log = this.$.station.get_station().input.midi_input.log;
     },
 
     onblur: function() {
