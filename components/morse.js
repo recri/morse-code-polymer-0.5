@@ -1032,7 +1032,7 @@
   **  don't work now even though the browser continues to list them;
   */
   morse.midi_input = function() {
-    var self = {
+    var self = extend(morse.event(), {
       midiOptions : { },
       midi : null,  // global MIDIAccess object
       onMIDIMessage : function ( event ) {
@@ -1043,11 +1043,12 @@
         console.log( str );
       },
       onMIDISuccess : function( midiAccess ) {
-        // console.log( "MIDI ready!" );
-        this.midi = midiAccess;
+        self.midi = midiAccess;
+        self.emit('refresh', self.names());
+        // console.log( "MIDI ready!", self.names() );
       },
       onMIDIFailure : function(msg) {
-        // console.log( "Failed to get MIDI access - " + msg );
+        console.log( "Failed to get MIDI access - " + msg );
       },
       names : function() {
         var names = [];
@@ -1076,12 +1077,15 @@
           }
         }
       },
-    };
-    if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess().then( self.onMIDISuccess, self.onMIDIFailure );
-    } else {
-      console.log("no navigator.requestMIDIAccess found");
-    }
+      refresh : function() {
+        if (navigator.requestMIDIAccess) {
+          navigator.requestMIDIAccess().then( self.onMIDISuccess, self.onMIDIFailure );
+        } else {
+          console.log("no navigator.requestMIDIAccess found");
+        }
+      },
+    });
+    self.refresh();
     return self;
   };
 
@@ -1149,7 +1153,8 @@
         this._midi = midi;
         this.midi_input.connect(midi, this.onmidievent);
       },
-      midi_refresh : function() { this.midi_input = morse.midi_input(); },
+      midi_on_refresh : function(callback, context) { this.midi_input.on('refresh', callback, context); },
+      midi_refresh : function() { this.midi_input.refresh(); },
       midi_names : function() { return this.midi_input.names(); },
     };
     return self;
@@ -1282,8 +1287,6 @@
       set output_ils(v) { this.output.ils = v; },
       get output_iws() { return this.output.iws; },
       set output_iws(v) { this.output.iws = v; },
-      get output_midi() { return this.output.midi; },
-      set output_midi(v) { this.output.midi = v; },
 
       // unconverted property getters and setters
       // changed to make these the natural units
@@ -1307,15 +1310,14 @@
       set reps_per_item(v) { this.progress.reps_per_item = v; },
 
       // useful actions
-      output_midi_refresh : function() { this.output.midi_refresh(); },
-      output_midi_names : function() { this.output.midi_names(); },
       output_send : function(text) { this.output.send(text); },
       output_cancel : function() { this.output.keyOff(); },
       output_decoder_on_letter : function(callback, context) { this.output_decoder.on('letter', callback, context); },
       output_decoder_off_letter : function(callback, context) { this.output_decoder.off('letter', callback, context); },
 
+      input_midi_on_refresh: function(callback, context) { this.input.midi_on_refresh(callback, context); },
       input_midi_refresh : function() { this.input.midi_refresh(); },
-      input_midi_names : function() { this.input.midi_names(); },
+      input_midi_names : function() { return this.input.midi_names(); },
       input_decoder_on_letter : function(callback, context) { this.input_decoder.on('letter', callback, context); },
       input_decoder_off_letter : function(callback, context) { this.input_decoder.off('letter', callback, context); },
       input_keydown : function(isleft) { this.input.keydown(isleft); },
@@ -1363,7 +1365,7 @@
     self.output_decoder.table = self.table;
     self.input_decoder.table = self.table;
 
-    console.log("station", params);
+    // console.log("station", params);
     if (params)
       self.set_params(params);
     else

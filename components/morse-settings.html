@@ -72,7 +72,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 	  <morse-slider value="{{input_pitch}}" min="220" max="1760" step="0.01" pin="true" snap="true" label="sidetone frequency" prefix="Input Pitch" suffix="Hz"></morse-slider>
 	  <morse-slider value="{{output_pitch}}" min="220" max="1760" step="0.01" pin="true" snap="true" label="sidetone frequency" prefix="Output Pitch" suffix="Hz"></morse-slider>
 	  <morse-slider value="{{gain_dB}}" min="-60" max="0" pin="true" snap="true" label="sidetone level" prefix="Level" suffix="dB"></morse-slider>
-          <morse-slider iambic value="{{wpm}}" min="5" max="50" step="2.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
+          <morse-slider iambic value="{{wpm}}" min="5" max="50" step="0.5" pin="true" snap="true" label="key speed" prefix="Speed" suffix="wpm"></morse-slider>
 	</div>
       </core-collapse>
 
@@ -105,13 +105,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
         <div layout horizontal block center>
           <paper-dropdown-menu label="MIDI Device">
 	    <paper-dropdown class="dropdown">
-              <core-menu class="menu" valueattr="label" selected="{{input_midi}}">
+              <core-menu class="menu" valueattr="label" selected="{{input_midi}}" id="midi_menu">
                 <paper-item label="none">None</paper-item>
               </core-menu>
 	    </paper-dropdown>
           </paper-dropdown-menu>
           <core-tooltip label="Reload the MIDI device list.">
-	    <paper-icon-button id="input_midi_reload" icon="refresh"></paper-icon-button>
+	    <paper-icon-button id="input_midi_reload" on-click="{{input_midi_refresh}}"icon="refresh"></paper-icon-button>
           </core-tooltip>MIDI Device
         </div>
 	</div>
@@ -190,7 +190,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       ils: 3,
       iws: 7,
 
-      input_midi: "none",
+      input_midi: "None",
       input_swapped: false,
       input_type: 'iambic',
 
@@ -199,7 +199,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
     },
 
     ready: function() {
-      // console.log('ready in morse-input', this.$.key, this.$.station);
+      // console.log('ready in morse-settings', this.$.key, this.$.station);
+      this.input_midi_on_refresh(this.input_midi_is_refreshed, this);
+      this.input_midi_is_refreshed(this.input_midi_names());
     },
 
     settings_toggle: function() { this.$.settings.toggle(); },
@@ -215,8 +217,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       // this.attrChanged('input_type', oldv, newv);
     },
 
+    input_midi_on_refresh: function(callback, context) { this.$.station.input_midi_on_refresh(callback, context); },
     input_midi_refresh: function() { this.$.station.input_midi_refresh(); },
     input_midi_names: function() { return this.$.station.input_midi_names(); },
+    input_midi_is_refreshed(names) {
+      // console.log('morse-settings', 'input_midi_is_refreshed', names, this.input_midi);
+      this.$.midi_menu.innerHTML = '<paper-item label="None">None</paper-item>'
+      if (names) {
+	for (var i = 0; i < names.length; i += 1) {
+	  this.$.midi_menu.innerHTML += '<paper-item label="'+names[i]+'">'+names[i]+'</paper-item>';
+	}
+      }
+    },
 
     onblur: function() {
       // console.log('input.onblur');

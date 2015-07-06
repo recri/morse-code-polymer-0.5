@@ -96,10 +96,10 @@ function study_progress(word_list, station) {
 
     check_words : function() {
       if (self.word_list && self.table && self.words) {
-        console.log("check_words");
-        console.log("self.word_list", self.word_list);
-        console.log("self.table", self.table);
-        console.log("self.words", self.words);
+        // console.log("check_words");
+        // console.log("self.word_list", self.word_list);
+        // console.log("self.table", self.table);
+        // console.log("self.words", self.words);
         var dup = word_list_by_name(self.word_list.name, self.table, 0);
         var count = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
         var total = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
@@ -117,8 +117,8 @@ function study_progress(word_list, station) {
           total[word.length] += 1;
         }
       }
-      console.log("count", count);
-      console.log("total", total);
+      // console.log("count", count);
+      // console.log("total", total);
     },
       
     

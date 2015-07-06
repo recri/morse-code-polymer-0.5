@@ -136,3 +136,8 @@
 * [ ] offer lessons with words differing only in spaces, like: [ete,ae,en,r]
 * [ ] save settings to google drive?
 
+* [ ] need a [Pause/Resume] button to postpone session
+* [ ] need to throw out the worst scores, or at least bound their badness
+* [ ] another training thread is the attack, there are a series of symbols
+  that begin with a squeeze A/R/~/+/. or N/K/C//;
+* [ ] adjust wpm in 0.5 steps not 2.5

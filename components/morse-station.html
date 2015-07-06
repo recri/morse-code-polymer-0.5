@@ -152,7 +152,7 @@
       },
 
       output_send: function(text) { station.output_send(text); },
-      output_cancel: function() { station.output.cancel(); },
+      output_cancel: function() { station.output_cancel(); },
       output_decoder_on_letter: function(callback, context) { station.output_decoder_on_letter(callback, context); },
       input_decoder_on_letter: function(callback, context) { station.input_decoder_on_letter(callback, context); },
       output_decoder_off_letter: function(callback, context) { station.output_decoder_off_letter(callback, context); },
@@ -166,6 +166,7 @@
 
       input_midi_names: function() { return station.input_midi_names(); },
       input_midi_refresh: function() { station.input_midi_refresh(); },
+      input_midi_on_refresh: function(callback, context) { station.input_midi_on_refresh(callback, context); },
 
       get_station: function() { return station; },
       get_keytarget: function() { return keytarget; },
